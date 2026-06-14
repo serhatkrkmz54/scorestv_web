@@ -44,6 +44,18 @@
     --radius: 12px;
     --radius-sm: 9px;
   }
+  /* Yatay tasma koruma — herhangi bir genis element viewport'u zorlamasin.
+     Detail tablolari (.stand-table, .career-table, .rank-table) zaten kendi
+     .*-wrap container'i icinde scroll'lu. Bu global guard ekstra emniyet. */
+  html, body { overflow-x: hidden; max-width: 100vw; }
+  /* Resimler ve gomulu medya viewport'u asmasin */
+  img, svg, video, iframe { max-width: 100%; height: auto; }
+  /* Uzun kelimeler / URL'ler kirilsin */
+  .layout, .lg-block, .match-hero, .lig-hero, .team-hero, .player-hero,
+  .stat-row, .event-row, .h2h-row, .comment-card {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 }
 
 /* ───────── Tema ───────── */
