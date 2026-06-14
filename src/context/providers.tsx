@@ -11,6 +11,8 @@ import { Footer } from "@/components/shell/Footer";
 import { Subnav } from "@/components/home/Subnav";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { NotificationsEngine } from "@/components/home/NotificationsEngine";
+import { MobileNavProvider, MobileNavDrawer } from "@/components/shell/MobileNav";
+import { MobileNavContent } from "@/components/shell/MobileNavContent";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -19,18 +21,29 @@ export function Providers({ children }: { children: ReactNode }) {
         <AuthProvider>
           <FavoritesProvider>
             <NotifPrefsProvider>
-              <div className="app">
-                <Header />
-                <Subnav />
-                <main>{children}</main>
-                <Footer />
-              </div>
-              <AuthModal />
-              <NotificationsEngine />
+              <MobileNavProvider>
+                <div className="app">
+                  <Header />
+                  <Subnav />
+                  <main>{children}</main>
+                  <Footer />
+                </div>
+                <MobileNavDrawerWithContent />
+                <AuthModal />
+                <NotificationsEngine />
+              </MobileNavProvider>
             </NotifPrefsProvider>
           </FavoritesProvider>
         </AuthProvider>
       </LangProvider>
     </ThemeProvider>
+  );
+}
+
+function MobileNavDrawerWithContent() {
+  return (
+    <MobileNavDrawer title="Menü">
+      <MobileNavContent />
+    </MobileNavDrawer>
   );
 }

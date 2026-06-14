@@ -19,6 +19,31 @@
   --uel: #34D399;
   --rel: #E5364B;
   --win: #22C55E;
+
+  /* Standart kırılım noktaları (Tailwind uyumlu) — referans amaclı.
+     Tum @media query'ler bu degerleri esas alir. */
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+
+  /* Layout spacing — mobile @media ile override edilir */
+  --page-pad-x: 24px;
+  --shell-z-header: 60;
+  --shell-z-backdrop: 110;
+  --shell-z-drawer: 120;
+}
+
+/* Mobile (<768) — kompakt spacing + kucuk header/subnav */
+@media (max-width: 767.98px) {
+  :root {
+    --gap: 14px;
+    --page-pad-x: 12px;
+    --header-h: 56px;
+    --subnav-h: 46px;
+    --radius: 12px;
+    --radius-sm: 9px;
+  }
 }
 
 /* ───────── Tema ───────── */
@@ -431,7 +456,7 @@ a.mr-team:hover .nm { color: var(--accent); }
 .layout {
   max-width: var(--maxw); margin: 0 auto; width: 100%;
   display: grid; grid-template-columns: var(--rail-l) minmax(0, 1fr) var(--rail-r);
-  gap: var(--gap); padding: var(--gap) 24px 60px; align-items: start;
+  gap: var(--gap); padding: var(--gap) var(--page-pad-x) 60px; align-items: start;
 }
 .rail-left, .rail-right {
   position: sticky; top: calc(var(--header-h) + var(--subnav-h) + var(--gap));
@@ -497,13 +522,20 @@ a.mr-team:hover .nm { color: var(--accent); }
   70% { filter: brightness(.98); }
 }
 
-@media (max-width: 1180px) {
+/* Tablet (1024px alti): sol ray gizlenir, sag ray kalir */
+@media (max-width: 1023.98px) {
   .layout { grid-template-columns: minmax(0, 1fr) var(--rail-r); }
   .layout .rail-left { display: none; }
 }
-@media (max-width: 880px) {
-  .layout { grid-template-columns: minmax(0, 1fr); }
+/* Mobile (768px alti): sag ray da gizlenir, tek kolon */
+@media (max-width: 767.98px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--gap) var(--page-pad-x) 80px;
+  }
   .layout .rail-right { display: none; }
+  /* mobile'da sticky pozisyonlari sifirla — alani yiyor */
+  .rail-left, .rail-right { position: static; max-height: none; overflow: visible; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -3253,41 +3285,463 @@ a.team-transfer-player:hover { color: var(--accent); }
   width: 10px; height: 10px;
   border-radius: 50%;
   background: var(--accent);
-  opacity: 0.4;
-  animation: retry-pulse 1.2s ease-in-out infinite;
+  opacity: 0;
+  animation: retry-pulse 1.4s ease-in-out infinite;
 }
-.retry-shell-spinner span:nth-child(2) { animation-delay: 0.15s; }
-.retry-shell-spinner span:nth-child(3) { animation-delay: 0.3s; }
+.retry-shell-spinner span:nth-child(2) { animation-delay: 0.2s; }
+.retry-shell-spinner span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes retry-pulse {
   0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-  40% { opacity: 1; transform: scale(1.15); }
+  40% { opacity: 1; transform: scale(1); }
 }
-.retry-shell-title {
-  font-size: 22px;
-  font-weight: 700;
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — shell (hamburger, drawer, mobile utilities)
+   Breakpoint stratejisi:
+     <640  : mobile (small)    — kompakt header, single col
+     <768  : mobile (large)    — sag ray gizli, drawer ile sol ray
+     <1024 : tablet            — sol ray gizli (sag ray gorunur)
+     1024+ : desktop           — 3-col tam layout
+   ════════════════════════════════════════════════════════════════ */
+
+/* Utility — viewport bazli gizle/goster */
+.hide-mobile { }                                     /* default gorunur */
+.show-mobile { display: none; }                      /* default gizli */
+@media (max-width: 767.98px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: initial; }
+  .show-mobile-flex { display: flex !important; }
+  .show-mobile-inline-flex { display: inline-flex !important; }
+}
+
+/* Hamburger button — header'in solunda mobile/tablet'te gorunur */
+.h-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  border: none;
+  background: transparent;
   color: var(--text);
-  margin: 0 0 8px;
-}
-.retry-shell-sub {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-faint);
-  line-height: 1.5;
-  margin: 0 0 22px;
-}
-.retry-shell-link {
-  display: inline-block;
-  padding: 9px 18px;
   border-radius: 10px;
-  background: var(--surface-2);
-  color: var(--text);
-  font-size: 13.5px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid var(--border);
-  transition: background .15s, border-color .15s;
+  cursor: pointer;
+  transition: background .12s;
+  flex-shrink: 0;
 }
-.retry-shell-link:hover {
-  background: var(--surface-3);
-  border-color: var(--accent);
+.h-toggle:hover { background: var(--surface-2); }
+.h-toggle:active { transform: scale(.96); }
+.h-toggle svg { display: block; }
+/* Tablet ve altinda (sol ray gizli durumda) hamburger gorunur */
+@media (max-width: 1023.98px) {
+  .h-toggle { display: inline-flex; }
+}
+
+/* Mobile drawer — sol kenardan kayar */
+.mobile-drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, .55);
+  z-index: var(--shell-z-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+.mobile-drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mobile-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: min(86vw, 340px);
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  z-index: var(--shell-z-drawer);
+  transform: translateX(-105%);
+  transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+  display: flex; flex-direction: column;
+  box-shadow: var(--shadow);
+  will-change: transform;
+}
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.mobile-drawer-title {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.mobile-drawer-close {
+  width: 36px; height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.mobile-drawer-close:hover { background: var(--surface-2); }
+.mobile-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex; flex-direction: column;
+  gap: 12px;
+  /* iOS smooth scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+/* body scroll lock — drawer acikken */
+body.drawer-open { overflow: hidden; touch-action: none; }
+
+/* Subnav mobile — horizontal scroll chip bar */
+@media (max-width: 767.98px) {
+  .subnav-in {
+    padding: 0 12px;
+    gap: 6px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .subnav-in::-webkit-scrollbar { display: none; }
+  .subnav-in > * { scroll-snap-align: start; flex-shrink: 0; }
+}
+
+/* Header mobile — kompakt actions */
+@media (max-width: 767.98px) {
+  .header-in {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .h-actions { gap: 4px; }
+  /* Mobile'da dil switcher kompakt — sadece aktif gosterir */
+  .h-actions .seg-toggle button:not(.on) { display: none; }
+  .h-actions .seg-toggle { border: none; background: transparent; }
+  .h-actions .seg-toggle button.on {
+    padding: 6px 10px;
+    background: var(--surface-2);
+    border-radius: 8px;
+  }
+  /* Login button mobile'da kompakt */
+  .login-btn { padding: 6px 12px; font-size: 13px; }
+}
+/* Mobile small (<640): logo kucult, bildirim ikonunu gizle */
+@media (max-width: 639.98px) {
+  .header-in .logo svg { transform: scale(.85); transform-origin: left center; }
+  .h-actions .h-btn[aria-label*="ildirim" i],
+  .h-actions .h-btn[aria-label*="otification" i] { display: none; }
+}
+
+/* ── Mobile drawer quick links (anasayfa / siralama / haberler) ── */
+.mn-quick {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 0 4px 4px;
+}
+.mn-quick-item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  transition: background .12s, transform .08s;
+}
+.mn-quick-item:hover { background: var(--surface-2); }
+.mn-quick-item:active { transform: scale(.97); }
+.mn-quick-item svg { color: var(--accent); }
+
+.mn-footer {
+  margin-top: auto;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 14px 8px 6px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--text-faint);
+}
+.mn-footer svg { color: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE PAGE-SPECIFIC — anasayfa, mac, lig, takim, oyuncu, siralama
+   Strateji: <768 (mobile) ve <640 (mobile small) icin font/padding/grid
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Anasayfa: DateStrip / MatchRow / LeagueBlock ── */
+@media (max-width: 767.98px) {
+  /* DateStrip — gun seridi */
+  .ds-row { padding: 0 6px; gap: 4px; }
+  .ds-day { min-width: 56px; padding: 8px 4px; font-size: 12px; }
+  .ds-day .ds-d { font-size: 16px; }
+  .ds-day .ds-m { font-size: 10px; }
+  .ds-title { font-size: 13px; padding: 10px 12px 6px; }
+
+  /* FilterChips — wrap, kompakt */
+  .filter-chips { gap: 6px; padding: 8px 0; flex-wrap: wrap; }
+  .filter-chip { padding: 5px 10px; font-size: 12px; }
+
+  /* MatchRow — kompakt */
+  .mr {
+    grid-template-columns: 44px minmax(0, 1fr) 36px;
+    padding: 9px 8px;
+    gap: 8px;
+    font-size: 13.5px;
+  }
+  .mr-time { font-size: 12px; }
+  .mr-team .nm { font-size: 13.5px; }
+  .mr-team img { width: 22px; height: 22px; }
+  .mr-score { font-size: 14px; min-width: 36px; }
+
+  /* LeagueBlock — header */
+  .lg-block { border-radius: var(--radius-sm); }
+  .lg-head { padding: 8px 10px; gap: 8px; font-size: 12px; }
+  .lg-head img { width: 18px; height: 18px; }
+  .lg-head .lg-nm { font-size: 13px; }
+}
+@media (max-width: 639.98px) {
+  .ds-day { min-width: 50px; }
+  .mr { font-size: 13px; }
+  .mr-team .nm { font-size: 13px; }
+}
+
+/* ── Footer mobile — tek kolon ── */
+@media (max-width: 767.98px) {
+  .site-footer { padding: 24px 12px; }
+  .site-footer-inner { gap: 14px; grid-template-columns: 1fr !important; }
+  .site-footer h4 { font-size: 13px; }
+  .site-footer a, .site-footer p { font-size: 12.5px; }
+  .site-footer-bottom { font-size: 11px; }
+}
+
+/* ── SearchBox mobile — overlay full-screen yerine kompakt ── */
+@media (max-width: 767.98px) {
+  .sb-wrap { max-width: none; flex: 1; }
+  .sb-input { font-size: 13px; padding: 8px 10px 8px 34px; }
+  .sb-dropdown {
+    position: fixed;
+    left: 0; right: 0;
+    top: var(--header-h);
+    max-height: calc(100vh - var(--header-h) - 20px);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    width: auto;
+  }
+  .sb-section { padding: 8px 10px; }
+  .sb-item { padding: 9px 10px; font-size: 13px; }
+}
+
+/* ── Match detail: Hero / ScoreBreakdown / Tabs / icerik kartlari ── */
+@media (max-width: 767.98px) {
+  /* Hero — kucult */
+  .match-hero { padding: 14px 12px; border-radius: var(--radius-sm); }
+  .mh-teams { gap: 8px; }
+  .mh-team img { width: 56px; height: 56px; }
+  .mh-team-name { font-size: 14px; line-height: 1.15; }
+  .mh-score { font-size: 30px; min-width: 70px; }
+  .mh-status { font-size: 12px; padding: 3px 8px; }
+  .mh-meta { font-size: 11.5px; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .mh-meta img { width: 16px; height: 16px; }
+
+  /* ScoreBreakdown periyot seridi */
+  .sb-strip { padding: 6px 10px; gap: 4px; font-size: 11px; }
+  .sb-strip-item { padding: 4px 8px; }
+
+  /* MatchTabs — yatay scroll pill */
+  .mt-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 4px;
+    padding: 6px 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mt-bar::-webkit-scrollbar { display: none; }
+  .mt-pill {
+    flex-shrink: 0;
+    padding: 7px 11px;
+    font-size: 12.5px;
+    scroll-snap-align: start;
+  }
+  .mt-pill svg { width: 14px; height: 14px; }
+
+  /* Match detail body — tek kolon */
+  .match-detail-body { display: block; }
+
+  /* StatBar / Events / Lineups kartlari */
+  .stat-row { font-size: 13px; }
+  .stat-row .stat-label { font-size: 12px; }
+  .event-row { font-size: 13px; padding: 8px 6px; }
+  .event-row .minute { font-size: 12px; min-width: 32px; }
+
+  /* Lineups Pitch */
+  .lineup-pitch { padding: 12px 6px; }
+  .lineup-bench { padding: 10px; gap: 8px; }
+  .lineup-bench-grid { grid-template-columns: 1fr !important; }
+
+  /* Standings tablo — yatay scroll */
+  .stand-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .stand-table { min-width: 540px; font-size: 12.5px; }
+  .stand-table th, .stand-table td { padding: 6px 4px; }
+  .stand-team-name { max-width: 130px; font-size: 13px; }
+
+  /* H2H */
+  .h2h-row { font-size: 12.5px; padding: 8px 6px; }
+  .h2h-tally { gap: 6px; padding: 8px 10px; font-size: 12px; }
+
+  /* Prediction bar */
+  .pred-bar { font-size: 12px; }
+  .pred-info-grid { grid-template-columns: 1fr !important; gap: 8px; }
+
+  /* Comments */
+  .comment-card { padding: 10px 12px; font-size: 13px; }
+  .comment-avatar { width: 32px; height: 32px; }
+}
+
+/* ── Lig detay: Hero / Tabs / Standings / Fixtures / TopPlayers ── */
+@media (max-width: 767.98px) {
+  .lig-hero { padding: 14px 12px; }
+  .lig-hero-top { gap: 10px; }
+  .lig-hero-logo { width: 56px; height: 56px; }
+  .lig-hero-name { font-size: 18px; }
+  .lig-hero-meta { font-size: 12px; gap: 6px; flex-wrap: wrap; }
+  .lig-hero-stats { grid-template-columns: 1fr !important; gap: 8px; }
+  .lig-hero-stat { padding: 10px 12px; }
+  .lig-hero-stat-name { font-size: 13px; }
+  .lig-hero-stat-val { font-size: 14px; }
+
+  /* Lig tabs — yatay scroll */
+  .lig-tabs {
+    overflow-x: auto;
+    gap: 4px; padding: 6px 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lig-tabs::-webkit-scrollbar { display: none; }
+  .lig-tab { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+
+  /* Lig overview cards */
+  .lig-metric-grid { grid-template-columns: 1fr !important; }
+  .lig-metric { padding: 12px; }
+
+  /* Lig fixtures round tab */
+  .lig-round-tabs { overflow-x: auto; scrollbar-width: none; }
+  .lig-round-tabs::-webkit-scrollbar { display: none; }
+
+  /* Top players segmented */
+  .top-segments { overflow-x: auto; scrollbar-width: none; }
+  .top-segments::-webkit-scrollbar { display: none; }
+  .top-segment { flex-shrink: 0; padding: 6px 10px; font-size: 12px; }
+  .tp-row { font-size: 13px; padding: 8px 10px; }
+}
+
+/* ── Takim detay: Hero / SideInfo / Tabs ── */
+@media (max-width: 767.98px) {
+  .team-hero { padding: 14px 12px; }
+  .team-hero-logo { width: 64px; height: 64px; }
+  .team-hero-name { font-size: 20px; line-height: 1.1; }
+  .team-hero-meta { font-size: 12px; gap: 6px; flex-wrap: wrap; }
+
+  /* SideInfo — mobile'da hero altına grid olur */
+  .team-side-info {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px; padding: 10px 12px;
+  }
+  .tsi-item { padding: 8px; }
+  .tsi-label { font-size: 10px; }
+  .tsi-value { font-size: 13px; }
+
+  /* Tabs — yatay scroll */
+  .team-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 4px; padding: 6px 8px;
+  }
+  .team-tabs::-webkit-scrollbar { display: none; }
+  .team-tab { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+
+  /* Squad grid */
+  .squad-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; }
+  .squad-card { padding: 10px; font-size: 13px; }
+  .squad-card-photo { width: 56px; height: 56px; }
+
+  /* Stats accordion */
+  .team-pos-grid { grid-template-columns: 1fr !important; }
+  .team-stand-stats { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 639.98px) {
+  .team-side-info { grid-template-columns: 1fr !important; }
+  .squad-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ── Oyuncu detay: Hero / SideInfo / Tabs / Stats ── */
+@media (max-width: 767.98px) {
+  .player-hero { padding: 14px 12px; }
+  .player-hero-photo { width: 72px; height: 72px; }
+  .player-hero-name { font-size: 20px; }
+  .player-hero-meta { font-size: 12px; gap: 6px; flex-wrap: wrap; }
+
+  /* SideInfo grid mobile */
+  .player-side-info {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px; padding: 10px 12px;
+  }
+  .psi-item { padding: 8px; }
+  .psi-label { font-size: 10px; }
+  .psi-value { font-size: 13px; }
+
+  /* Player tabs */
+  .player-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 4px; padding: 6px 8px;
+  }
+  .player-tabs::-webkit-scrollbar { display: none; }
+  .player-tab { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+
+  /* Stats accordion */
+  .stat-accordion-head { padding: 10px 12px; font-size: 13px; }
+  .stat-accordion-body { padding: 10px; }
+  .stat-grid { grid-template-columns: 1fr !important; }
+
+  /* Trophy card */
+  .trophy-card { padding: 10px 12px; font-size: 13px; }
+  .trophy-seasons { gap: 4px; }
+  .trophy-season-chip { padding: 2px 6px; font-size: 11px; }
+
+  /* Career table */
+  .career-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .career-table { min-width: 600px; font-size: 12.5px; }
+}
+@media (max-width: 639.98px) {
+  .player-side-info { grid-template-columns: 1fr !important; }
+}
+
+/* ── Siralamalar (Rankings): 3-tab + tablo ── */
+@media (max-width: 767.98px) {
+  .rank-tabs { gap: 4px; overflow-x: auto; scrollbar-width: none; padding: 6px 8px; }
+  .rank-tabs::-webkit-scrollbar { display: none; }
+  .rank-tab { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+
+  .rank-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .rank-table { min-width: 500px; font-size: 12.5px; }
+  .rank-table th, .rank-table td { padding: 6px 6px; }
+  .rank-row-name { max-width: 140px; font-size: 13px; }
+}
+
+/* ── Auth modal mobile — kompakt ── */
+@media (max-width: 767.98px) {
+  .auth-modal { width: 92vw; max-width: 420px; padding: 18px; }
+  .auth-modal h2 { font-size: 18px; }
+  .auth-modal input { font-size: 14px; padding: 10px 12px; }
+}
+
+/* ── ScrollToTop mobile — kucult ── */
+@media (max-width: 767.98px) {
+  .to-top { right: 14px; bottom: 14px; width: 42px; height: 42px; }
 }

@@ -68,6 +68,20 @@ export function IconClose({ s = 18, ...p }: IP) {
     </svg>
   );
 }
+export function IconMenu({ s = 22, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" {...p}>
+      <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  );
+}
+export function IconHome({ s = 18, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1v-9z" />
+    </svg>
+  );
+}
 export function IconMail({ s = 17, ...p }: IP) {
   return (
     <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
@@ -413,6 +427,8 @@ export function IconHeart2({ s = 14, ...p }: IP) {
       <path d="M12 21s-7-4.5-9.5-9C1 8.5 3 5 6.5 5c1.7 0 3.3.9 4.2 2.3l1.3 1.7 1.3-1.7C14.2 5.9 15.8 5 17.5 5 21 5 23 8.5 21.5 12 19 16.5 12 21 12 21z" />
     </svg>
   );
+}
+
 }
 
 export function IconOdds({ s = 14, ...p }: IP) {

@@ -9,6 +9,7 @@ import { IconBell, IconMoon, IconSun } from "@/components/icons";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { Logo } from "./Logo";
 import { SearchBox } from "./SearchBox";
+import { MobileNavToggle } from "./MobileNav";
 import { translatePath } from "@/lib/routes";
 import type { Lang } from "@/i18n/auth-strings";
 
@@ -19,7 +20,6 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Dil degisince mevcut path'i hedef dile cevirip navigate et.
   const switchLang = (target: Lang) => {
     if (target === lang) return;
     setLang(target);
@@ -31,6 +31,8 @@ export function Header() {
   return (
     <header className="header">
       <div className="header-in">
+        <MobileNavToggle label={lang === "tr" ? "Menüyü aç" : "Open menu"} />
+
         <Link href="/" className="logo" aria-label="ScoresTV">
           <Logo h={36} />
         </Link>
