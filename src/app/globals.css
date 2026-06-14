@@ -3200,7 +3200,34 @@ a.team-transfer-player:hover { color: var(--accent); }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .04em;
-  color: var(--text-faint
+  color: var(--text-faint);
+  background: var(--surface-3);
+  padding: 2px 7px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.sd-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+.sd-foot-took {
+  font-family: monospace;
+  background: var(--surface-2);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .search-dropdown { max-height: 60vh; }
+  .sd-foot-hint { display: none; }
+}
+
 /* ============================================================
    RetryablePage shell — SSR sirasinda backend down ise gosterilir.
    Detail sayfalari (takim/lig/oyuncu/mac) icin "yukleniyor + auto-retry"

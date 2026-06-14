@@ -1,0 +1,56 @@
+# ===================================================================
+# Production compose — scorestv_web
+# TEK SUNUCU MIMARISI: backend ile ayni Sunucu 1'de calisir.
+# Nginx YOK — mevcut /opt/scorestv/ icindeki nginx ikisini de serve eder.
+# Web container 127.0.0.1:3000'de bind, mevcut nginx oradan proxy yapar.
+#
+# Calistirmadan once:
+#   1. /opt/scorestv-web/.env doldur (BACKEND_URL=http://host.docker.internal:8080)
+#   2. cd /opt/scorestv-web && docker compose up -d --build
+#   3. /opt/scorestv/conf/nginx/scorestv.conf icine scorestv.com server
+#      block'lari ekle (asagidaki scorestv-web-server.conf'tan kopyala)
+#   4. docker exec scorestv-nginx nginx -s reload
+# ===================================================================
+name: scorestv-web
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: scorestv-web:latest
+    container_name: scorestv-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    # host.docker.internal → host'un docker0 IP'sine resolve eder.
+    # Web'den backend'e (127.0.0.1:8080'e host'tan bind'li) erisim icin sart.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Sadece localhost'a bind — mevcut nginx (host network'te) erissin, dunyaya acik degil.
+    # Host port 3001 — Grafana zaten host 3000'i tutuyor (cakismasi onlenir).
+    # Container icinde Next hala 3000 dinler.
+    ports:
+      - "127.0.0.1:3001:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+        reservations:
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "5"
+
+networks:
+  default:
+    name: scorestv-web-net
+    driver: bridge
