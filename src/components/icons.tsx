@@ -429,7 +429,6 @@ export function IconHeart2({ s = 14, ...p }: IP) {
   );
 }
 
-}
 
 export function IconOdds({ s = 14, ...p }: IP) {
   return (
