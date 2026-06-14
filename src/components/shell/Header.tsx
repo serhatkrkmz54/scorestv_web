@@ -1,17 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
 import { useTheme } from "@/context/theme-context";
-import { IconBell, IconMoon, IconSearch, IconSun } from "@/components/icons";
+import { IconBell, IconMoon, IconSun } from "@/components/icons";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { Logo } from "./Logo";
+import { SearchBox } from "./SearchBox";
+import { translatePath } from "@/lib/routes";
+import type { Lang } from "@/i18n/auth-strings";
 
 export function Header() {
   const { user, loading, openAuth } = useAuth();
   const { lang, setLang } = useLang();
   const { theme, toggle: toggleTheme } = useTheme();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Dil degisince mevcut path'i hedef dile cevirip navigate et.
+  const switchLang = (target: Lang) => {
+    if (target === lang) return;
+    setLang(target);
+    if (!pathname) return;
+    const next = translatePath(pathname, target);
+    if (next !== pathname) router.push(next);
+  };
 
   return (
     <header className="header">
@@ -20,17 +35,7 @@ export function Header() {
           <Logo h={36} />
         </Link>
 
-        <div className="search">
-          <span className="s-ico">
-            <IconSearch s={18} />
-          </span>
-          <input
-            type="search"
-            placeholder={lang === "tr" ? "Takım, lig, oyuncu ara…" : "Search team, league, player…"}
-            aria-label="Ara"
-          />
-          <kbd>/</kbd>
-        </div>
+        <SearchBox />
 
         <div className="h-actions">
           <button className="h-btn icon" aria-label={lang === "tr" ? "Bildirimler" : "Notifications"}>
@@ -40,16 +45,16 @@ export function Header() {
           <button
             className="h-btn icon"
             onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Açık tema" : "Koyu tema"}
+            aria-label={theme === "dark" ? "Acik tema" : "Koyu tema"}
           >
             {theme === "dark" ? <IconSun s={19} /> : <IconMoon s={19} />}
           </button>
 
           <div className="seg-toggle" role="group" aria-label="Dil / Language">
-            <button className={lang === "tr" ? "on" : ""} onClick={() => setLang("tr")}>
+            <button className={lang === "tr" ? "on" : ""} onClick={() => switchLang("tr")}>
               TR
             </button>
-            <button className={lang === "en" ? "on" : ""} onClick={() => setLang("en")}>
+            <button className={lang === "en" ? "on" : ""} onClick={() => switchLang("en")}>
               EN
             </button>
           </div>
@@ -58,7 +63,7 @@ export function Header() {
             <UserMenu user={user} />
           ) : (
             <button className="login-btn" onClick={() => openAuth("signin")}>
-              {lang === "tr" ? "Giriş" : "Sign in"}
+              {lang === "tr" ? "Giris" : "Sign in"}
             </button>
           )}
         </div>

@@ -1,4 +1,3 @@
-import type { Lang } from "./auth-strings";
 
 export const HOME_STR = {
   tr: {
@@ -19,6 +18,7 @@ export const HOME_STR = {
     trending: "Gündem",
     follow: "Takip Et",
     news: "Haberler",
+    rankings: "Sıralamalar",
     favorites: "Favoriler",
     favLeague: "Ligi favorile",
     notifSettings: "Bildirim Ayarları",
@@ -57,6 +57,7 @@ export const HOME_STR = {
     trending: "Trending",
     follow: "Follow",
     news: "News",
+    rankings: "Rankings",
     favorites: "Favorites",
     favLeague: "Favorite league",
     notifSettings: "Notification Settings",
@@ -79,4 +80,4 @@ export const HOME_STR = {
   },
 } as const;
 
-export type HomeStrings = (typeof HOME_STR)[Lang];
+export type HomeStrings = (typeof HOME_STR)[keyof typeof HOME_STR];

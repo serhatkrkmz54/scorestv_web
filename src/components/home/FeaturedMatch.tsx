@@ -6,10 +6,40 @@ import { useHome } from "@/context/home-context";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import { categorize, kickoffTime, liveClock, winnerSide } from "@/lib/fixtures";
-import { matchPath } from "@/lib/routes";
-import type { FixtureSummary, PopularLeague } from "@/lib/fixtures-types";
+import { matchPath, teamPath, leaguePath } from "@/lib/routes";
+import type { FixtureSummary, FixtureTeam, PopularLeague } from "@/lib/fixtures-types";
+import type { Lang } from "@/i18n/auth-strings";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { IconChevronsRight } from "@/components/icons";
+
+function FmSide({
+  team,
+  side,
+  lost,
+  lang,
+}: {
+  team: FixtureTeam;
+  side: "home" | "away";
+  lost: boolean;
+  lang: Lang;
+}) {
+  const cls = `fm-side ${side}${lost ? " lost" : ""}`;
+  const name = <span className="fm-nm">{team.name}</span>;
+  const logo = <TeamLogo name={team.name} logo={team.logo} size={26} />;
+  const inner = side === "home" ? (<>{name}{logo}</>) : (<>{logo}{name}</>);
+  if (team.slug) {
+    return (
+      <Link
+        href={teamPath(lang, team.slug)}
+        className={cls}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {inner}
+      </Link>
+    );
+  }
+  return <div className={cls}>{inner}</div>;
+}
 
 function FeatRow({ f }: { f: FixtureSummary }) {
   const { lang } = useLang();
@@ -21,14 +51,11 @@ function FeatRow({ f }: { f: FixtureSummary }) {
   const awayLost = winner === "home";
 
   return (
-    <Link href={matchPath(lang, f.slug)} className="feat-match">
+    <div className="feat-match">
       <div className="fm-row">
-        <div className={"fm-side home" + (homeLost ? " lost" : "")}>
-          <span className="fm-nm">{f.homeTeam.name}</span>
-          <TeamLogo name={f.homeTeam.name} logo={f.homeTeam.logo} size={26} />
-        </div>
+        <FmSide team={f.homeTeam} side="home" lost={homeLost} lang={lang} />
 
-        <div className="fm-score">
+        <Link href={matchPath(lang, f.slug)} className="fm-score">
           {isUpcoming ? (
             <span className="fm-time tnum">{kickoffTime(f.kickoff)}</span>
           ) : (
@@ -44,18 +71,26 @@ function FeatRow({ f }: { f: FixtureSummary }) {
               {liveClock(f.status)}
             </span>
           )}
-        </div>
+        </Link>
 
-        <div className={"fm-side away" + (awayLost ? " lost" : "")}>
-          <TeamLogo name={f.awayTeam.name} logo={f.awayTeam.logo} size={26} />
-          <span className="fm-nm">{f.awayTeam.name}</span>
+        <FmSide team={f.awayTeam} side="away" lost={awayLost} lang={lang} />
+      </div>
+      {f.leagueRef.slug ? (
+        <Link
+          href={leaguePath(lang, f.leagueRef.slug)}
+          className="fm-league"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {f.leagueRef.name}
+          {f.round ? ` · ${f.round}` : ""}
+        </Link>
+      ) : (
+        <div className="fm-league">
+          {f.leagueRef.name}
+          {f.round ? ` · ${f.round}` : ""}
         </div>
-      </div>
-      <div className="fm-league">
-        {f.leagueRef.name}
-        {f.round ? ` · ${f.round}` : ""}
-      </div>
-    </Link>
+      )}
+    </div>
   );
 }
 
@@ -82,7 +117,6 @@ export function FeaturedMatch() {
     };
   }, [lang]);
 
-  // Popüler liglerin maçları (yoksa tümü); öne çıkanlar: canlı → yaklaşan → biten.
   const featured = useMemo<FixtureSummary[]>(() => {
     if (!day) return [];
     const popular: FixtureSummary[] = [];

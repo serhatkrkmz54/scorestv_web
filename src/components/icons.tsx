@@ -307,3 +307,119 @@ export function IconVolume({ s = 16, ...p }: IP) {
     </svg>
   );
 }
+
+// ───── Mac detay tab + event ikonlari ─────
+
+export function IconList({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <line x1="8" y1="6" x2="20" y2="6" />
+      <line x1="8" y1="12" x2="20" y2="12" />
+      <line x1="8" y1="18" x2="20" y2="18" />
+      <circle cx="4" cy="6" r="1" fill="currentColor" />
+      <circle cx="4" cy="12" r="1" fill="currentColor" />
+      <circle cx="4" cy="18" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function IconBars({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="3" y="13" width="4" height="8" />
+      <rect x="10" y="8" width="4" height="13" />
+      <rect x="17" y="3" width="4" height="18" />
+    </svg>
+  );
+}
+
+export function IconLineup({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+export function IconTrophy({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M7 4h10v4a5 5 0 01-10 0V4z" />
+      <path d="M7 7H4v2a3 3 0 003 3M17 7h3v2a3 3 0 01-3 3" />
+      <path d="M10 16h4v3h-4zM8 20h8" />
+    </svg>
+  );
+}
+
+export function IconSwap({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <polyline points="7 4 4 7 7 10" />
+      <line x1="4" y1="7" x2="20" y2="7" />
+      <polyline points="17 14 20 17 17 20" />
+      <line x1="20" y1="17" x2="4" y2="17" />
+    </svg>
+  );
+}
+
+export function IconChart({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <line x1="3" y1="20" x2="21" y2="20" />
+      <polyline points="5 16 9 11 13 14 19 6" />
+    </svg>
+  );
+}
+
+export function IconMed({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="9" y="3" width="6" height="18" rx="1.5" />
+      <rect x="3" y="9" width="18" height="6" rx="1.5" />
+    </svg>
+  );
+}
+
+export function IconChat({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+    </svg>
+  );
+}
+
+export function IconCard({ s = 14, color, ...p }: IP & { color?: string }) {
+  return (
+    <svg {...base(s)} fill={color ?? "currentColor"} {...p}>
+      <rect x="6" y="3" width="12" height="18" rx="1.5" />
+    </svg>
+  );
+}
+
+export function IconWhistle({ s = 14, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <circle cx="9" cy="12" r="5" />
+      <path d="M14 11l7-4M14 13l7 4" />
+    </svg>
+  );
+}
+
+export function IconHeart2({ s = 14, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="currentColor" {...p}>
+      <path d="M12 21s-7-4.5-9.5-9C1 8.5 3 5 6.5 5c1.7 0 3.3.9 4.2 2.3l1.3 1.7 1.3-1.7C14.2 5.9 15.8 5 17.5 5 21 5 23 8.5 21.5 12 19 16.5 12 21 12 21z" />
+    </svg>
+  );
+}
+
+export function IconOdds({ s = 14, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v10M9 9.5c0-1 .8-1.5 3-1.5s3 .8 3 1.8c0 1.2-1.2 1.6-3 1.7-1.8.1-3 .5-3 1.7 0 1 1 1.8 3 1.8s3-.5 3-1.5" />
+    </svg>
+  );
+}

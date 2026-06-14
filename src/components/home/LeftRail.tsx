@@ -1,38 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import { leaguePath, teamPath } from "@/lib/routes";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { IconFlame, IconGlobe } from "@/components/icons";
+import { useSilentRetry } from "@/lib/silent-retry";
 import type { PopularLeague, PopularTeam } from "@/lib/fixtures-types";
 
+/**
+ * Sol ray: Populer Ligler + Ulkeler (milli takimlar).
+ *
+ * Backend cold-start halinde olabilir veya deploy sirasinda kisa sureli
+ * dusebilir. {@link useSilentRetry} ile her iki listeyi de bagimsiz olarak
+ * 1/2/4/8/15s backoff'la cekiyoruz. Window focus / online event'lerinde
+ * anlik retry tetiklenir; kullanici tab'a geri donunce / wifi gelince
+ * veriler F5 atmadan gelir.
+ */
 export function LeftRail() {
   const { lang } = useLang();
   const t = HOME_STR[lang];
   const [leagues, setLeagues] = useState<PopularLeague[]>([]);
   const [teams, setTeams] = useState<PopularTeam[]>([]);
 
-  useEffect(() => {
-    let active = true;
-    void (async () => {
-      try {
-        const [lr, tr] = await Promise.all([
-          fetch(`/api/leagues/popular?lang=${lang}`, { cache: "no-store" }),
-          fetch(`/api/teams/popular?lang=${lang}`, { cache: "no-store" }),
-        ]);
-        if (active && lr.ok) setLeagues((await lr.json()) as PopularLeague[]);
-        if (active && tr.ok) setTeams((await tr.json()) as PopularTeam[]);
-      } catch {
-        // yut
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [lang]);
+  // Bagimsiz retry zincirleri — biri dolarsa digeri yine de retry'a devam eder.
+  useSilentRetry<PopularLeague[]>({
+    enabled: leagues.length === 0,
+    isDone: () => leagues.length > 0,
+    fetcher: async (signal) => {
+      const r = await fetch(`/api/leagues/popular?lang=${lang}`, {
+        cache: "no-store",
+        signal,
+      });
+      if (!r.ok) return null;
+      const data = (await r.json()) as PopularLeague[];
+      return data.length > 0 ? data : null;
+    },
+    onSuccess: setLeagues,
+  });
+
+  useSilentRetry<PopularTeam[]>({
+    enabled: teams.length === 0,
+    isDone: () => teams.length > 0,
+    fetcher: async (signal) => {
+      const r = await fetch(`/api/teams/popular?lang=${lang}`, {
+        cache: "no-store",
+        signal,
+      });
+      if (!r.ok) return null;
+      const data = (await r.json()) as PopularTeam[];
+      return data.length > 0 ? data : null;
+    },
+    onSuccess: setTeams,
+  });
 
   return (
     <>

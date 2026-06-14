@@ -7,6 +7,8 @@ import { AuthProvider } from "./auth-context";
 import { FavoritesProvider } from "./favorites-context";
 import { NotifPrefsProvider } from "./notif-prefs-context";
 import { Header } from "@/components/shell/Header";
+import { Footer } from "@/components/shell/Footer";
+import { Subnav } from "@/components/home/Subnav";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { NotificationsEngine } from "@/components/home/NotificationsEngine";
 
@@ -19,7 +21,9 @@ export function Providers({ children }: { children: ReactNode }) {
             <NotifPrefsProvider>
               <div className="app">
                 <Header />
+                <Subnav />
                 <main>{children}</main>
+                <Footer />
               </div>
               <AuthModal />
               <NotificationsEngine />

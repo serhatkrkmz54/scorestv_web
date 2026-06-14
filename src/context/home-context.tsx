@@ -190,3 +190,9 @@ export function useHome(): HomeCtxValue {
   if (!ctx) throw new Error("useHome must be used within HomeProvider");
   return ctx;
 }
+
+// HomeProvider yoksa null doner; Subnav gibi global bilesenler bu hook'la
+// canli sayisini guvenli okur.
+export function useHomeOptional(): HomeCtxValue | null {
+  return useContext(HomeCtx);
+}

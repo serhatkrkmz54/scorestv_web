@@ -1,5 +1,4 @@
 import { HomeProvider } from "@/context/home-context";
-import { Subnav } from "@/components/home/Subnav";
 import { HomeFixtures } from "@/components/home/HomeFixtures";
 import { LeftRail } from "@/components/home/LeftRail";
 import { RightRail } from "@/components/home/RightRail";
@@ -8,7 +7,6 @@ import { ScrollToTop } from "@/components/home/ScrollToTop";
 export default function HomePage() {
   return (
     <HomeProvider>
-      <Subnav />
       <div className="layout">
         <aside className="rail-left">
           <LeftRail />
