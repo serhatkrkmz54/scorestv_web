@@ -3666,3 +3666,96 @@ a.team-transfer-player:hover { color: var(--accent); }
     text-overflow: ellipsis;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   M-Resp-Header-Fix — mobile header sigis (logo kucult, giris sigsin)
+   Sorun: hamburger + logo + search + bell + theme + lang + giris
+   yedi item viewport'a sigmiyor, giris sag tarafa kayip gizleniyor.
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767.98px) {
+  /* Logo — kucult, en sol elementlere yer ver */
+  .header-in .logo {
+    flex-shrink: 0;
+  }
+  .header-in .logo svg {
+    transform: scale(.72);
+    transform-origin: left center;
+    width: auto;
+  }
+  /* SearchBox kucult — flex 1 ama min-width sinirla */
+  .sb-wrap {
+    flex: 1 1 0;
+    min-width: 80px;     /* daralirken kaybolmasin */
+    max-width: 100%;
+  }
+  /* Actions kompakt */
+  .h-actions {
+    flex-shrink: 0;
+    gap: 2px;
+  }
+  /* Theme + bell ikonu kucult */
+  .h-actions .h-btn.icon {
+    width: 34px; height: 34px;
+    padding: 0;
+  }
+  /* Lang aktif kompakt — 2 harf */
+  .h-actions .seg-toggle button.on {
+    padding: 5px 7px;
+    font-size: 12px;
+    min-width: 28px;
+  }
+  /* Giris butonu daha kompakt */
+  .login-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+/* Mobile small (<640) — gerçekten dar — daha agresif sıkıştır */
+@media (max-width: 639.98px) {
+  /* Logo daha küçük */
+  .header-in .logo svg {
+    transform: scale(.62);
+  }
+  /* Bildirim ikonunu tamamen gizle (yer kazanç) */
+  .h-actions .h-btn[aria-label*="ildirim" i],
+  .h-actions .h-btn[aria-label*="otification" i] {
+    display: none !important;
+  }
+  /* Theme toggle dar */
+  .h-actions .h-btn.icon { width: 32px; height: 32px; }
+  /* Lang chip dar */
+  .h-actions .seg-toggle button.on {
+    padding: 5px 6px;
+    min-width: 24px;
+    font-size: 11.5px;
+  }
+  /* Giris butonu agresif kompakt */
+  .login-btn {
+    padding: 5px 9px;
+    font-size: 11.5px;
+    letter-spacing: 0;
+  }
+  /* SearchBox iyice daralt */
+  .sb-wrap {
+    min-width: 60px;
+  }
+  .sb-input {
+    font-size: 12px;
+    padding: 7px 8px 7px 28px;
+  }
+  .sb-ic {
+    left: 8px;
+  }
+}
+
+/* Çok küçük (<400) — search ikonu/input'u hamburger'a fedâ et */
+@media (max-width: 399.98px) {
+  /* Search ikonunu sadece soldaki ikon yap, input expand on focus */
+  .sb-input { font-size: 11.5px; padding-left: 24px; }
+  /* Logo iyice küçük */
+  .header-in .logo svg { transform: scale(.55); }
+}
