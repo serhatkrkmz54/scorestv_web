@@ -161,6 +161,104 @@ a { color: inherit; text-decoration: none; }
 .login-btn { background: var(--accent); color: var(--accent-ink); border: none; height: 40px; padding: 0 18px; border-radius: 11px; font-weight: 700; font-size: 14px; letter-spacing: .01em; transition: filter .14s; }
 .login-btn:hover { filter: brightness(1.07); }
 
+/* ════════════════════════════════════════════════════════════════
+   MOBILE NAV DRAWER — hamburger (.h-toggle) + soldan slide-in panel.
+   React altyapisi MobileNav.tsx'te; bu blok gorsel stilleri saglar.
+   Hamburger desktop'ta gizli (drawer acilamaz), mobile/tablet'te (<1024)
+   gorunur — cunku sol ray (populer ligler + ulkeler) o genisliklerde gizli.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Hamburger butonu — varsayilan gizli (desktop) */
+.h-toggle { display: none; }
+
+@media (max-width: 1023.98px) {
+  .h-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; flex-shrink: 0;
+    border: 1px solid transparent; background: transparent; border-radius: 11px;
+    color: var(--text); cursor: pointer;
+    transition: background .14s, color .14s;
+  }
+  .h-toggle:hover { background: var(--surface-2); }
+  .h-toggle:active { background: var(--surface-3); }
+}
+
+/* Backdrop — drawer acikken sayfayi karartir */
+.mobile-drawer-backdrop {
+  position: fixed; inset: 0; z-index: var(--shell-z-backdrop);
+  background: rgba(0, 0, 0, .5);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.mobile-drawer-backdrop.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+/* Panel — soldan kayarak acilir */
+.mobile-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: var(--shell-z-drawer);
+  width: min(86vw, 320px);
+  display: flex; flex-direction: column;
+  background: var(--surface); border-right: 1px solid var(--border);
+  box-shadow: 0 0 44px rgba(0, 0, 0, .45);
+  transform: translateX(-100%);
+  transition: transform .28s cubic-bezier(.32, .72, .3, 1);
+  will-change: transform;
+}
+.mobile-drawer.open { transform: translateX(0); }
+
+.mobile-drawer-head {
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--header-h); flex-shrink: 0;
+  padding: 0 12px 0 18px; border-bottom: 1px solid var(--border);
+}
+.mobile-drawer-title {
+  font-size: 12px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.mobile-drawer-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; flex-shrink: 0;
+  border: none; background: transparent; border-radius: 9px;
+  color: var(--text-dim); cursor: pointer; transition: background .14s, color .14s;
+}
+.mobile-drawer-close:hover { background: var(--surface-2); color: var(--text); }
+
+.mobile-drawer-body {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 14px; padding: 14px;
+  scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent;
+}
+.mobile-drawer-body::-webkit-scrollbar { width: 5px; }
+.mobile-drawer-body::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 6px; }
+
+/* Drawer acikken arka plan scroll'u kilitle (body.drawer-open MobileNav'da set edilir) */
+body.drawer-open { overflow: hidden; }
+
+/* Hizli linkler — Futbol / Siralama / Haberler */
+.mn-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mn-quick-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; padding: 12px 6px; border-radius: var(--radius-sm);
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-dim); font-size: 12px; font-weight: 600; text-align: center;
+  transition: background .14s, color .14s;
+}
+.mn-quick-item:hover { background: var(--surface-3); color: var(--text); }
+.mn-quick-item svg { color: var(--accent); }
+
+/* Drawer footer */
+.mn-footer {
+  margin-top: auto;
+  display: flex; align-items: center; gap: 7px; padding: 8px 4px 2px;
+  color: var(--text-faint); font-size: 12px; font-weight: 600;
+}
+.mn-footer svg { color: var(--accent); opacity: .85; }
+
+/* Emniyet: desktop'a buyutulurse (resize) drawer kapali kalsin */
+@media (min-width: 1024px) {
+  .mobile-drawer, .mobile-drawer-backdrop { display: none; }
+}
+
 /* ════════════════════ Giriş/Kayıt modalı ════════════════════ */
 .auth-overlay {
   position: fixed; inset: 0; z-index: 200;
@@ -1859,8 +1957,40 @@ a.event-assist-name:hover { color: var(--accent); }
   font-size: 12.5px; color: var(--text-faint);
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
 }
-@media (max-width: 900px) { .site-footer-inner { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 520px) { .site-footer-inner { grid-template-columns: 1fr; } }
+/* Tablet (≤900) — marka üstte tam genişlik, link kolonları 3'lü yan yana */
+@media (max-width: 900px) {
+  .site-footer-inner {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px 24px;
+  }
+  .site-footer-brand { grid-column: 1 / -1; }
+  .site-footer-tag { max-width: 560px; }
+}
+
+/* Mobil (≤600) — kompakt padding, link kolonları 2'li, alt bar ortalı */
+@media (max-width: 600px) {
+  .site-footer {
+    margin-top: 28px;
+    padding: 26px 16px 16px;
+  }
+  .site-footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 18px;
+  }
+  .site-footer-tag { max-width: none; }
+  .site-footer-social { margin-top: 4px; }
+  /* Dokunma hedefi biraz daha rahat */
+  .site-footer-col ul { gap: 11px; }
+  .site-footer-bottom {
+    margin-top: 18px; padding-top: 14px;
+    justify-content: center; text-align: center;
+  }
+}
+
+/* Çok dar (≤360) — tek kolon */
+@media (max-width: 360px) {
+  .site-footer-inner { grid-template-columns: 1fr; }
+}
 
 /* ════════════════════════════════════════════════════════════════
    LEAGUE DETAIL — Hero, Fixtures, TopPlayers, Coverage chips
@@ -2672,6 +2802,13 @@ a.fm-league:hover { color: var(--accent); }
 .team-detail-screen { display: block; min-width: 0; }
 .team-detail-main { min-width: 0; }
 .team-detail-body { display: block; min-width: 0; }
+
+/* Takim Bilgisi kutusu — sadece mobilde (hero altinda) gosterilir.
+   Desktop/tablet'te sag raydaki kopya kullanildigi icin burada gizli. */
+.team-info-mobile { display: none; }
+@media (max-width: 767.98px) {
+  .team-info-mobile { display: block; margin-bottom: 14px; }
+}
 
 /* ── Team Hero ── */
 .team-hero { margin-bottom: 14px; }
@@ -3674,6 +3811,11 @@ a.team-transfer-player:hover { color: var(--accent); }
    ════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 767.98px) {
+  /* Header satiri — bosluklari sik, hamburger solda; item'lar tek satira sigsin */
+  .header-in {
+    gap: 6px;
+    padding: 0 10px;
+  }
   /* Logo — kucult, en sol elementlere yer ver */
   .header-in .logo {
     flex-shrink: 0;

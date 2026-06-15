@@ -20,18 +20,56 @@ export function DateStrip({
   const scroll = (dx: number) => ref.current?.scrollBy({ left: dx, behavior: "smooth" });
 
   // Acilista (tarihler gelince) bugun/secili gunu yatay olarak ORTAYA kaydir.
+  // Ilk (cold) ziyarette sorun: Rajdhani fontu `display: swap` ile sonradan
+  // yukleniyor; efekt yedek font genisligiyle olcup ortaliyor, gercek font
+  // gelince gun genislikleri degisiyor ve secili tarih ortadan kaciyordu.
+  // Cozum: layout/paint otursun diye rAF ile olc + `document.fonts.ready`
+  // sonrasi yeniden ortala. Konteyner henuz olculmediyse (genislik 0) erteler.
   const didCenter = useRef(false);
   useEffect(() => {
     if (didCenter.current) return;
-    const c = ref.current;
-    const el = activeRef.current;
-    if (!c || !el) return;
-    // getBoundingClientRect ile guvenli ortalama (offsetParent'a bagli degil,
-    // sayfayi dikey kaydirmaz — yalniz seridi yatay kaydirir).
-    const cRect = c.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    c.scrollLeft += (elRect.left - cRect.left) + el.clientWidth / 2 - c.clientWidth / 2;
-    didCenter.current = true;
+    if (!dates.length) return;
+    let cancelled = false;
+
+    const center = (): boolean => {
+      const c = ref.current;
+      const el = activeRef.current;
+      if (!c || !el || c.clientWidth === 0) return false;
+      // getBoundingClientRect ile guvenli ortalama (offsetParent'a bagli degil,
+      // sayfayi dikey kaydirmaz — yalniz seridi yatay kaydirir).
+      const cRect = c.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const delta = elRect.left - cRect.left + el.clientWidth / 2 - c.clientWidth / 2;
+      const max = c.scrollWidth - c.clientWidth;
+      const next = Math.max(0, Math.min(c.scrollLeft + delta, max));
+      // CSS `scroll-behavior: smooth` animasyonunu gecici kapat — anlik otursun.
+      const prevBehavior = c.style.scrollBehavior;
+      c.style.scrollBehavior = "auto";
+      c.scrollLeft = next;
+      c.style.scrollBehavior = prevBehavior;
+      return true;
+    };
+
+    // Layout/paint oturduktan sonra olc (iki rAF).
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        if (!cancelled && center()) didCenter.current = true;
+      });
+    });
+
+    // Web font yuklenince genislikler degisir → yeniden ortala (ilk ziyaret kritik).
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      void document.fonts.ready.then(() => {
+        if (!cancelled && center()) didCenter.current = true;
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+    };
   }, [dates]);
 
   const dayNum = (iso: string) => {

@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { teamPath } from "@/lib/routes";
 import { TeamHero } from "./TeamHero";
+import { TeamSideInfo } from "./TeamSideInfo";
 import { TeamTabs, type TeamTabKey, type TeamTabDef } from "./TeamTabs";
 import { TeamOverviewTab } from "./tabs/TeamOverviewTab";
 import { TeamSquadTab } from "./tabs/TeamSquadTab";
@@ -114,6 +115,11 @@ export function TeamDetailScreen({ initial, slug, lang }: Props) {
         onSeasonChange={handleSeasonChange}
         lang={lang}
       />
+      {/* Takim Bilgisi — sag ray mobilde gizli oldugu icin burada (hero altinda)
+          sadece mobilde gosterilir. Desktop'ta sag raydaki kopya kullanilir. */}
+      <div className="team-info-mobile">
+        <TeamSideInfo detail={detail} lang={lang} />
+      </div>
       <TeamTabs tabs={tabs} active={tab} onChange={setTab} />
       <div className="team-detail-body">
         {tab === "overview" ? <TeamOverviewTab detail={detail} lang={lang} /> : null}
