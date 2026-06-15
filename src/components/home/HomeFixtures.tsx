@@ -62,6 +62,15 @@ export function HomeFixtures() {
         ) : (
           <div className="date-strip" style={{ height: 48 }} />
         )}
+        {dates ? (
+          <button
+            type="button"
+            className={"cal-btn cal-today" + (selectedDate === dates.today ? " on" : "")}
+            onClick={() => setSelectedDate(dates.today)}
+          >
+            {lang === "tr" ? "Bugün" : "Today"}
+          </button>
+        ) : null}
         <button className="cal-btn">
           <IconCalendar s={16} /> {t.calendar}
         </button>

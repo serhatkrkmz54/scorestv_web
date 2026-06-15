@@ -52,6 +52,8 @@ export function SearchBox() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeIdx, setActiveIdx] = useState(-1);
+  // Mobilde arama ikona doner; tiklayinca ortada overlay acilir.
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -149,6 +151,7 @@ export function SearchBox() {
   const onInputKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       setOpen(false);
+      setMobileOpen(false);
       inputRef.current?.blur();
       return;
     }
@@ -169,13 +172,30 @@ export function SearchBox() {
     }
   };
 
+  // Overlay acilinca input'a odaklan.
+  useEffect(() => {
+    if (mobileOpen) inputRef.current?.focus();
+  }, [mobileOpen]);
+
   const showDropdown = open && query.trim().length > 0;
 
   return (
-    <div className="search" ref={wrapRef}>
-      <span className="s-ico">
-        <IconSearch s={18} />
-      </span>
+    <>
+      <button
+        type="button"
+        className="search-trigger"
+        onClick={() => setMobileOpen(true)}
+        aria-label={t("Ara", "Search")}
+      >
+        <IconSearch s={20} />
+      </button>
+      {mobileOpen ? (
+        <div className="search-backdrop" onClick={() => setMobileOpen(false)} aria-hidden />
+      ) : null}
+      <div className={"search" + (mobileOpen ? " mobile-open" : "")} ref={wrapRef}>
+        <span className="s-ico">
+          <IconSearch s={18} />
+        </span>
       <input
         ref={inputRef}
         type="search"
@@ -344,7 +364,8 @@ export function SearchBox() {
           )}
         </div>
       ) : null}
-    </div>
+      </div>
+    </>
   );
 }
 
