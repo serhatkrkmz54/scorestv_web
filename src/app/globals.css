@@ -308,11 +308,22 @@ a { color: inherit; text-decoration: none; }
 .date-day.today:not(.on) .dn, .date-day.today:not(.on) .wd { color: var(--accent); }
 .date-day.on { background: var(--accent); }
 .date-day.on .wd, .date-day.on .dn { color: var(--accent-ink); }
+/* Tarih seridinde 'Bugun' butonu — tiklayinca bugune doner. */
+.date-today {
+  flex-shrink: 0; height: 38px; padding: 0 12px; border-radius: 9px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-dim); font-family: inherit; font-weight: 700; font-size: 13px;
+  white-space: nowrap; cursor: pointer; transition: .13s;
+}
+.date-today:hover { color: var(--text); border-color: var(--border-2); }
+.date-today.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
 .cal-btn { flex-shrink: 0; height: 48px; padding: 0 14px; border-radius: 13px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13.5px; }
 .cal-btn:hover { background: var(--surface-2); color: var(--text); }
 
-.chips { display: flex; gap: 8px; }
-.chip { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 15px; border-radius: 11px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 13.5px; transition: .13s; }
+/* Tablar: tasinca alt satira inip ayarlar ikonunu itmesin diye yatay kayar. */
+.chips { display: flex; gap: 8px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex-shrink: 0; display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 15px; border-radius: 11px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 13.5px; transition: .13s; }
 .chip:hover { border-color: var(--border-2); color: var(--text); }
 .chip.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
 .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); }
@@ -645,7 +656,8 @@ a.mr-team:hover .nm { color: var(--accent); }
 @media (max-width: 600px) { .sport-tab span { display: none; } }
 
 /* ── Çip satırı + bildirim ayarları (gear) ── */
-.chips-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.chips-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+.chips-row > :last-child { flex-shrink: 0; }   /* ayarlar ikonu hep sagda kalsin */
 .chip svg { flex-shrink: 0; }
 .settings-menu { position: relative; flex-shrink: 0; }
 .settings-btn { width: 38px; height: 38px; border-radius: 11px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: .14s; }
@@ -722,7 +734,11 @@ a.mr-team:hover .nm { color: var(--accent); }
 }
 .match-hero-team-home { justify-content: flex-end; text-align: right; }
 .match-hero-team-away { justify-content: flex-start; text-align: left; }
-.match-hero-team-name { font-size: 19px; font-weight: 700; line-height: 1.2; }
+.match-hero-team-name {
+  font-size: 19px; font-weight: 700; line-height: 1.2;
+  min-width: 0; max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .match-hero-team:hover .match-hero-team-name { color: var(--accent); }
 
 .match-hero-center {
@@ -1652,6 +1668,9 @@ a.event-assist-name:hover { color: var(--accent); }
   padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 13px;
   cursor: pointer;
 }
+/* Yorum CTA butonu: dar mobilde "Giris Yap" alt alta gecmesin. */
+.comments-cta .btn-primary { flex-shrink: 0; white-space: nowrap; }
+.comments-cta-text { min-width: 0; }
 .comment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .comment-body { display: flex; gap: 10px; padding: 10px 4px; border-bottom: 1px dashed var(--border); }
 .comment-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -3659,7 +3678,9 @@ body.drawer-open { overflow: hidden; }
 .mn-quick-item svg { color: var(--accent); }
 
 .mn-footer {
-  margin-top: auto;
+  /* margin-top:auto KALDIRILDI — flex-column + overflow:auto drawer'da
+     scroll'u bozabiliyordu (alt icerige inilemiyordu). Footer artik
+     icerigin akisinda en altta yer alir. */
   display: flex; align-items: center; justify-content: center;
   gap: 8px;
   padding: 14px 8px 6px;
