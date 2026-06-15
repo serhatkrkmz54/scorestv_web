@@ -3656,6 +3656,8 @@ body.drawer-open { overflow: hidden; }
     padding: 0 12px;
     gap: 8px;
   }
+  /* Logo mobilde biraz daha kucuk + max-width ile header'i sikistirmaz. */
+  .header-in .logo-img { height: 36px !important; max-width: 150px; object-fit: contain; }
   .h-actions { gap: 4px; }
   /* Mobile'da dil switcher: HER IKI dil de gorunsun (kullanici secebilsin), kompakt. */
   .h-actions .seg-toggle button { padding: 5px 9px; font-size: 12px; }

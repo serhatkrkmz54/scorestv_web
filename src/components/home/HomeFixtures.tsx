@@ -7,7 +7,7 @@ import { useHome } from "@/context/home-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import { categorize } from "@/lib/fixtures";
 import type { LeagueGroup } from "@/lib/fixtures-types";
-import { IconBall, IconCalendar } from "@/components/icons";
+import { IconBall } from "@/components/icons";
 import { DateStrip } from "./DateStrip";
 import { StatusChips, type StatusCounts } from "./StatusChips";
 import { LeagueBlock } from "./LeagueBlock";
@@ -71,9 +71,6 @@ export function HomeFixtures() {
             {lang === "tr" ? "Bugün" : "Today"}
           </button>
         ) : null}
-        <button className="cal-btn">
-          <IconCalendar s={16} /> {t.calendar}
-        </button>
       </div>
 
       <StatusChips counts={counts} status={status} onChange={setStatus} />
