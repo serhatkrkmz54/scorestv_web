@@ -33,6 +33,13 @@ export const AUTH_STR = {
     genericError: "Bir şeyler ters gitti. Lütfen tekrar dene.",
     offlineError: "Sunucuya ulaşılamıyor. Backend çalışıyor mu?",
     googleUnavailable: "Google girişi henüz yapılandırılmadı.",
+    // Google ile ilk kayit — birthDate + country eksik
+    googleCompleteTitle: "Hesabını tamamla",
+    googleCompleteSub: "Google ile ilk kayıt için doğum tarihi ve ülke gerekli.",
+    googleCompleteSubmit: "Tamamla ve devam et",
+    authCancel: "Vazgeç",
+    birthDateRequired: "Doğum tarihi seçilmedi.",
+    countryRequired: "Ülke seçilmedi.",
     // şifre sayfaları
     forgotTitle: "Şifreni mi unuttun?",
     forgotSub: "E-posta adresini gir, sıfırlama bağlantısı gönderelim.",
@@ -75,6 +82,13 @@ export const AUTH_STR = {
     genericError: "Something went wrong. Please try again.",
     offlineError: "Cannot reach the server. Is the backend running?",
     googleUnavailable: "Google sign-in is not configured yet.",
+    // Google first-time signup — birthDate + country required
+    googleCompleteTitle: "Complete your account",
+    googleCompleteSub: "First-time Google sign-up needs a birth date and country.",
+    googleCompleteSubmit: "Finish & continue",
+    authCancel: "Cancel",
+    birthDateRequired: "Please choose a birth date.",
+    countryRequired: "Please choose a country.",
     forgotTitle: "Forgot your password?",
     forgotSub: "Enter your email and we'll send a reset link.",
     forgotSubmit: "Send link",

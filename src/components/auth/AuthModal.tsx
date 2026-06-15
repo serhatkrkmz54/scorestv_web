@@ -29,7 +29,17 @@ export function AuthModal() {
 }
 
 function AuthModalInner() {
-  const { authMode, closeAuth, setAuthMode, login, register, loginWithGoogle } = useAuth();
+  const {
+    authMode,
+    closeAuth,
+    setAuthMode,
+    login,
+    register,
+    loginWithGoogle,
+    needsGoogleCompletion,
+    completeGoogleSignUp,
+    cancelGoogleCompletion,
+  } = useAuth();
   const { lang } = useLang();
   const router = useRouter();
   const a = AUTH_STR[lang];
@@ -46,6 +56,11 @@ function AuthModalInner() {
   const [birthDate, setBirthDate] = useState("");
   const [country, setCountry] = useState("");
   const [remember, setRemember] = useState(true);
+
+  // Google completion paneli icin ayri form alanlari — normal kayit form'undan
+  // bagimsiz tutuyoruz ki kullanici geri donerse degerler karismasin.
+  const [gcBirthDate, setGcBirthDate] = useState("");
+  const [gcCountry, setGcCountry] = useState("");
 
   // Esc kapatma + body scroll kilidi (harici sistem effect'i)
   useEffect(() => {
@@ -73,11 +88,45 @@ function AuthModalInner() {
     setBusy("google");
     const started = await triggerGoogleSignIn(async (idToken) => {
       const r = await loginWithGoogle(idToken);
-      if (!r.ok) setError(r.error ?? a.genericError);
+      // needsCompletion ise hata gosterme — context state'i panele gecisi
+      // tetikledi. Sadece gercek hatalarda hata mesaji set et.
+      if (!r.ok && !r.needsCompletion) setError(r.error ?? a.genericError);
     });
     if (!started) setError(a.googleUnavailable);
     setBusy(null);
   }, [a, loginWithGoogle]);
+
+  /** Google tamamlama paneli — "Tamamla" butonu */
+  const handleGoogleComplete = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setError(null);
+      if (!gcBirthDate) {
+        setError(a.birthDateRequired);
+        return;
+      }
+      if (!gcCountry) {
+        setError(a.countryRequired);
+        return;
+      }
+      setBusy("google");
+      const r = await completeGoogleSignUp({
+        birthDate: gcBirthDate,
+        country: gcCountry,
+      });
+      if (!r.ok) setError(r.error ?? a.genericError);
+      setBusy(null);
+    },
+    [a, completeGoogleSignUp, gcBirthDate, gcCountry],
+  );
+
+  /** Google tamamlama paneli — "Vazgec" butonu */
+  const handleGoogleCancel = useCallback(() => {
+    setError(null);
+    setGcBirthDate("");
+    setGcCountry("");
+    cancelGoogleCompletion();
+  }, [cancelGoogleCompletion]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -124,23 +173,91 @@ function AuthModalInner() {
           <div className="auth-logo">
             <Logo h={26} />
           </div>
-          <h2>{a.welcome}</h2>
-          <p>{a.subtitle}</p>
+          <h2>{needsGoogleCompletion ? a.googleCompleteTitle : a.welcome}</h2>
+          <p>{needsGoogleCompletion ? a.googleCompleteSub : a.subtitle}</p>
         </div>
 
-        <div className="auth-tabs">
-          <button className={!isUp ? "on" : ""} onClick={() => switchMode("signin")}>
-            {a.tabIn}
-          </button>
-          <button className={isUp ? "on" : ""} onClick={() => switchMode("signup")}>
-            {a.tabUp}
-          </button>
-          <span
-            className="auth-tab-ind"
-            style={{ transform: isUp ? "translateX(100%)" : "translateX(0)" }}
-          />
-        </div>
+        {!needsGoogleCompletion && (
+          <div className="auth-tabs">
+            <button className={!isUp ? "on" : ""} onClick={() => switchMode("signin")}>
+              {a.tabIn}
+            </button>
+            <button className={isUp ? "on" : ""} onClick={() => switchMode("signup")}>
+              {a.tabUp}
+            </button>
+            <span
+              className="auth-tab-ind"
+              style={{ transform: isUp ? "translateX(100%)" : "translateX(0)" }}
+            />
+          </div>
+        )}
 
+        {needsGoogleCompletion ? (
+          <div className="auth-body">
+            {error && (
+              <div className="auth-error" role="alert" style={{ marginBottom: 13 }}>
+                {error}
+              </div>
+            )}
+            <form className="auth-form" onSubmit={handleGoogleComplete}>
+              <label className="auth-field">
+                <span className="af-label">{a.birthDate}</span>
+                <div className="af-input">
+                  <span className="af-ic">
+                    <IconCalendar s={17} />
+                  </span>
+                  <input
+                    name="gcBirthDate"
+                    type="date"
+                    value={gcBirthDate}
+                    max={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setGcBirthDate(e.target.value)}
+                    required
+                  />
+                </div>
+              </label>
+
+              <label className="auth-field">
+                <span className="af-label">{a.country}</span>
+                <div className="af-input">
+                  <span className="af-ic">
+                    <IconGlobe s={17} />
+                  </span>
+                  <select
+                    name="gcCountry"
+                    value={gcCountry}
+                    onChange={(e) => setGcCountry(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      {a.countryPlaceholder}
+                    </option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={countryLabel(c, lang)}>
+                        {countryLabel(c, lang)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </label>
+
+              <button className="auth-submit" type="submit" disabled={!!busy}>
+                {busy === "google" ? <span className="spin dark" /> : null}
+                {busy === "google" ? a.loading : a.googleCompleteSubmit}
+              </button>
+
+              <button
+                type="button"
+                className="auth-link"
+                style={{ marginTop: 12, textAlign: "center", width: "100%" }}
+                onClick={handleGoogleCancel}
+                disabled={!!busy}
+              >
+                {a.authCancel}
+              </button>
+            </form>
+          </div>
+        ) : (
         <div className="auth-body">
           <button className="prov-btn google" disabled={!!busy} onClick={handleGoogle} type="button">
             {busy === "google" ? <span className="spin" /> : <GoogleMark s={19} />}
@@ -317,6 +434,7 @@ function AuthModalInner() {
             </button>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
