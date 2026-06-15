@@ -158,7 +158,7 @@ export function PredictionTab({ detail, lang }: Props) {
               </div>
             ) : null}
             {p.advice ? (
-              <div className="info-row">
+              <div className="info-row info-row-wide">
                 <dt>{t("Tavsiye", "Advice")}</dt>
                 <dd>{p.advice}</dd>
               </div>

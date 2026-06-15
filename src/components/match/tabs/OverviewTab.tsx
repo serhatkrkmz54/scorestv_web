@@ -1,7 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { formatMinute } from "@/lib/match-format";
+import { playerPath } from "@/lib/routes";
+import { buildEntitySlug } from "@/lib/slug-utils";
 import {
   IconBall,
   IconCard,
@@ -12,6 +15,28 @@ import type {
   MatchDetailResponse,
   MatchEvent,
 } from "@/lib/match-detail-types";
+
+/** Oyuncu adi — id varsa oyuncu sayfasina link (dile gore slug), yoksa duz metin. */
+function PlayerLink({
+  name,
+  id,
+  lang,
+  className,
+}: {
+  name: string;
+  id?: number | null;
+  lang: "tr" | "en";
+  className: string;
+}) {
+  if (id != null && name && name !== "-") {
+    return (
+      <Link href={playerPath(lang, buildEntitySlug(name, id))} className={className}>
+        {name}
+      </Link>
+    );
+  }
+  return <span className={className}>{name}</span>;
+}
 
 interface Props {
   detail: MatchDetailResponse;
@@ -92,10 +117,11 @@ export function OverviewTab({ detail, lang }: Props) {
                     <div className="event-cell">
                       {eventIcon(ev)}
                       <div className="event-text">
-                        <span className="event-player">{playerName}</span>
+                        <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="event-player" />
                         {assist ? (
                           <span className="event-assist">
-                            {t("Asist", "Assist")}: {assist}
+                            {t("Asist", "Assist")}:{" "}
+                            <PlayerLink name={assist} id={ev.assistId} lang={lang} className="event-assist-name" />
                           </span>
                         ) : null}
                         {subText && subText !== playerName ? (
@@ -114,10 +140,11 @@ export function OverviewTab({ detail, lang }: Props) {
                   {!isHome ? (
                     <div className="event-cell">
                       <div className="event-text">
-                        <span className="event-player">{playerName}</span>
+                        <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="event-player" />
                         {assist ? (
                           <span className="event-assist">
-                            {t("Asist", "Assist")}: {assist}
+                            {t("Asist", "Assist")}:{" "}
+                            <PlayerLink name={assist} id={ev.assistId} lang={lang} className="event-assist-name" />
                           </span>
                         ) : null}
                         {subText && subText !== playerName ? (

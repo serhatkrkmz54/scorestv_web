@@ -77,6 +77,11 @@ export function MatchRow({ fixture }: { fixture: FixtureSummary }) {
   const statusMain = isUpcoming
     ? kickoffTime(fixture.kickoff)
     : minute || fixture.status.longText || statusLabelShort(fixture.status, lang);
+  // Mobilde dar status kolonuna sigmasi icin KISA etiket (longText degil).
+  // Masaustunde tam metin gosterilir; ikisi CSS ile toggle edilir.
+  const statusCompact = isUpcoming
+    ? kickoffTime(fixture.kickoff)
+    : minute || statusLabelShort(fixture.status, lang);
 
   // Uzatma / penaltı skorları → ikon tooltip'inde (sol kolonu kalabalık etmesin).
   const etTip = !isUpcoming
@@ -114,7 +119,8 @@ export function MatchRow({ fixture }: { fixture: FixtureSummary }) {
         <div className={`mr-status ${statusKind}`}>
           <span className="st-main">
             {isLive && <span className="live-dot pulse" />}
-            <span className="tnum">{statusMain}</span>
+            <span className="tnum st-full">{statusMain}</span>
+            <span className="tnum st-compact">{statusCompact}</span>
           </span>
         </div>
 

@@ -1,26 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-// Ziyaretçinin ülkesine göre VARSAYILAN dili belirler (yalnızca ilk ziyarette,
-// kullanıcı henüz dil seçmemişse). Cloudflare arkasında CF-IPCountry header'ı
-// kesin ülke kodunu verir: Türkiye → tr, diğer tüm ülkeler → en.
+// Dil artik her ulke icin VARSAYILAN olarak Ingilizce'dir. Onceki "Turkiye ->
+// Turkce" otomatik (CF-IPCountry) secimi kaldirildi. Kullanici TR/EN toggle'ina
+// basinca tercih localStorage + cookie'ye yazilir ve korunur.
 //
-// CF header yoksa (örn. local geliştirme) hiçbir şey yapılmaz; uygulama kendi
-// varsayılanına (tr) düşer. Kullanıcı TR/EN toggle'ına basınca cookie güncellenir
-// ve bu otomatik mantık devre dışı kalır.
-export function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-
-  const country = req.headers.get("cf-ipcountry");
-  if (country && !req.cookies.get("stv_lang")) {
-    const lang = country.toUpperCase() === "TR" ? "tr" : "en";
-    res.cookies.set("stv_lang", lang, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365, // 1 yıl
-      sameSite: "lax",
-    });
-  }
-
-  return res;
+// Bu middleware artik dil icin bir sey yapmiyor; baska bir amac gerekmiyorsa
+// dosya tamamen silinebilir (PowerShell: Remove-Item src\middleware.ts).
+export function middleware(_req: NextRequest) {
+  return NextResponse.next();
 }
 
 export const config = {

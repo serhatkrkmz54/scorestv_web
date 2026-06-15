@@ -33,7 +33,9 @@ services:
     ports:
       - "127.0.0.1:3001:3000"
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
+      # localhost bazi imajlarda ::1 (IPv6) cozer; Next 0.0.0.0 (IPv4) dinler.
+      # 127.0.0.1 ile IPv4'e zorla — yoksa container "unhealthy" gorunur.
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -54,3 +56,5 @@ networks:
   default:
     name: scorestv-web-net
     driver: bridge
+  scorestv-app-net:        # ← external network olarak tanımla
+    external: true

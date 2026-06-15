@@ -20,7 +20,13 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# build-time env (NEXT_PUBLIC_*) gerekiyorsa burada `ARG` ile alinabilir.
+# NEXT_PUBLIC_* degerleri build sirasinda JS bundle'ina GOMULUR (runtime env
+# bunlari etkilemez). Bu yuzden ARG ile alip ENV yapiyoruz; degerler
+# docker-compose build.args'tan (.env) gelir.
+ARG NEXT_PUBLIC_WS_URL
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 RUN npm run build
 
 # ---- Stage 3: runner ----

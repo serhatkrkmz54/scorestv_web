@@ -30,10 +30,13 @@ function writeCookie(name: string, value: string) {
 }
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("tr");
+  // Varsayilan dil: Ingilizce (her ulke icin). Kullanici TR/EN toggle'ina
+  // basinca tercih localStorage + cookie'ye yazilir ve sonraki ziyaretlerde
+  // korunur.
+  const [lang, setLangState] = useState<Lang>("en");
 
   useEffect(() => {
-    // Öncelik: kullanıcının açık seçimi (localStorage) > ülke varsayılanı (cookie, middleware) > tr
+    // Oncelik: kullanicinin acik secimi (localStorage > cookie) > varsayilan en
     const saved = (localStorage.getItem(STORAGE_KEY) as Lang | null) ?? (readCookie(STORAGE_KEY) as Lang | null);
     if (saved === "tr" || saved === "en") {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage/cookie hidrasyonu (kasitli)
