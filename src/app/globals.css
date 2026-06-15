@@ -3759,3 +3759,126 @@ a.team-transfer-player:hover { color: var(--accent); }
   /* Logo iyice küçük */
   .header-in .logo svg { transform: scale(.55); }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   M-Resp-Row-Fix — anasayfa MatchRow mobile (isim sigsin, status kisalsin)
+   Onceki M-Resp-6'da .mr- prefix kullanildi ama gercek class .mrow-line.
+   Burada gercek class'lara uygun mobile rules.
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767.98px) {
+  /* Grid kompakt — 5 sutun ama daha dar */
+  .mrow-line {
+    grid-template-columns: 52px minmax(0, 1fr) 64px minmax(0, 1fr) 38px;
+    gap: 4px;
+    padding: 0 8px;
+    min-height: 56px;
+  }
+  /* Status — kompakt FT/HT/VS etiketi göster, longText gizle */
+  .mr-status { padding-left: 2px; }
+  .mr-status .st-full { display: none; }
+  .mr-status .st-compact { display: inline; }
+  .mr-status.fin .st-main { font-size: 11px; }
+  .mr-status.up .st-main { font-size: 12.5px; }
+  .mr-status.live .st-main { font-size: 12px; }
+  .mr-status .st-main { gap: 3px; }
+  .live-dot.pulse { width: 6px; height: 6px; }
+
+  /* Takım hücreleri — isim KESIN gozuksun, ellipsis ile */
+  .mr-team {
+    gap: 6px;
+    min-width: 0;
+  }
+  .mr-team .nm {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  /* Logo daha küçük */
+  .mr-team .team-logo,
+  .mr-team img {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  /* Skor kompakt */
+  .mr-score .sc-main b { font-size: 17px; min-width: 14px; }
+  .mr-score .sc-main i { font-size: 13px; }
+  .mr-score .sc-main { gap: 5px; }
+  .mr-score .sc-ht { font-size: 10.5px; }
+  .mr-vs { font-size: 13px; }
+
+  /* End — sadece star, info/venue ikonlari gizle (tip ile zaten taşar) */
+  .mr-end { gap: 0; padding-right: 2px; }
+  .mr-end .cell-ic { display: none; }
+  .mr-end .iconbtn.fav { padding: 6px; }
+}
+
+/* Mobile small (<640) — daha sıkı sıkıştır */
+@media (max-width: 639.98px) {
+  .mrow-line {
+    grid-template-columns: 46px minmax(0, 1fr) 56px minmax(0, 1fr) 32px;
+    padding: 0 6px;
+    min-height: 52px;
+  }
+  .mr-team .nm { font-size: 12.5px; }
+  .mr-team .team-logo,
+  .mr-team img { width: 20px; height: 20px; }
+  .mr-team { gap: 5px; }
+  .mr-score .sc-main b { font-size: 16px; min-width: 12px; }
+  .mr-status.fin .st-main { font-size: 10.5px; }
+  .mr-status.up .st-main { font-size: 11.5px; }
+  .mr-status.live .st-main { font-size: 11px; }
+}
+
+/* Çok dar (<400) */
+@media (max-width: 399.98px) {
+  .mrow-line {
+    grid-template-columns: 42px minmax(0, 1fr) 50px minmax(0, 1fr) 28px;
+    gap: 3px;
+    padding: 0 5px;
+  }
+  .mr-team .nm { font-size: 12px; }
+  .mr-score .sc-main b { font-size: 15px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   M-Resp-Subnav-Names — Subnav chip isimleri mobile'da gozuksun
+   Eski 600px kurali ".sport-tab span { display: none }" sadece ikon
+   birakiyor. Mobile'da isimler de gerekiyor (Futbol/Siralamalar/Haberler)
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767.98px) {
+  /* Eski display:none kuralini override — isimleri geri getir */
+  .sport-tab span { display: inline !important; }
+
+  /* Chip kompakt ama isim+ikon sigsin */
+  .sport-tab {
+    padding: 0 11px;
+    font-size: 13px;
+    gap: 6px;
+    flex-shrink: 0;       /* yatay scroll icin daralma yok */
+  }
+  .sport-tab svg { width: 15px; height: 15px; }
+  .sport-tab .cnt {
+    font-size: 10.5px;
+    padding: 0 5px;
+    min-width: 18px;
+  }
+
+  /* Subnav-in yatay scroll garantili (M-Resp-5'te zaten vardi ama
+     gap'i biraz daha sıkıştıralım ki çok chip sığsın) */
+  .subnav-in {
+    gap: 4px;
+  }
+}
+
+/* Mobile small (<640) — chip daha sıkı ama yazı kalsın */
+@media (max-width: 639.98px) {
+  .sport-tab { padding: 0 9px; font-size: 12.5px; gap: 5px; }
+  .sport-tab svg { width: 14px; height: 14px; }
+  .sport-tab .cnt { font-size: 10px; padding: 0 4px; min-width: 16px; }
+}
