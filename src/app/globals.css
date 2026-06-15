@@ -1900,6 +1900,144 @@ a.event-assist-name:hover { color: var(--accent); }
 /* ════════════════════════════════════════════════════════════════
    FOOTER (global)
    ════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   STATIC / BİLGİ & YASAL SAYFALAR — Hakkımızda, İletişim, Reklam,
+   Kariyer, Gizlilik, Kullanım Şartları, Çerez Politikası, KVKK.
+   Hepsi ortak StaticPage şablonunu (+ İletişim formu) kullanır; tek blok
+   tümünü biçimlendirir. Mobil uygulama bu sayfaları WebView ile açtığı
+   için bu stiller orada da geçerlidir.
+   ════════════════════════════════════════════════════════════════ */
+.static-page {
+  max-width: var(--maxw); margin: 0 auto; width: 100%;
+  padding: var(--gap) var(--page-pad-x) 64px;
+  display: flex; justify-content: center;
+}
+.static-page-inner {
+  width: 100%; max-width: 840px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(22px, 4vw, 44px);
+}
+
+/* Breadcrumb */
+.static-breadcrumb {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 13px; font-weight: 600; color: var(--text-faint);
+  margin-bottom: 20px;
+}
+.static-breadcrumb a { color: var(--text-dim); transition: color .14s; }
+.static-breadcrumb a:hover { color: var(--accent); }
+.static-breadcrumb .cur { color: var(--text); }
+.static-breadcrumb span[aria-hidden] { opacity: .55; }
+
+/* Başlık + accent çizgi */
+.static-page-inner h1 {
+  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: clamp(26px, 5vw, 38px); font-weight: 700; line-height: 1.08;
+  letter-spacing: -.5px; color: var(--text); margin: 0;
+}
+.static-page-inner h1::after {
+  content: ""; display: block; width: 54px; height: 4px; border-radius: 3px;
+  background: var(--accent); margin-top: 14px;
+}
+
+.static-updated {
+  display: inline-block; margin: 16px 0 0;
+  font-size: 12px; font-weight: 700; letter-spacing: .03em;
+  color: var(--text-dim); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 999px; padding: 4px 13px;
+}
+
+.static-intro {
+  margin: 20px 0 4px; font-size: 16.5px; line-height: 1.7;
+  color: var(--text-dim);
+}
+
+/* Bölümler */
+.static-section { margin-top: 32px; }
+.static-section h2 {
+  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 19.5px; font-weight: 700; color: var(--text);
+  letter-spacing: .01em; margin: 0 0 11px;
+  display: flex; align-items: center; gap: 11px;
+}
+.static-section h2::before {
+  content: ""; width: 4px; height: 19px; border-radius: 3px;
+  background: var(--accent); flex-shrink: 0;
+}
+.static-section p {
+  margin: 0 0 12px; font-size: 15px; line-height: 1.78; color: var(--text-dim);
+}
+.static-section p:last-child { margin-bottom: 0; }
+
+/* Accent işaretli listeler */
+.static-section ul {
+  list-style: none; margin: 8px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 11px;
+}
+.static-section li {
+  position: relative; padding-left: 26px;
+  font-size: 15px; line-height: 1.6; color: var(--text-dim);
+}
+.static-section li::before {
+  content: ""; position: absolute; left: 4px; top: 8px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* ── İletişim formu ── */
+.contact-form { margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
+.contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.contact-field { display: flex; flex-direction: column; gap: 7px; }
+.contact-field > span { font-size: 13px; font-weight: 700; color: var(--text-dim); }
+.contact-field > span i { color: var(--accent); font-style: normal; }
+.contact-field input, .contact-field textarea {
+  width: 100%; border-radius: 11px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); font-family: inherit; font-size: 14.5px; font-weight: 500;
+  padding: 12px 14px; outline: none;
+  transition: border-color .14s, background .14s, box-shadow .14s;
+}
+.contact-field textarea { resize: vertical; min-height: 140px; line-height: 1.6; }
+.contact-field input::placeholder, .contact-field textarea::placeholder { color: var(--text-faint); }
+.contact-field input:focus, .contact-field textarea:focus {
+  border-color: var(--accent); background: var(--surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.contact-error {
+  margin: 0; font-size: 13.5px; font-weight: 600; color: var(--rel);
+  background: color-mix(in srgb, var(--rel) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rel) 32%, transparent);
+  border-radius: 10px; padding: 10px 13px;
+}
+.contact-submit { align-self: flex-start; min-width: 168px; margin-top: 2px; }
+
+/* Başarı kutusu */
+.contact-success {
+  margin-top: 28px; text-align: center;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 38px 24px;
+}
+.contact-success h3 {
+  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--text); margin: 0 0 8px;
+}
+.contact-success p {
+  margin: 0 auto 18px; max-width: 420px;
+  font-size: 14.5px; line-height: 1.6; color: var(--text-dim);
+}
+
+/* Mobil */
+@media (max-width: 600px) {
+  .static-page-inner { padding: 20px 16px; border-radius: 14px; }
+  .static-intro { font-size: 15px; }
+  .static-section { margin-top: 26px; }
+  .contact-row { grid-template-columns: 1fr; }
+  .contact-submit { align-self: stretch; }
+}
+
 .site-footer {
   margin-top: 40px;
   background: var(--surface);
