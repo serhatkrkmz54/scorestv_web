@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
@@ -24,6 +24,15 @@ export function LeftRail() {
   const t = HOME_STR[lang];
   const [leagues, setLeagues] = useState<PopularLeague[]>([]);
   const [teams, setTeams] = useState<PopularTeam[]>([]);
+
+  // Dil degisince state'leri sifirla — useSilentRetry `enabled: length === 0`
+  // kosulu ile calistigi icin dolu liste varken yeni fetch tetiklenmez. Lang
+  // degistiginde listeyi bosaltinca hook yeni dil parametresiyle yeniden fetch
+  // yapar ve TR/EN secimi sol ray'a anlik yansir.
+  useEffect(() => {
+    setLeagues([]);
+    setTeams([]);
+  }, [lang]);
 
   // Bagimsiz retry zincirleri — biri dolarsa digeri yine de retry'a devam eder.
   useSilentRetry<PopularLeague[]>({
