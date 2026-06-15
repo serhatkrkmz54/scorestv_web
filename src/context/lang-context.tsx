@@ -36,11 +36,24 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
 
   useEffect(() => {
-    // Oncelik: kullanicinin acik secimi (localStorage > cookie) > varsayilan en
-    const saved = (localStorage.getItem(STORAGE_KEY) as Lang | null) ?? (readCookie(STORAGE_KEY) as Lang | null);
-    if (saved === "tr" || saved === "en") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage/cookie hidrasyonu (kasitli)
-      setLangState(saved);
+    // Oncelik: URL ?lang= (mobil WebView bunu gonderir, orn. /hakkimizda?lang=tr)
+    //   > kullanicinin acik secimi (localStorage > cookie) > varsayilan en.
+    let next: Lang | null = null;
+    try {
+      const q = new URLSearchParams(window.location.search).get("lang");
+      if (q === "tr" || q === "en") next = q;
+    } catch {
+      /* URL okunamadi — sessizce gec */
+    }
+    if (!next) {
+      const saved =
+        (localStorage.getItem(STORAGE_KEY) as Lang | null) ??
+        (readCookie(STORAGE_KEY) as Lang | null);
+      if (saved === "tr" || saved === "en") next = saved;
+    }
+    if (next) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- URL/localStorage hidrasyonu (kasitli)
+      setLangState(next);
     }
   }, []);
 
