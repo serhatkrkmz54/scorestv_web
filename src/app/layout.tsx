@@ -15,15 +15,9 @@ export const metadata: Metadata = {
   title: "ScoresTV — Canlı Skor & İstatistik",
   description:
     "Futbol, basketbol, tenis ve voleybol canlı skorları, puan durumları, istatistikler ve daha fazlası.",
-  // Favicon override — Next.js'in convention-based default'unu ezer.
-  // Kaynak dosyalar: src/app/favicon.ico  (ve varsa icon.png, apple-icon.png)
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-    ],
-    shortcut: ["/favicon.ico"],
-    apple: ["/favicon.ico"],
-  },
+  // Favicon: src/app/favicon.ico (Next convention). Override KALDIRILDI —
+  // Next dosyayi hash'li servis eder (favicon.ico?<hash>), boylece favicon
+  // degisince URL degisir ve tarayici/CDN cache'i otomatik kirilir.
 };
 
 // Tema/dil "flash" önleyici: ilk boyamadan önce localStorage'tan oku.
