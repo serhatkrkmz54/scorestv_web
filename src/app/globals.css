@@ -3546,111 +3546,121 @@ a.team-transfer-player:hover { color: var(--accent); }
 .hide-mobile { }                                     /* default gorunur */
 .show-mobile { display: none; }                      /* default gizli */
 @media (max-width: 767.98px) {
-  .hide-mobile { display: none !important; }
-  .show-mobile { display: initial; }
-  .show-mobile-flex { display: flex !important; }
-  .show-mobile-inline-flex { display: inline-flex !important; }
-}
-
-/* Hamburger button — header'in solunda mobile/tablet'te gorunur */
-.h-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px; height: 40px;
-  border: none;
-  background: transparent;
-  color: var(--text);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background .12s;
-  flex-shrink: 0;
-}
-.h-toggle:hover { background: var(--surface-2); }
-.h-toggle:active { transform: scale(.96); }
-.h-toggle svg { display: block; }
-/* Tablet ve altinda (sol ray gizli durumda) hamburger gorunur */
-@media (max-width: 1023.98px) {
-  .h-toggle { display: inline-flex; }
-}
-
-/* Mobile drawer — sol kenardan kayar */
-.mobile-drawer-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0, 0, 0, .55);
-  z-index: var(--shell-z-backdrop);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s ease;
-}
-.mobile-drawer-backdrop.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-.mobile-drawer {
-  position: fixed; top: 0; left: 0; bottom: 0;
-  width: min(86vw, 340px);
-  background: var(--bg);
-  border-right: 1px solid var(--border);
-  z-index: var(--shell-z-drawer);
-  transform: translateX(-105%);
-  transition: transform .28s cubic-bezier(.32, .72, 0, 1);
-  box-shadow: var(--shadow);
-  will-change: transform;
-  /* SCROLL: drawer'in KENDISI kaydirilir (flex-child overflow edge-case'leri
-     yok). Baslik asagida sticky ile ustte sabit kalir. */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-.mobile-drawer.open { transform: translateX(0); }
-.mobile-drawer-head {
-  position: sticky; top: 0; z-index: 2;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-}
-.mobile-drawer-title {
-  font-size: 13px; font-weight: 700;
-  letter-spacing: .09em; text-transform: uppercase;
-  color: var(--text-dim);
-}
-.mobile-drawer-close {
-  width: 36px; height: 36px;
-  border: none;
-  background: transparent;
-  color: var(--text);
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-}
-.mobile-drawer-close:hover { background: var(--surface-2); }
-.mobile-drawer-body {
-  padding: 12px;
-  display: flex; flex-direction: column;
-  gap: 12px;
-}
-/* body scroll lock — drawer acikken. NOT: touch-action:none KULLANMA;
-   body'de olunca drawer ic kaydirmasini da olduruyordu. overflow:hidden +
-   drawer-body'deki overscroll-behavior:contain arka plani zaten kilitliyor. */
-body.drawer-open { overflow: hidden; }
-
-/* Subnav mobile — horizontal scroll chip bar */
+ 
+/* ════════════════════════════════════════════════════════════════
+   M-Resp-Team-Fix — TeamHero mobile (venue tasması, meta sığması)
+   ════════════════════════════════════════════════════════════════ */
 @media (max-width: 767.98px) {
-  .subnav-in {
-    padding: 0 12px;
-    gap: 6px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+  /* Row: logo + text — kompakt + wrap garantili */
+  .team-hero-row {
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
   }
-  .subnav-in::-webkit-scrollbar { display: none; }
-  .subnav-in > * { scroll-snap-align: start; flex-shrink: 0; }
+  .team-hero-logo {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+  /* Text alani logoyla aynı satirda kalsin ama uzun isimde tasmasın */
+  .team-hero-text {
+    flex: 1 1 0;
+    min-width: 0;       /* flex shrink garanti — child'larin ellipsis'i icin sart */
+  }
+
+  /* Üst meta satiri — country + flag + national badge + code + founded */
+  .team-hero-meta {
+    font-size: 11.5px;
+    gap: 5px 8px;       /* satir arasi 5px, item arasi 8px */
+    flex-wrap: wrap;
+    align-items: center;
+    line-height: 1.2;
+  }
+  .team-hero-country { display: inline-flex; align-items: center; gap: 5px; }
+  .team-hero-country img,
+  .team-hero-meta img { width: 14px; height: 10px; flex-shrink: 0; }
+  .team-hero-badge.is-national {
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 5px;
+    letter-spacing: .04em;
+    line-height: 1.1;
+  }
+  .team-hero-code {
+    padding: 1px 5px;
+    font-size: 10.5px;
+    border-radius: 4px;
+  }
+  .team-hero-founded { font-size: 11.5px; white-space: nowrap; }
+
+  /* Takım adı */
+  .team-hero-name {
+    font-size: 19px;
+    line-height: 1.15;
+    margin: 6px 0 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Venue — tek satira sigsin, tasanlar ellipsis */
+  .team-hero-venue {
+    display: block;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--text-dim);
+    white-space: normal;          /* wrap edebilsin */
+    word-break: break-word;
+  }
+  .team-hero-venue-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .team-hero-venue-sep {
+    margin: 0 4px;
+    opacity: .6;
+  }
+  .team-hero-venue-city,
+  .team-hero-venue-cap {
+    font-size: 11.5px;
+  }
+  /* Cok uzun stadyum ismi 2 satirla ellipsis */
+  .team-hero-venue-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  /* Sezon dropdown — venue altinda kendi satirinda */
+  .team-hero-season {
+    margin-top: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .team-hero-season-label {
+    font-size: 10.5px;
+    letter-spacing: .1em;
+  }
+  .team-hero-season-select {
+    font-size: 13px;
+    padding: 6px 28px 6px 10px;
+  }
 }
 
-/* Header mobile — kompakt actions */
+/* Mobile small (<640) — daha sıkı */
+@media (max-width: 639.98px) {
+  .team-hero-logo { width: 48px; height: 48px; }
+  .team-hero-name { font-size: 17px; }
+  .team-hero-meta { font-size: 11px; gap: 4px 6px; }
+  .team-hero-venue { font-size: 11.5px; }
+  /* Tek tek meta itemlari ellipsis'le kessin, badge falan en azindan tasmasin */
+  .team-hero-meta > * {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 @media (max-width: 767.98px) {
   .header-in {
     padding: 0 12px;
