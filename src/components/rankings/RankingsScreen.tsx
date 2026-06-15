@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
-import { teamPath } from "@/lib/routes";
-import { buildEntitySlug } from "@/lib/slug-utils";
+import { countryPath } from "@/lib/routes";
 import {
   IconTrophy,
   IconGlobe,
@@ -302,8 +301,6 @@ function FifaTable({ data, lang }: { data: FifaRankingResponse | null; lang: "tr
           </thead>
           <tbody>
             {data.teams.map((r, i) => {
-              const numericId = Number(r.teamId);
-              const slug = !isNaN(numericId) ? buildEntitySlug(r.teamName, numericId) : null;
               const teamCell = (
                 <span className="rk-team-cell">
                   <TeamLogo name={r.teamName} logo={r.flagUrl ?? null} size={20} />
@@ -315,8 +312,8 @@ function FifaTable({ data, lang }: { data: FifaRankingResponse | null; lang: "tr
                   <td className="rk-col-rank tnum">{r.rank ?? "—"}</td>
                   <td className="rk-col-mv"><MovementBadge m={r.movement} /></td>
                   <td className="rk-col-team">
-                    {slug ? (
-                      <Link href={teamPath(lang, slug)} className="rk-team-link">{teamCell}</Link>
+                    {r.countrySlug ? (
+                      <Link href={countryPath(lang, r.countrySlug)} className="rk-team-link">{teamCell}</Link>
                     ) : (
                       teamCell
                     )}

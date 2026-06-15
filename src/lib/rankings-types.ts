@@ -17,6 +17,8 @@ export interface FifaRankingRow {
   prevPoints?: number | string | null;
   ratedMatches?: number | null;
   flagUrl?: string | null;
+  /** DB Country eslesmesi varsa /ulke linki icin slug; yoksa null (link yok). */
+  countrySlug?: string | null;
 }
 
 export interface FifaRankingResponse {
