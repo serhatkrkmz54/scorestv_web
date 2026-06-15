@@ -21,7 +21,11 @@ export const metadata: Metadata = {
 };
 
 // Tema/dil "flash" önleyici: ilk boyamadan önce localStorage'tan oku.
-const noFlash = `(function(){try{var t=localStorage.getItem('stv_theme');var c=t==='light'?'theme-light':'theme-dark';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add(c);var l=localStorage.getItem('stv_lang');if(l==='tr'||l==='en')e.lang=l;}catch(_){}})();`;
+// Default dil: EN (her ulkeden gelen yeni ziyaretci EN gorur). Kullanici
+// acikca TR sectiyse localStorage/cookie'de durdugu icin sonraki ziyaretlerde
+// TR olarak kalir. Boş ise explicit 'en' set edilir — html lang attribute
+// SSR'de de "en" tutarli olsun diye.
+const noFlash = `(function(){try{var t=localStorage.getItem('stv_theme');var c=t==='light'?'theme-light':'theme-dark';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add(c);var l=localStorage.getItem('stv_lang');e.lang=(l==='tr'||l==='en')?l:'en';}catch(_){document.documentElement.lang='en';}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
