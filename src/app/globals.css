@@ -1847,17 +1847,92 @@ a.evx-out-link:hover { color: var(--accent); }
 /* Yorum CTA butonu: dar mobilde "Giris Yap" alt alta gecmesin. */
 .comments-cta .btn-primary { flex-shrink: 0; white-space: nowrap; }
 .comments-cta-text { min-width: 0; }
-.comment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.comment-body { display: flex; gap: 10px; padding: 10px 4px; border-bottom: 1px dashed var(--border); }
-.comment-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.comment-avatar-initials { font-size: 12px; font-weight: 700; color: var(--text-dim); }
-.comment-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.comment-author { font-size: 13px; font-weight: 700; color: var(--text); }
+/* Sort aktif durum — JSX `.comments-sort-btn.is-active` kullanir */
+.comments-sort button.is-active {
+  background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+}
+
+/* ── Yorum yazma kutusu (composer) — .match-card ile birlikte kullanilir ── */
+.comment-composer { display: flex; gap: 12px; align-items: flex-start; }
+.comment-composer-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-3));
+  color: var(--accent); font-size: 13px; font-weight: 800;
+}
+.comment-composer-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.comment-composer textarea,
+.comment-reply-form textarea {
+  width: 100%; resize: vertical; min-height: 64px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px;
+  color: var(--text); font-family: inherit; font-size: 14px; line-height: 1.5;
+  padding: 11px 13px; outline: none;
+  transition: border-color .14s, box-shadow .14s, background .14s;
+}
+.comment-composer textarea:focus,
+.comment-reply-form textarea:focus {
+  border-color: var(--accent); background: var(--surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.comment-composer textarea::placeholder,
+.comment-reply-form textarea::placeholder { color: var(--text-faint); }
+.comment-composer-actions { display: flex; justify-content: flex-end; }
+.comment-post-err { margin: 0; font-size: 13px; font-weight: 600; color: var(--rel); }
+.btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+
+/* ── Yorum listesi ── */
+.comment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.comment-item {
+  display: flex; gap: 11px; align-items: flex-start;
+  padding: 14px 4px; border-top: 1px solid var(--border);
+}
+.comment-list > .comment-item:first-child { border-top: none; }
+.comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.comment-avatar-initials { font-size: 12.5px; font-weight: 700; color: var(--text-dim); }
+.comment-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.comment-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.comment-author { font-size: 13.5px; font-weight: 700; color: var(--text); }
 .comment-time { font-size: 11.5px; color: var(--text-faint); }
-.comment-text { margin: 4px 0; font-size: 13.5px; line-height: 1.45; color: var(--text); }
-.comment-foot { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--text-faint); }
-.comment-reply-count { font-weight: 600; }
-.comment-replies { margin-left: 44px; padding-left: 12px; border-left: 2px solid var(--border); }
+.comment-del {
+  margin-left: auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border: none; background: transparent;
+  color: var(--text-faint); border-radius: 6px; cursor: pointer; transition: background .14s, color .14s;
+}
+.comment-del:hover { background: var(--surface-2); color: var(--rel); }
+.comment-text { margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Aksiyonlar (beğen / yanıtla) */
+.comment-foot { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.comment-act {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: none; background: transparent; cursor: pointer;
+  color: var(--text-dim); font-family: inherit; font-size: 12.5px; font-weight: 600;
+  padding: 4px 7px; border-radius: 7px; transition: background .12s, color .12s;
+}
+.comment-act:hover { background: var(--surface-2); color: var(--text); }
+.comment-act.like.is-liked { color: var(--rel); }
+.comment-act.like.is-liked svg { fill: var(--rel); }
+.comment-act.is-active { color: var(--accent); }
+
+/* Yanıt formu */
+.comment-reply-form { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.comment-reply-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.comment-cancel {
+  border: 1px solid var(--border); background: transparent; color: var(--text-dim);
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  padding: 8px 14px; border-radius: 9px; cursor: pointer; transition: background .14s, color .14s;
+}
+.comment-cancel:hover { background: var(--surface-2); color: var(--text); }
+
+/* Yanıtlar (nested) */
+.comment-replies {
+  list-style: none; margin: 12px 0 0; padding-left: 14px;
+  border-left: 2px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.comment-replies .comment-item:first-child { border-top: none; }
+.comment-item.is-reply .comment-avatar { width: 30px; height: 30px; }
 
 /* ════════════════════ ODDS (iddaa) ════════════════════ */
 .match-tab-odds { display: block; }
