@@ -127,7 +127,7 @@ export function CommentsTab({ detail, lang }: Props) {
       setText("");
       await load();
     } catch {
-      setPostErr(t("Yorum gönderilemedi. Tekrar dene.", "Could not post. Try again."));
+      setPostErr(t("Yorumunuz gönderilemedi (Küfür,argo,hakaret içerikli kelimeler gönderilmez!). Tekrar dene.", "Your comment could not be sent (Swearing, slang, and insulting words will not be sent!). Please try again."));
     } finally {
       setPosting(false);
     }
