@@ -6,9 +6,11 @@ import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
 import { COUNTRIES, countryLabel } from "@/lib/countries";
 import {
+  GoogleMark,
   IconCalendar,
   IconGlobe,
   IconLock,
+  IconLogout,
   IconMail,
   IconUser,
 } from "@/components/icons";
@@ -18,7 +20,7 @@ type Msg = { type: "ok" | "err"; text: string } | null;
 const TODAY = new Date().toISOString().slice(0, 10);
 
 export function ProfilePage() {
-  const { user, loading, openAuth, refresh } = useAuth();
+  const { user, loading, openAuth, refresh, logout } = useAuth();
   const { lang } = useLang();
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
 
@@ -175,6 +177,9 @@ export function ProfilePage() {
     );
   }
 
+  // Google ile oluşturulmuş hesap (yerel şifre yok) → şifre formu yerine bilgi.
+  const googleOnly = user.hasPassword === false;
+
   return (
     <div className="profile-page">
       <nav className="static-breadcrumb" aria-label="breadcrumb">
@@ -183,161 +188,187 @@ export function ProfilePage() {
         <span className="cur">{t("Profilim", "My Profile")}</span>
       </nav>
 
-      {/* Hero */}
-      <section className="profile-hero">
-        <span className="profile-hero-av">{initial}</span>
-        <div className="profile-hero-main">
-          <h1>{user.displayName || t("Üye", "Member")}</h1>
-          <span className="profile-hero-mail">
-            <IconMail s={14} /> {user.email}
-          </span>
-          <div className="profile-hero-chips">
-            <span className="profile-chip is-accent">{roleLabel(user.role)}</span>
-            {user.country ? <span className="profile-chip">{user.country}</span> : null}
-            {user.age != null ? (
-              <span className="profile-chip">{user.age} {t("yaş", "yrs")}</span>
-            ) : null}
+      <div className="profile-layout">
+        {/* Sol: kimlik kartı + çıkış */}
+        <aside className="profile-aside">
+          <div className="profile-id">
+            <span className="profile-id-glow" aria-hidden="true" />
+            <span className="profile-id-av">{initial}</span>
+            <h2 className="profile-id-name">{user.displayName || t("Üye", "Member")}</h2>
+            <span className="profile-id-mail">
+              <IconMail s={14} /> {user.email}
+            </span>
+            <div className="profile-id-chips">
+              <span className="profile-chip is-accent">{roleLabel(user.role)}</span>
+              {user.country ? <span className="profile-chip">{user.country}</span> : null}
+              {user.age != null ? (
+                <span className="profile-chip">
+                  {user.age} {t("yaş", "yrs")}
+                </span>
+              ) : null}
+            </div>
           </div>
+          <button className="profile-logout" type="button" onClick={() => void logout()}>
+            <IconLogout s={16} /> {t("Çıkış Yap", "Sign out")}
+          </button>
+        </aside>
+
+        {/* Sağ: formlar */}
+        <div className="profile-main">
+          {/* Profil bilgileri / düzenleme */}
+          <section className="profile-card">
+            <header className="profile-card-head">
+              <h2>{t("Profil Bilgileri", "Profile Details")}</h2>
+              <p>{t("Adını, doğum tarihini ve ülkeni güncelle.", "Update your name, birth date and country.")}</p>
+            </header>
+
+            <form className="profile-form" onSubmit={saveProfile}>
+              <label className="pf-field">
+                <span className="pf-label">{t("Ad Soyad", "Full name")}</span>
+                <div className="pf-input">
+                  <span className="pf-ic"><IconUser s={17} /></span>
+                  <input
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    maxLength={100}
+                    placeholder={t("Adın", "Your name")}
+                    autoComplete="name"
+                  />
+                </div>
+              </label>
+
+              <label className="pf-field">
+                <span className="pf-label">{t("E-posta", "Email")}</span>
+                <div className="pf-input is-readonly">
+                  <span className="pf-ic"><IconMail s={17} /></span>
+                  <input type="email" value={user.email} readOnly disabled />
+                </div>
+                <span className="pf-hint">{t("E-posta değiştirilemez.", "Email cannot be changed.")}</span>
+              </label>
+
+              <div className="pf-grid">
+                <label className="pf-field">
+                  <span className="pf-label">{t("Doğum tarihi", "Date of birth")}</span>
+                  <div className="pf-input">
+                    <span className="pf-ic"><IconCalendar s={17} /></span>
+                    <input
+                      type="date"
+                      value={birthDate}
+                      max={TODAY}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                    />
+                  </div>
+                </label>
+
+                <label className="pf-field">
+                  <span className="pf-label">{t("Ülke", "Country")}</span>
+                  <div className="pf-input">
+                    <span className="pf-ic"><IconGlobe s={17} /></span>
+                    <select value={country} onChange={(e) => setCountry(e.target.value)}>
+                      <option value="" disabled>
+                        {t("Ülke seç", "Select country")}
+                      </option>
+                      {COUNTRIES.map((c) => (
+                        <option key={c.code} value={countryLabel(c, lang)}>
+                          {countryLabel(c, lang)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </label>
+              </div>
+
+              {saveMsg ? <p className={`pf-msg ${saveMsg.type}`}>{saveMsg.text}</p> : null}
+
+              <div className="pf-actions">
+                <button className="btn-primary" type="submit" disabled={saving || !dirty}>
+                  {saving ? t("Kaydediliyor…", "Saving…") : t("Değişiklikleri Kaydet", "Save Changes")}
+                </button>
+              </div>
+            </form>
+          </section>
+
+          {/* Şifre değiştir VEYA Google bilgisi */}
+          {googleOnly ? (
+            <section className="profile-card profile-note">
+              <span className="profile-note-ic">
+                <GoogleMark s={20} />
+              </span>
+              <div className="profile-note-body">
+                <h2>{t("Şifre", "Password")}</h2>
+                <p>
+                  {t(
+                    "Bu hesaba Google ile giriş yapıyorsun. Şifre yönetimi Google hesabın üzerinden yapılır; burada değiştirilemez.",
+                    "You sign in to this account with Google. Password is managed through your Google account and can't be changed here.",
+                  )}
+                </p>
+              </div>
+            </section>
+          ) : (
+            <section className="profile-card">
+              <header className="profile-card-head">
+                <h2>{t("Şifre Değiştir", "Change Password")}</h2>
+                <p>{t("Hesabını güvende tut, güçlü bir şifre seç.", "Keep your account safe with a strong password.")}</p>
+              </header>
+
+              <form className="profile-form" onSubmit={changePassword}>
+                <label className="pf-field">
+                  <span className="pf-label">{t("Mevcut şifre", "Current password")}</span>
+                  <div className="pf-input">
+                    <span className="pf-ic"><IconLock s={17} /></span>
+                    <input
+                      type="password"
+                      value={curPw}
+                      onChange={(e) => setCurPw(e.target.value)}
+                      autoComplete="current-password"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </label>
+
+                <div className="pf-grid">
+                  <label className="pf-field">
+                    <span className="pf-label">{t("Yeni şifre", "New password")}</span>
+                    <div className="pf-input">
+                      <span className="pf-ic"><IconLock s={17} /></span>
+                      <input
+                        type="password"
+                        value={newPw}
+                        onChange={(e) => setNewPw(e.target.value)}
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                      />
+                    </div>
+                  </label>
+
+                  <label className="pf-field">
+                    <span className="pf-label">{t("Yeni şifre (tekrar)", "New password (again)")}</span>
+                    <div className="pf-input">
+                      <span className="pf-ic"><IconLock s={17} /></span>
+                      <input
+                        type="password"
+                        value={newPw2}
+                        onChange={(e) => setNewPw2(e.target.value)}
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                      />
+                    </div>
+                  </label>
+                </div>
+
+                {pwMsg ? <p className={`pf-msg ${pwMsg.type}`}>{pwMsg.text}</p> : null}
+
+                <div className="pf-actions">
+                  <button className="btn-primary" type="submit" disabled={pwSaving}>
+                    {pwSaving ? t("Güncelleniyor…", "Updating…") : t("Şifreyi Güncelle", "Update Password")}
+                  </button>
+                </div>
+              </form>
+            </section>
+          )}
         </div>
-      </section>
-
-      {/* Profil bilgileri / düzenleme */}
-      <section className="profile-card">
-        <header className="profile-card-head">
-          <h2>{t("Profil Bilgileri", "Profile Details")}</h2>
-          <p>{t("Adını, doğum tarihini ve ülkeni güncelle.", "Update your name, birth date and country.")}</p>
-        </header>
-
-        <form className="profile-form" onSubmit={saveProfile}>
-          <label className="pf-field">
-            <span className="pf-label">{t("Ad Soyad", "Full name")}</span>
-            <div className="pf-input">
-              <span className="pf-ic"><IconUser s={17} /></span>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                maxLength={100}
-                placeholder={t("Adın", "Your name")}
-                autoComplete="name"
-              />
-            </div>
-          </label>
-
-          <label className="pf-field">
-            <span className="pf-label">{t("E-posta", "Email")}</span>
-            <div className="pf-input is-readonly">
-              <span className="pf-ic"><IconMail s={17} /></span>
-              <input type="email" value={user.email} readOnly disabled />
-            </div>
-            <span className="pf-hint">{t("E-posta değiştirilemez.", "Email cannot be changed.")}</span>
-          </label>
-
-          <div className="pf-grid">
-            <label className="pf-field">
-              <span className="pf-label">{t("Doğum tarihi", "Date of birth")}</span>
-              <div className="pf-input">
-                <span className="pf-ic"><IconCalendar s={17} /></span>
-                <input
-                  type="date"
-                  value={birthDate}
-                  max={TODAY}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                />
-              </div>
-            </label>
-
-            <label className="pf-field">
-              <span className="pf-label">{t("Ülke", "Country")}</span>
-              <div className="pf-input">
-                <span className="pf-ic"><IconGlobe s={17} /></span>
-                <select value={country} onChange={(e) => setCountry(e.target.value)}>
-                  <option value="" disabled>
-                    {t("Ülke seç", "Select country")}
-                  </option>
-                  {COUNTRIES.map((c) => (
-                    <option key={c.code} value={countryLabel(c, lang)}>
-                      {countryLabel(c, lang)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </label>
-          </div>
-
-          {saveMsg ? (
-            <p className={`pf-msg ${saveMsg.type}`}>{saveMsg.text}</p>
-          ) : null}
-
-          <div className="pf-actions">
-            <button className="btn-primary" type="submit" disabled={saving || !dirty}>
-              {saving ? t("Kaydediliyor…", "Saving…") : t("Değişiklikleri Kaydet", "Save Changes")}
-            </button>
-          </div>
-        </form>
-      </section>
-
-      {/* Şifre değiştir */}
-      <section className="profile-card">
-        <header className="profile-card-head">
-          <h2>{t("Şifre Değiştir", "Change Password")}</h2>
-          <p>{t("Hesabını güvende tut, güçlü bir şifre seç.", "Keep your account safe with a strong password.")}</p>
-        </header>
-
-        <form className="profile-form" onSubmit={changePassword}>
-          <label className="pf-field">
-            <span className="pf-label">{t("Mevcut şifre", "Current password")}</span>
-            <div className="pf-input">
-              <span className="pf-ic"><IconLock s={17} /></span>
-              <input
-                type="password"
-                value={curPw}
-                onChange={(e) => setCurPw(e.target.value)}
-                autoComplete="current-password"
-                placeholder="••••••••"
-              />
-            </div>
-          </label>
-
-          <div className="pf-grid">
-            <label className="pf-field">
-              <span className="pf-label">{t("Yeni şifre", "New password")}</span>
-              <div className="pf-input">
-                <span className="pf-ic"><IconLock s={17} /></span>
-                <input
-                  type="password"
-                  value={newPw}
-                  onChange={(e) => setNewPw(e.target.value)}
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                />
-              </div>
-            </label>
-
-            <label className="pf-field">
-              <span className="pf-label">{t("Yeni şifre (tekrar)", "New password (again)")}</span>
-              <div className="pf-input">
-                <span className="pf-ic"><IconLock s={17} /></span>
-                <input
-                  type="password"
-                  value={newPw2}
-                  onChange={(e) => setNewPw2(e.target.value)}
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                />
-              </div>
-            </label>
-          </div>
-
-          {pwMsg ? <p className={`pf-msg ${pwMsg.type}`}>{pwMsg.text}</p> : null}
-
-          <div className="pf-actions">
-            <button className="btn-primary" type="submit" disabled={pwSaving}>
-              {pwSaving ? t("Güncelleniyor…", "Updating…") : t("Şifreyi Güncelle", "Update Password")}
-            </button>
-          </div>
-        </form>
-      </section>
+      </div>
     </div>
   );
 }

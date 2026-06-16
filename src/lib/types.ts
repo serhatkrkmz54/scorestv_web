@@ -9,6 +9,12 @@ export interface AppUser {
   birthDate: string | null; // ISO yyyy-MM-dd
   age: number | null;
   country: string | null;
+  /**
+   * Yerel şifresi var mı? Google ile oluşturulan hesaplarda false döner —
+   * profil sayfası "Şifre Değiştir" bölümünü buna göre gösterir/gizler.
+   * Eski backend bu alanı döndürmezse undefined kalır (şifre bölümü gösterilir).
+   */
+  hasPassword?: boolean;
 }
 
 // /api/v1/auth/* başarılı yanıtı

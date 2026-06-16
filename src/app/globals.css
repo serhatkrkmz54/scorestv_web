@@ -2183,7 +2183,7 @@ a.evx-out-link:hover { color: var(--accent); }
    + şifre değiştirme. Hesap menüsünden (sağ üst) erişilir.
    ════════════════════════════════════════════════════════════════ */
 .profile-page {
-  max-width: 760px; margin: 0 auto; width: 100%;
+  max-width: 980px; margin: 0 auto; width: 100%;
   padding: var(--gap) var(--page-pad-x) 64px;
   display: flex; flex-direction: column; gap: 16px;
 }
@@ -2193,28 +2193,79 @@ a.evx-out-link:hover { color: var(--accent); }
 .user-drop .ud-head:hover { background: var(--surface-2); border-radius: 9px; }
 .user-drop a.ud-item { text-decoration: none; }
 
-/* Hero kart */
-.profile-hero {
-  display: flex; align-items: center; gap: 16px;
+/* İki kolon: sol kimlik kartı (sticky) + sağ formlar */
+.profile-layout {
+  display: grid; grid-template-columns: 300px minmax(0, 1fr);
+  gap: 16px; align-items: start;
+}
+.profile-aside {
+  position: sticky; top: calc(var(--header-h) + var(--subnav-h) + var(--gap));
+  display: flex; flex-direction: column; gap: 12px;
+}
+.profile-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* Kimlik kartı — accent glow + ortalanmış avatar */
+.profile-id {
+  position: relative; overflow: hidden; text-align: center;
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px;
+  border-radius: var(--radius); padding: 26px 20px 22px;
 }
-.profile-hero-av {
-  width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0;
-  background: var(--accent); color: var(--accent-ink);
-  display: inline-flex; align-items: center; justify-content: center;
+.profile-id-glow {
+  position: absolute; top: -64px; left: 50%; transform: translateX(-50%);
+  width: 240px; height: 170px; pointer-events: none; opacity: .75;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--accent) 30%, transparent), transparent);
+}
+.profile-id-av {
+  position: relative; width: 76px; height: 76px; margin: 0 auto 12px;
+  border-radius: 22px; background: var(--accent); color: var(--accent-ink);
+  display: flex; align-items: center; justify-content: center;
   font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
-  font-size: 30px; font-weight: 700;
+  font-size: 36px; font-weight: 700;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent);
 }
-.profile-hero-main { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.profile-hero-main h1 {
-  margin: 0; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
-  font-size: clamp(22px, 4vw, 28px); font-weight: 700; line-height: 1.1; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.profile-id-name {
+  position: relative; margin: 0;
+  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 20px; font-weight: 700; line-height: 1.15; color: var(--text);
+  word-break: break-word;
 }
-.profile-hero-mail { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-dim); min-width: 0; }
-.profile-hero-mail svg { flex-shrink: 0; color: var(--text-faint); }
-.profile-hero-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.profile-id-mail {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 5px; max-width: 100%; font-size: 13px; color: var(--text-dim);
+}
+.profile-id-mail svg { flex-shrink: 0; color: var(--text-faint); }
+.profile-id-chips {
+  position: relative; display: flex; flex-wrap: wrap; gap: 7px;
+  justify-content: center; margin-top: 14px;
+}
+
+/* Çıkış butonu */
+.profile-logout {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; border-radius: 12px; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-dim); font-family: inherit; font-weight: 700; font-size: 14px;
+  transition: background .14s, color .14s, border-color .14s;
+}
+.profile-logout:hover {
+  background: color-mix(in srgb, var(--rel) 10%, var(--surface));
+  color: var(--rel); border-color: color-mix(in srgb, var(--rel) 35%, var(--border));
+}
+
+/* Google hesabı bilgi kartı (şifre formu yerine) */
+.profile-note { display: flex; align-items: flex-start; gap: 14px; }
+.profile-note-ic {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.profile-note-body h2 {
+  margin: 0 0 4px; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 18px; font-weight: 700; color: var(--text);
+}
+.profile-note-body p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--text-dim); }
+
 .profile-chip {
   font-size: 12px; font-weight: 700; color: var(--text-dim);
   background: var(--surface-2); border: 1px solid var(--border);
@@ -2295,13 +2346,18 @@ a.evx-out-link:hover { color: var(--accent); }
 .profile-signedout-actions { display: flex; gap: 10px; justify-content: center; align-items: center; }
 .profile-signedout-actions .comment-cancel { text-decoration: none; display: inline-flex; align-items: center; }
 
+/* Tablet/dar: tek kolon — kimlik kartı üstte, sticky kapalı */
+@media (max-width: 820px) {
+  .profile-layout { grid-template-columns: 1fr; }
+  .profile-aside { position: static; }
+}
+
 /* Mobil */
 @media (max-width: 560px) {
   .pf-grid { grid-template-columns: 1fr; }
   .pf-actions { width: 100%; }
   .pf-actions .btn-primary { width: 100%; }
-  .profile-hero { padding: 16px; gap: 13px; }
-  .profile-hero-av { width: 54px; height: 54px; border-radius: 15px; font-size: 25px; }
+  .profile-id-av { width: 66px; height: 66px; border-radius: 18px; font-size: 30px; }
 }
 
 .site-footer {
