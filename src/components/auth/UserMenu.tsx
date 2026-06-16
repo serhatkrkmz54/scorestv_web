@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
 import { IconBell, IconChevronDown, IconLogout, IconStar, IconUser } from "@/components/icons";
@@ -33,21 +34,21 @@ export function UserMenu({ user }: { user: AppUser }) {
       </button>
       {open && (
         <div className="user-drop">
-          <div className="ud-head">
+          <Link href="/profil" className="ud-head" onClick={() => setOpen(false)}>
             <span className="user-av big">{initial}</span>
             <div>
               <b>{name}</b>
               <span>{user.email}</span>
             </div>
-          </div>
+          </Link>
+          <Link href="/profil" className="ud-item" onClick={() => setOpen(false)}>
+            <IconUser s={16} /> {t("Profilim", "My Profile")}
+          </Link>
           <button className="ud-item">
             <IconStar s={16} /> {t("Favorilerim", "My Favorites")}
           </button>
           <button className="ud-item">
             <IconBell s={16} /> {t("Bildirimler", "Notifications")}
-          </button>
-          <button className="ud-item">
-            <IconUser s={16} /> {t("Hesap Ayarları", "Account")}
           </button>
           <button
             className="ud-item danger"

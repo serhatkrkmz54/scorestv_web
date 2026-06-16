@@ -2178,6 +2178,132 @@ a.evx-out-link:hover { color: var(--accent); }
   .contact-submit { align-self: stretch; }
 }
 
+/* ════════════════════════════════════════════════════════════════
+   PROFİL SAYFASI — /profil (ProfilePage). Bilgi gösterimi + düzenleme
+   + şifre değiştirme. Hesap menüsünden (sağ üst) erişilir.
+   ════════════════════════════════════════════════════════════════ */
+.profile-page {
+  max-width: 760px; margin: 0 auto; width: 100%;
+  padding: var(--gap) var(--page-pad-x) 64px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+/* Hesap menüsü: head + item artik <a> (Link) — alt cizgi yok, head tiklanir */
+.user-drop .ud-head { color: var(--text); text-decoration: none; transition: background .12s; cursor: pointer; }
+.user-drop .ud-head:hover { background: var(--surface-2); border-radius: 9px; }
+.user-drop a.ud-item { text-decoration: none; }
+
+/* Hero kart */
+.profile-hero {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+}
+.profile-hero-av {
+  width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0;
+  background: var(--accent); color: var(--accent-ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 30px; font-weight: 700;
+}
+.profile-hero-main { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.profile-hero-main h1 {
+  margin: 0; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: clamp(22px, 4vw, 28px); font-weight: 700; line-height: 1.1; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.profile-hero-mail { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-dim); min-width: 0; }
+.profile-hero-mail svg { flex-shrink: 0; color: var(--text-faint); }
+.profile-hero-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.profile-chip {
+  font-size: 12px; font-weight: 700; color: var(--text-dim);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px 11px;
+}
+.profile-chip.is-accent {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* Bölüm kartı */
+.profile-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: clamp(18px, 3vw, 26px);
+}
+.profile-card-head { margin-bottom: 16px; }
+.profile-card-head h2 {
+  margin: 0 0 4px; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 19px; font-weight: 700; color: var(--text);
+}
+.profile-card-head p { margin: 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.5; }
+
+/* Form */
+.profile-form { display: flex; flex-direction: column; gap: 15px; }
+.pf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.pf-field { display: flex; flex-direction: column; gap: 7px; }
+.pf-label { font-size: 12.5px; font-weight: 700; color: var(--text-dim); }
+.pf-hint { font-size: 11.5px; color: var(--text-faint); }
+.pf-input { position: relative; display: flex; align-items: center; }
+.pf-input .pf-ic { position: absolute; left: 13px; color: var(--text-faint); display: flex; pointer-events: none; }
+.pf-input input, .pf-input select {
+  width: 100%; height: 46px; border-radius: 11px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); font-family: inherit; font-size: 15px; font-weight: 500;
+  padding: 0 14px 0 40px; outline: none;
+  transition: border-color .14s, background .14s, box-shadow .14s;
+}
+.pf-input select { cursor: pointer; appearance: none; }
+.pf-input input:focus, .pf-input select:focus {
+  border-color: var(--accent); background: var(--surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.pf-input.is-readonly input { color: var(--text-dim); cursor: not-allowed; opacity: .85; }
+.pf-input input[type="date"] { color-scheme: dark; }
+.theme-light .pf-input input[type="date"] { color-scheme: light; }
+
+.pf-actions { display: flex; justify-content: flex-end; margin-top: 2px; }
+.pf-actions .btn-primary { min-width: 170px; }
+.pf-msg { margin: 0; font-size: 13.5px; font-weight: 600; padding: 10px 13px; border-radius: 10px; }
+.pf-msg.ok {
+  color: var(--win);
+  background: color-mix(in srgb, var(--win) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--win) 32%, transparent);
+}
+.pf-msg.err {
+  color: var(--rel);
+  background: color-mix(in srgb, var(--rel) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rel) 32%, transparent);
+}
+
+/* Oturum yok durumu */
+.profile-signedout {
+  text-align: center; max-width: 460px; margin: 24px auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 40px 28px;
+}
+.profile-signedout-ic {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; border-radius: 16px; margin-bottom: 16px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent);
+}
+.profile-signedout h1 {
+  margin: 0 0 8px; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--text);
+}
+.profile-signedout p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--text-dim); }
+.profile-signedout-actions { display: flex; gap: 10px; justify-content: center; align-items: center; }
+.profile-signedout-actions .comment-cancel { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* Mobil */
+@media (max-width: 560px) {
+  .pf-grid { grid-template-columns: 1fr; }
+  .pf-actions { width: 100%; }
+  .pf-actions .btn-primary { width: 100%; }
+  .profile-hero { padding: 16px; gap: 13px; }
+  .profile-hero-av { width: 54px; height: 54px; border-radius: 15px; font-size: 25px; }
+}
+
 .site-footer {
   margin-top: 40px;
   background: var(--surface);

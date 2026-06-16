@@ -1,0 +1,343 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
+import { useLang } from "@/context/lang-context";
+import { COUNTRIES, countryLabel } from "@/lib/countries";
+import {
+  IconCalendar,
+  IconGlobe,
+  IconLock,
+  IconMail,
+  IconUser,
+} from "@/components/icons";
+
+type Msg = { type: "ok" | "err"; text: string } | null;
+
+const TODAY = new Date().toISOString().slice(0, 10);
+
+export function ProfilePage() {
+  const { user, loading, openAuth, refresh } = useAuth();
+  const { lang } = useLang();
+  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+
+  // ── Profil düzenleme ──
+  const [displayName, setDisplayName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [country, setCountry] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<Msg>(null);
+
+  // ── Şifre değiştir ──
+  const [curPw, setCurPw] = useState("");
+  const [newPw, setNewPw] = useState("");
+  const [newPw2, setNewPw2] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwMsg, setPwMsg] = useState<Msg>(null);
+
+  useEffect(() => {
+    if (user) {
+      setDisplayName(user.displayName ?? "");
+      setBirthDate(user.birthDate ?? "");
+      setCountry(user.country ?? "");
+    }
+  }, [user]);
+
+  const dirty = useMemo(() => {
+    if (!user) return false;
+    return (
+      displayName.trim() !== (user.displayName ?? "") ||
+      birthDate !== (user.birthDate ?? "") ||
+      country !== (user.country ?? "")
+    );
+  }, [user, displayName, birthDate, country]);
+
+  const roleLabel = (r: string) =>
+    r === "ADMIN"
+      ? t("Yönetici", "Admin")
+      : r === "EDITOR"
+        ? t("Editör", "Editor")
+        : t("Üye", "Member");
+
+  const initial = (user?.displayName || user?.email || "U").trim().charAt(0).toUpperCase();
+
+  async function saveProfile(e: React.FormEvent) {
+    e.preventDefault();
+    setSaveMsg(null);
+    if (!displayName.trim() || !birthDate || !country) {
+      setSaveMsg({ type: "err", text: t("Lütfen tüm alanları doldur.", "Please fill all fields.") });
+      return;
+    }
+    setSaving(true);
+    try {
+      const r = await fetch("/api/auth/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: displayName.trim(), birthDate, country }),
+      });
+      if (r.status === 401) {
+        openAuth("signin");
+        return;
+      }
+      if (!r.ok) {
+        const j = (await r.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(j?.message);
+      }
+      await refresh();
+      setSaveMsg({ type: "ok", text: t("Profil güncellendi.", "Profile updated.") });
+    } catch (err) {
+      setSaveMsg({
+        type: "err",
+        text: (err as Error)?.message || t("Güncellenemedi. Tekrar dene.", "Update failed. Try again."),
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function changePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPwMsg(null);
+    if (!curPw || !newPw) {
+      setPwMsg({ type: "err", text: t("Mevcut ve yeni şifreyi gir.", "Enter current and new password.") });
+      return;
+    }
+    if (newPw.length < 3) {
+      setPwMsg({ type: "err", text: t("Yeni şifre en az 3 karakter olmalı.", "New password must be at least 3 characters.") });
+      return;
+    }
+    if (newPw !== newPw2) {
+      setPwMsg({ type: "err", text: t("Yeni şifreler eşleşmiyor.", "New passwords do not match.") });
+      return;
+    }
+    setPwSaving(true);
+    try {
+      const r = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword: curPw, newPassword: newPw }),
+      });
+      if (r.status === 401) {
+        openAuth("signin");
+        return;
+      }
+      if (!r.ok) {
+        const j = (await r.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(j?.message);
+      }
+      setCurPw("");
+      setNewPw("");
+      setNewPw2("");
+      setPwMsg({ type: "ok", text: t("Şifren güncellendi.", "Password updated.") });
+    } catch (err) {
+      setPwMsg({
+        type: "err",
+        text: (err as Error)?.message || t("Şifre değiştirilemedi.", "Could not change password."),
+      });
+    } finally {
+      setPwSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="profile-page">
+        <p className="match-empty">{t("Yükleniyor…", "Loading…")}</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="profile-page">
+        <div className="profile-signedout">
+          <span className="profile-signedout-ic">
+            <IconUser s={26} />
+          </span>
+          <h1>{t("Profilini görmek için giriş yap", "Sign in to view your profile")}</h1>
+          <p>
+            {t(
+              "Hesabını yönetmek, bilgilerini düzenlemek ve favorilerini takip etmek için giriş yapmalısın.",
+              "Sign in to manage your account, edit your details and follow your favorites.",
+            )}
+          </p>
+          <div className="profile-signedout-actions">
+            <button className="btn-primary" onClick={() => openAuth("signin")}>
+              {t("Giriş Yap", "Sign In")}
+            </button>
+            <Link href="/" className="comment-cancel">
+              {t("Ana sayfa", "Home")}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="profile-page">
+      <nav className="static-breadcrumb" aria-label="breadcrumb">
+        <Link href="/">{t("Ana sayfa", "Home")}</Link>
+        <span aria-hidden="true">/</span>
+        <span className="cur">{t("Profilim", "My Profile")}</span>
+      </nav>
+
+      {/* Hero */}
+      <section className="profile-hero">
+        <span className="profile-hero-av">{initial}</span>
+        <div className="profile-hero-main">
+          <h1>{user.displayName || t("Üye", "Member")}</h1>
+          <span className="profile-hero-mail">
+            <IconMail s={14} /> {user.email}
+          </span>
+          <div className="profile-hero-chips">
+            <span className="profile-chip is-accent">{roleLabel(user.role)}</span>
+            {user.country ? <span className="profile-chip">{user.country}</span> : null}
+            {user.age != null ? (
+              <span className="profile-chip">{user.age} {t("yaş", "yrs")}</span>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      {/* Profil bilgileri / düzenleme */}
+      <section className="profile-card">
+        <header className="profile-card-head">
+          <h2>{t("Profil Bilgileri", "Profile Details")}</h2>
+          <p>{t("Adını, doğum tarihini ve ülkeni güncelle.", "Update your name, birth date and country.")}</p>
+        </header>
+
+        <form className="profile-form" onSubmit={saveProfile}>
+          <label className="pf-field">
+            <span className="pf-label">{t("Ad Soyad", "Full name")}</span>
+            <div className="pf-input">
+              <span className="pf-ic"><IconUser s={17} /></span>
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                maxLength={100}
+                placeholder={t("Adın", "Your name")}
+                autoComplete="name"
+              />
+            </div>
+          </label>
+
+          <label className="pf-field">
+            <span className="pf-label">{t("E-posta", "Email")}</span>
+            <div className="pf-input is-readonly">
+              <span className="pf-ic"><IconMail s={17} /></span>
+              <input type="email" value={user.email} readOnly disabled />
+            </div>
+            <span className="pf-hint">{t("E-posta değiştirilemez.", "Email cannot be changed.")}</span>
+          </label>
+
+          <div className="pf-grid">
+            <label className="pf-field">
+              <span className="pf-label">{t("Doğum tarihi", "Date of birth")}</span>
+              <div className="pf-input">
+                <span className="pf-ic"><IconCalendar s={17} /></span>
+                <input
+                  type="date"
+                  value={birthDate}
+                  max={TODAY}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                />
+              </div>
+            </label>
+
+            <label className="pf-field">
+              <span className="pf-label">{t("Ülke", "Country")}</span>
+              <div className="pf-input">
+                <span className="pf-ic"><IconGlobe s={17} /></span>
+                <select value={country} onChange={(e) => setCountry(e.target.value)}>
+                  <option value="" disabled>
+                    {t("Ülke seç", "Select country")}
+                  </option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={countryLabel(c, lang)}>
+                      {countryLabel(c, lang)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
+          </div>
+
+          {saveMsg ? (
+            <p className={`pf-msg ${saveMsg.type}`}>{saveMsg.text}</p>
+          ) : null}
+
+          <div className="pf-actions">
+            <button className="btn-primary" type="submit" disabled={saving || !dirty}>
+              {saving ? t("Kaydediliyor…", "Saving…") : t("Değişiklikleri Kaydet", "Save Changes")}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {/* Şifre değiştir */}
+      <section className="profile-card">
+        <header className="profile-card-head">
+          <h2>{t("Şifre Değiştir", "Change Password")}</h2>
+          <p>{t("Hesabını güvende tut, güçlü bir şifre seç.", "Keep your account safe with a strong password.")}</p>
+        </header>
+
+        <form className="profile-form" onSubmit={changePassword}>
+          <label className="pf-field">
+            <span className="pf-label">{t("Mevcut şifre", "Current password")}</span>
+            <div className="pf-input">
+              <span className="pf-ic"><IconLock s={17} /></span>
+              <input
+                type="password"
+                value={curPw}
+                onChange={(e) => setCurPw(e.target.value)}
+                autoComplete="current-password"
+                placeholder="••••••••"
+              />
+            </div>
+          </label>
+
+          <div className="pf-grid">
+            <label className="pf-field">
+              <span className="pf-label">{t("Yeni şifre", "New password")}</span>
+              <div className="pf-input">
+                <span className="pf-ic"><IconLock s={17} /></span>
+                <input
+                  type="password"
+                  value={newPw}
+                  onChange={(e) => setNewPw(e.target.value)}
+                  autoComplete="new-password"
+                  placeholder="••••••••"
+                />
+              </div>
+            </label>
+
+            <label className="pf-field">
+              <span className="pf-label">{t("Yeni şifre (tekrar)", "New password (again)")}</span>
+              <div className="pf-input">
+                <span className="pf-ic"><IconLock s={17} /></span>
+                <input
+                  type="password"
+                  value={newPw2}
+                  onChange={(e) => setNewPw2(e.target.value)}
+                  autoComplete="new-password"
+                  placeholder="••••••••"
+                />
+              </div>
+            </label>
+          </div>
+
+          {pwMsg ? <p className={`pf-msg ${pwMsg.type}`}>{pwMsg.text}</p> : null}
+
+          <div className="pf-actions">
+            <button className="btn-primary" type="submit" disabled={pwSaving}>
+              {pwSaving ? t("Güncelleniyor…", "Updating…") : t("Şifreyi Güncelle", "Update Password")}
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
