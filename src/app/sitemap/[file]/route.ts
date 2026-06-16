@@ -1,7 +1,7 @@
 import { entriesFor, urlsetXml } from "@/lib/sitemap-data";
 
 // Alt sitemap'ler — /sitemap/teams-0.xml, /sitemap/players-3.xml, /sitemap/static.xml ...
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET(
   _req: Request,

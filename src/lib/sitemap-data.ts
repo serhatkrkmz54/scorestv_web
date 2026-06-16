@@ -5,7 +5,6 @@ import "server-only";
 export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 const BACKEND = process.env.BACKEND_URL ?? "http://localhost:8080";
 export const PAGE_SIZE = 10000; // varlik/sayfa; URL/sayfa bunun 2 kati (EN+TR)
-const REVALIDATE = 3600;
 
 export interface Counts {
   teams: number;
@@ -28,7 +27,7 @@ export interface UrlEntry {
 export async function fetchCounts(): Promise<Counts> {
   try {
     const r = await fetch(`${BACKEND}/api/v1/sitemap/counts`, {
-      next: { revalidate: REVALIDATE },
+      cache: "no-store",
     });
     if (!r.ok) return { teams: 0, players: 0, leagues: 0, matches: 0 };
     const j = (await r.json()) as Partial<Counts>;
@@ -95,7 +94,7 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
   try {
     const r = await fetch(
       `${BACKEND}/api/v1/sitemap/${type}?page=${page}&size=${PAGE_SIZE}`,
-      { next: { revalidate: REVALIDATE } },
+      { cache: "no-store" },
     );
     if (!r.ok) return [];
     const list = (await r.json()) as {

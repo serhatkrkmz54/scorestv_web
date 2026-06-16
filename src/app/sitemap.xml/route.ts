@@ -1,7 +1,9 @@
 import { fetchCounts, sitemapFiles, indexXml } from "@/lib/sitemap-data";
 
 // Sitemap INDEX — /sitemap.xml. Stilli (XSL) + alt sitemap'lere isaret eder.
-export const revalidate = 3600;
+// force-dynamic: her zaman canli counts cek (cache'lenmis 0/404 sorununu onler).
+// CF/nginx Cache-Control ile yine cache'lenir, backend yorulmaz.
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const files = sitemapFiles(await fetchCounts());
