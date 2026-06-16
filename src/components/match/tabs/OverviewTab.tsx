@@ -5,12 +5,6 @@ import Link from "next/link";
 import { formatMinute } from "@/lib/match-format";
 import { playerPath } from "@/lib/routes";
 import { buildEntitySlug } from "@/lib/slug-utils";
-import {
-  IconBall,
-  IconCard,
-  IconSwap,
-  IconWhistle,
-} from "@/components/icons";
 import type {
   MatchDetailResponse,
   MatchEvent,
@@ -43,38 +37,63 @@ interface Props {
   lang: "tr" | "en";
 }
 
-function eventIcon(ev: MatchEvent): ReactNode {
+/**
+ * Olay tipine (ve detayina) gore SVG ikonu + tema-uyumlu renk secer.
+ * SVG'ler CSS mask olarak kullanilir: SEKIL dosyadan, RENK buradan gelir —
+ * yani ikon hem dark hem light modda net gozukur (SVG'nin ic rengi onemsiz).
+ * Dosyalar: public/events/<isim>.svg  ->  servis: /events/<isim>.svg
+ */
+function eventIconMeta(ev: MatchEvent): { src: string; tone: string } {
   const type = (ev.type ?? "").toLowerCase();
   const detail = (ev.detail ?? "").toLowerCase();
   if (type === "goal") {
-    if (detail.includes("own goal")) {
-      return <span className="ev-ic ev-ic-own"><IconBall s={14} /></span>;
-    }
-    if (detail.includes("missed")) {
-      return <span className="ev-ic ev-ic-miss"><IconBall s={14} /></span>;
-    }
-    return <span className="ev-ic ev-ic-goal"><IconBall s={14} /></span>;
+    if (detail.includes("own")) return { src: "/events/own-goal.svg", tone: "var(--rel)" };
+    if (detail.includes("missed")) return { src: "/events/missed-penalty.svg", tone: "var(--text-faint)" };
+    if (detail.includes("penalty")) return { src: "/events/penalty.svg", tone: "var(--text)" };
+    return { src: "/events/goal.svg", tone: "var(--text)" };
   }
   if (type === "card") {
-    if (detail.includes("red")) {
-      return <span className="ev-ic ev-ic-red"><IconCard s={12} /></span>;
-    }
-    return <span className="ev-ic ev-ic-yellow"><IconCard s={12} /></span>;
+    if (detail.includes("red")) return { src: "/events/red-card.svg", tone: "var(--rel)" };
+    return { src: "/events/yellow-card.svg", tone: "#f1c40f" };
   }
   if (type === "subst" || type === "substitution") {
-    return <span className="ev-ic ev-ic-sub"><IconSwap s={13} /></span>;
+    return { src: "/events/substitution.svg", tone: "var(--accent)" };
   }
-  if (type === "var") {
-    return <span className="ev-ic ev-ic-var"><IconWhistle s={13} /></span>;
-  }
-  return <span className="ev-ic"><IconWhistle s={13} /></span>;
+  return { src: "/events/var.svg", tone: "var(--text-dim)" };
 }
+
+function eventIcon(ev: MatchEvent): ReactNode {
+  const { src, tone } = eventIconMeta(ev);
+  return (
+    <span className="ev-ic">
+      <span
+        className="ev-ic-glyph"
+        style={{
+          WebkitMaskImage: `url(${src})`,
+          maskImage: `url(${src})`,
+          backgroundColor: tone,
+        }}
+      />
+    </span>
+  );
+}
+
+/** Gol mu? (kacirilan penalti/iptal haric.) */
+function isGoal(ev: MatchEvent): boolean {
+  const type = (ev.type ?? "").toLowerCase();
+  const detail = (ev.detail ?? "").toLowerCase();
+  return type === "goal" && !detail.includes("missed");
+}
+
+type TimelineRow =
+  | { kind: "event"; ev: MatchEvent; score: string | null; key: string }
+  | { kind: "divider"; label: string; key: string };
 
 export function OverviewTab({ detail, lang }: Props) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const { events: rawEvents, homeTeam } = detail;
-  // Backend sirasi garanti degil — savunmaci olarak ascending sort.
-  // Yeni gelen WS event'i de dogru dakikada (en altta) gozuksun.
+
+  // Backend sirasi garanti degil — ascending sort (dakika + uzatma).
   const events = rawEvents
     ? [...rawEvents].sort((a, b) => {
         const am = (a.elapsed ?? 0) * 100 + (a.extra ?? 0);
@@ -82,9 +101,8 @@ export function OverviewTab({ detail, lang }: Props) {
         return am - bm;
       })
     : [];
-  const hasEvents = events.length > 0;
 
-  if (!hasEvents) {
+  if (events.length === 0) {
     return (
       <div className="match-tab match-tab-overview">
         <section className="match-card">
@@ -94,67 +112,134 @@ export function OverviewTab({ detail, lang }: Props) {
     );
   }
 
+  // Satirlari kur: olaylar arasina devre/uzatma ayraclari serpistir, gollerde
+  // o ana kadarki skoru hesapla.
+  const rows: TimelineRow[] = [];
+  let h = 0;
+  let a = 0;
+  let htDone = false;
+  let etDone = false;
+  events.forEach((ev, i) => {
+    const el = ev.elapsed ?? 0;
+    if (!htDone && el > 45) {
+      rows.push({ kind: "divider", label: t("Devre Arası", "Half Time"), key: "d-ht" });
+      htDone = true;
+    }
+    if (!etDone && el > 90) {
+      rows.push({ kind: "divider", label: t("Uzatmalar", "Extra Time"), key: "d-et" });
+      etDone = true;
+    }
+    let score: string | null = null;
+    if (isGoal(ev)) {
+      const own = (ev.detail ?? "").toLowerCase().includes("own");
+      const homeScored = own ? ev.teamId !== homeTeam.id : ev.teamId === homeTeam.id;
+      if (homeScored) h += 1;
+      else a += 1;
+      score = `${h}–${a}`;
+    }
+    rows.push({
+      kind: "event",
+      ev,
+      score,
+      key: `${ev.elapsed ?? "?"}-${ev.type}-${ev.teamId}-${i}`,
+    });
+  });
+
+  const finished = ["FT", "AET", "PEN"].includes(
+    (detail.status?.shortCode ?? "").toUpperCase(),
+  );
+  if (finished) {
+    rows.push({ kind: "divider", label: t("Maç Sonu", "Full Time"), key: "d-ft" });
+  }
+
   return (
     <div className="match-tab match-tab-overview">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>{t("Mac Olaylari", "Match Events")}</h3>
+          <h3>{t("Maç Olayları", "Match Events")}</h3>
         </header>
-        <ul className="event-timeline">
-          {events.map((ev, i) => {
+
+        <ul className="evx-timeline">
+          {rows.map((row) => {
+            if (row.kind === "divider") {
+              return (
+                <li className="evx-divider" key={row.key}>
+                  <span>{row.label}</span>
+                </li>
+              );
+            }
+
+            const { ev, score } = row;
             const isHome = ev.teamId === homeTeam.id;
-            const side: "home" | "away" = isHome ? "home" : "away";
+            const type = (ev.type ?? "").toLowerCase();
+            const isSub = type === "subst" || type === "substitution";
+            const isGoalEv = type === "goal";
             const playerName = ev.playerName ?? "-";
-            const subText = ev.detailText ?? ev.typeText ?? ev.detail ?? ev.type;
             const assist = ev.assistName ?? null;
+            const subText = ev.detailText ?? ev.typeText ?? ev.detail ?? ev.type;
+
+            let body: ReactNode;
+            if (isGoalEv) {
+              // Gol: atan kalin + (asist) parantez icinde ince.
+              body = (
+                <span className="evx-sub-line">
+                  <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="evx-in" />
+                  {assist ? (
+                    <span className="evx-out">
+                      (
+                      <PlayerLink name={assist} id={ev.assistId} lang={lang} className="evx-out-link" />
+                      )
+                    </span>
+                  ) : null}
+                </span>
+              );
+            } else if (isSub) {
+              // Degisiklik: giren kalin + cikan ince yan yana.
+              body = (
+                <span className="evx-sub-line">
+                  <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="evx-in" />
+                  {assist ? (
+                    <PlayerLink name={assist} id={ev.assistId} lang={lang} className="evx-out" />
+                  ) : null}
+                </span>
+              );
+            } else if (type === "card") {
+              // Kart: sadece ikon + isim (Yellow/Red Card etiketi yazma).
+              body = (
+                <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="evx-player" />
+              );
+            } else {
+              // VAR / diger: oyuncu (varsa) + aciklama (orn. "Goal cancelled").
+              body = (
+                <>
+                  {playerName && playerName !== "-" ? (
+                    <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="evx-player" />
+                  ) : null}
+                  {subText ? <span className="evx-label">{subText}</span> : null}
+                </>
+              );
+            }
+
+            // Ikon olayin SOLUNDA (merkezde degil) — metnin yaninda.
+            const card = (
+              <div className="evx-card">
+                {eventIcon(ev)}
+                <div className="evx-body">{body}</div>
+              </div>
+            );
+
             return (
-              <li
-                key={`${ev.elapsed ?? "?"}-${ev.type}-${ev.teamId}-${i}`}
-                className={`event-row is-${side}`}
-              >
-                <div className="event-side event-side-home">
-                  {isHome ? (
-                    <div className="event-cell">
-                      {eventIcon(ev)}
-                      <div className="event-text">
-                        <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="event-player" />
-                        {assist ? (
-                          <span className="event-assist">
-                            {t("Asist", "Assist")}:{" "}
-                            <PlayerLink name={assist} id={ev.assistId} lang={lang} className="event-assist-name" />
-                          </span>
-                        ) : null}
-                        {subText && subText !== playerName ? (
-                          <span className="event-label">{subText}</span>
-                        ) : null}
-                      </div>
-                    </div>
-                  ) : null}
+              <li className={`evx-row is-${isHome ? "home" : "away"}`} key={row.key}>
+                <div className="evx-side evx-left">{isHome ? card : null}</div>
+
+                <div className="evx-center">
+                  <span className="evx-min tnum">
+                    {formatMinute(ev.elapsed, ev.extra) || "·"}
+                  </span>
+                  {score ? <span className="evx-score tnum">{score}</span> : null}
                 </div>
 
-                <div className="event-minute tnum">
-                  {formatMinute(ev.elapsed, ev.extra) || "·"}
-                </div>
-
-                <div className="event-side event-side-away">
-                  {!isHome ? (
-                    <div className="event-cell">
-                      <div className="event-text">
-                        <PlayerLink name={playerName} id={ev.playerId} lang={lang} className="event-player" />
-                        {assist ? (
-                          <span className="event-assist">
-                            {t("Asist", "Assist")}:{" "}
-                            <PlayerLink name={assist} id={ev.assistId} lang={lang} className="event-assist-name" />
-                          </span>
-                        ) : null}
-                        {subText && subText !== playerName ? (
-                          <span className="event-label">{subText}</span>
-                        ) : null}
-                      </div>
-                      {eventIcon(ev)}
-                    </div>
-                  ) : null}
-                </div>
+                <div className="evx-side evx-right">{!isHome ? card : null}</div>
               </li>
             );
           })}

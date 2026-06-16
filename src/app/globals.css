@@ -992,62 +992,115 @@ a.mr-team:hover .nm { color: var(--accent); }
 }
 .match-tab { display: block; }
 
-/* ── Overview: Events ── */
-.event-timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.event-row {
+/* ── Overview: Events timeline (merkez spine + canli skor + devre ayraci) ── */
+.evx-timeline {
+  list-style: none; margin: 0; padding: 6px 0;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+/* Merkez dikey spine cizgisi — node'lar bunun uzerinde oturur. */
+.evx-timeline::before {
+  content: ""; position: absolute; top: 4px; bottom: 4px; left: 50%;
+  width: 2px; transform: translateX(-50%);
+  background: var(--border);
+}
+.evx-row {
+  position: relative; z-index: 1;
   display: grid;
-  grid-template-columns: 1fr 80px 1fr;
+  grid-template-columns: 1fr 76px 1fr;
   align-items: center;
-  padding: 12px 8px;
+  padding: 7px 2px;
+}
+.evx-side { min-width: 0; display: flex; }
+.evx-left { justify-content: flex-end; }
+.evx-right { justify-content: flex-start; }
+
+.evx-card {
+  display: flex; align-items: center; gap: 9px;
+  max-width: 100%;
+  padding: 5px 6px;
   border-radius: 9px;
   transition: background .12s;
 }
-.event-row:hover { background: var(--surface-2); }
-.event-side { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.event-side-home { justify-content: flex-end; text-align: right; }
-.event-side-away { justify-content: flex-start; text-align: left; }
-.event-cell {
-  display: inline-flex; align-items: center; gap: 8px;
-  max-width: 100%;
+.evx-row:hover .evx-card { background: var(--surface-2); }
+/* Varsayilan (deplasman, sag taraf): ikon solda, metin sola hizali. */
+.evx-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left; align-items: flex-start; }
+/* Ev sahibi (sol taraf): aynala — ikon sagda (seride bakar), metin saga hizali. */
+.evx-left .evx-card { flex-direction: row-reverse; }
+.evx-left .evx-body { text-align: right; align-items: flex-end; }
+.evx-left .evx-sub-line { justify-content: flex-end; }
+
+.evx-player { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.25; }
+a.evx-player { text-decoration: none; color: var(--text); }
+a.evx-player:hover { color: var(--accent); }
+.evx-sub { font-size: 12px; font-weight: 500; color: var(--text-faint); line-height: 1.2; }
+.evx-sub-link { color: var(--text-dim); text-decoration: none; }
+a.evx-sub-link:hover { color: var(--accent); }
+.evx-label { font-size: 11.5px; font-weight: 600; color: var(--text-dim); line-height: 1.2; }
+
+/* Gol / degisiklik — ana oyuncu (kalin) + ikincil (ince) yan yana.
+   Gol: atan kalin + (asist) ince;  Degisiklik: giren kalin + cikan ince. */
+.evx-sub-line { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; max-width: 100%; }
+.evx-in { font-size: 14px; font-weight: 700; color: var(--text); text-decoration: none; line-height: 1.25; }
+a.evx-in:hover { color: var(--accent); }
+.evx-out { font-size: 13px; font-weight: 400; color: var(--text-faint); text-decoration: none; line-height: 1.25; }
+a.evx-out:hover { color: var(--accent); }
+.evx-out-link { color: var(--text-faint); text-decoration: none; }
+a.evx-out-link:hover { color: var(--accent); }
+
+/* Merkez node: dakika + ikon + (gollerde) skor */
+.evx-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.evx-min {
+  font-size: 12.5px; font-weight: 700; color: var(--text-dim);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 2px 10px; white-space: nowrap;
 }
-.event-row.is-home .event-side-home .event-cell { flex-direction: row-reverse; }
-.event-minute {
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700;
-  color: var(--text-dim);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 5px 11px; min-width: 44px;
-  margin: 0 auto;
-  white-space: nowrap;
+.evx-score {
+  font-size: 12.5px; font-weight: 800; color: var(--text); letter-spacing: .01em;
+  background: var(--surface); padding: 0 5px; border-radius: 5px;
 }
-.event-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.event-row.is-home .event-text { align-items: flex-end; text-align: right; }
-.event-row.is-away .event-text { align-items: flex-start; text-align: left; }
-.event-player { font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.25; }
-.event-assist { font-size: 12.5px; font-weight: 500; color: var(--text-faint); line-height: 1.2; }
-.event-label { font-size: 12.5px; font-weight: 600; color: var(--text-dim); line-height: 1.2; }
-/* Event'teki oyuncu/asist adlari link (id varsa) — hover'da accent. */
-a.event-player { text-decoration: none; color: var(--text); }
-a.event-player:hover { color: var(--accent); }
-.event-assist-name { color: inherit; }
-a.event-assist-name { text-decoration: none; }
-a.event-assist-name:hover { color: var(--accent); }
 
 .ev-ic {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; border-radius: 50%;
+  width: 30px; height: 30px; border-radius: 50%;
   flex-shrink: 0;
-  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
-.ev-ic-goal { background: color-mix(in srgb, var(--win) 22%, transparent); color: var(--win); }
-.ev-ic-miss { background: var(--surface-3); color: var(--text-faint); }
-.ev-ic-own { background: color-mix(in srgb, var(--rel) 22%, transparent); color: var(--rel); }
-.ev-ic-yellow { background: #f1d10033; color: #f1d100; }
-.ev-ic-red { background: color-mix(in srgb, var(--rel) 22%, transparent); color: var(--rel); }
-.ev-ic-sub { background: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--accent); }
-.ev-ic-var { background: var(--surface-3); color: var(--text-dim); }
+/* SVG'yi mask olarak kullan — sekil dosyadan, renk backgroundColor'dan (tema-uyumlu). */
+.ev-ic-glyph {
+  width: 20px; height: 20px; display: block;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+}
+
+/* Devre / Uzatma / Mac Sonu ayraci */
+.evx-divider {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  margin: 8px 0;
+}
+.evx-divider span {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 4px 14px;
+}
+
+/* Events timeline — mobil */
+@media (max-width: 767.98px) {
+  .evx-row { grid-template-columns: 1fr 54px 1fr; padding: 6px 1px; }
+  .evx-card { padding: 6px 9px; }
+  .evx-player, .evx-in { font-size: 13px; }
+  .evx-out { font-size: 12px; }
+  .evx-sub, .evx-label { font-size: 11px; }
+  .ev-ic { width: 29px; height: 29px; }
+  .ev-ic-glyph { width: 18px; height: 18px; }
+  .evx-min { font-size: 11.5px; padding: 2px 8px; }
+  .evx-score { font-size: 11.5px; }
+}
 
 /* ── Info grid (overview match info) ── */
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }

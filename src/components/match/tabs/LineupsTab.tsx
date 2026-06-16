@@ -28,7 +28,7 @@ interface PStat {
   position?: string | null;
   goals?: { total?: number | null; assists?: number | null } | null;
   shots?: { total?: number | null; on?: number | null } | null;
-  passes?: { accuracy?: string | number | null } | null;
+  passes?: { total?: number | null; accuracy?: string | number | null } | null;
   tackles?: { total?: number | null } | null;
   duels?: { total?: number | null; won?: number | null } | null;
   fouls?: { committed?: number | null } | null;
@@ -247,14 +247,21 @@ function PlayerStatSheet({
   const played = !!stat && minutes > 0;
   const rt = ratingText(stat?.rating);
 
-  const acc = stat?.passes?.accuracy;
+  // passes.accuracy API-Football'da YUZDE DEGIL, isabetli pas SAYISI.
+  // Gercek pas isabeti = isabetli / toplam * 100.
+  const passTotal = Number(stat?.passes?.total);
+  const passAcc = Number(stat?.passes?.accuracy);
+  const passPct =
+    Number.isFinite(passTotal) && passTotal > 0 && Number.isFinite(passAcc)
+      ? Math.min(100, Math.round((passAcc / passTotal) * 100))
+      : null;
   const cells: Array<{ v: string; l: string }> = played
     ? [
         { v: `${stat?.minutes ?? 0}'`, l: t("Dakika", "Minutes") },
         { v: `${stat?.goals?.total ?? 0}`, l: t("Gol", "Goals") },
         { v: `${stat?.goals?.assists ?? 0}`, l: t("Asist", "Assists") },
         { v: `${stat?.shots?.total ?? 0} (${stat?.shots?.on ?? 0})`, l: t("Şut", "Shots") },
-        { v: acc != null && acc !== "" ? `${acc}%` : "-", l: t("Pas %", "Pass %") },
+        { v: passPct != null ? `${passPct}%` : "-", l: t("Pas %", "Pass %") },
         { v: `${stat?.tackles?.total ?? 0}`, l: t("Top Kapma", "Tackles") },
         { v: `${stat?.duels?.won ?? 0}/${stat?.duels?.total ?? 0}`, l: t("İkili Müc.", "Duels") },
         { v: `${stat?.fouls?.committed ?? 0}`, l: t("Faul", "Fouls") },
