@@ -59,32 +59,22 @@ export function HighlightsTab({ detail, lang }: Props) {
     <div className="match-tab match-tab-highlights">
       <ul className="hl-list">
         {items.map((h) => {
+          // Backend, kullanıcının ülkesinde oynayabilecek highlight'ları
+          // embeddable=true işaretler; yalnız onları iframe ile göm, gerisi
+          // küçük-resim + "tarayıcıda aç" yedeği.
           const canEmbed = !!h.embeddable && !!h.embedUrl;
           return (
             <li key={h.id} className="hl-card">
               {canEmbed ? (
-                <div className="hl-embed-wrap">
-                  <div className="hl-embed">
-                    <iframe
-                      src={h.embedUrl ?? undefined}
-                      title={h.title}
-                      loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      referrerPolicy="strict-origin-when-cross-origin"
-                    />
-                  </div>
-                  <div className="hl-embed-meta">
-                    <span className="hl-title">{h.title}</span>
-                    <a
-                      className="hl-ext"
-                      href={h.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t("Tarayıcıda aç", "Open in browser")}
-                    </a>
-                  </div>
+                <div className="hl-embed">
+                  <iframe
+                    src={h.embedUrl ?? undefined}
+                    title={h.title}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
                 </div>
               ) : (
                 <a
