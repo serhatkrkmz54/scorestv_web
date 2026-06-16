@@ -2360,6 +2360,43 @@ a.evx-out-link:hover { color: var(--accent); }
   .profile-id-av { width: 66px; height: 66px; border-radius: 18px; font-size: 27.6px; }
 }
 
+/* ════════════════════════════════════════════════════════════════
+   MAÇ ÖZETİ / HIGHLIGHTS — maç detayı "Maç Özeti" sekmesi (HighlightsTab).
+   ════════════════════════════════════════════════════════════════ */
+.match-tab-highlights { display: block; }
+.hl-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.hl-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color .14s, background .14s;
+}
+.hl-card:hover { border-color: var(--accent); background: var(--surface-2); }
+.hl-link { display: flex; align-items: stretch; text-decoration: none; color: inherit; }
+.hl-thumb {
+  position: relative; flex-shrink: 0; width: 152px; aspect-ratio: 16 / 9;
+  background: var(--surface-2); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.hl-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.hl-play {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; background: rgba(0, 0, 0, .28);
+}
+.hl-play svg { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .5)); }
+.hl-meta {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;
+  gap: 5px; padding: 12px 14px;
+}
+.hl-title {
+  font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.hl-src {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .03em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+@media (max-width: 480px) { .hl-thumb { width: 120px; } }
+
 .site-footer {
   margin-top: 40px;
   background: var(--surface);

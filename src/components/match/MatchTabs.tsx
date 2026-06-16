@@ -3,6 +3,7 @@
 import { useRef, useEffect, type ReactNode } from "react";
 
 export type MatchTabKey =
+  | "highlights"
   | "overview"
   | "stats"
   | "lineups"

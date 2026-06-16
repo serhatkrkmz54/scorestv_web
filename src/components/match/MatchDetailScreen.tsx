@@ -13,6 +13,7 @@ import { H2HTab } from "./tabs/H2HTab";
 import { PredictionTab } from "./tabs/PredictionTab";
 import { InjuriesTab } from "./tabs/InjuriesTab";
 import { CommentsTab } from "./tabs/CommentsTab";
+import { HighlightsTab } from "./tabs/HighlightsTab";
 import { OddsTab } from "./tabs/OddsTab";
 import { fetchMatchDetailClient } from "@/lib/match-detail-client";
 import {
@@ -34,6 +35,7 @@ import {
   IconMed,
   IconChat,
   IconOdds,
+  IconPlay,
 } from "@/components/icons";
 
 interface Props {
@@ -61,6 +63,14 @@ function tabDefs(lang: "tr" | "en", detail: MatchDetailResponse): MatchTabDef[] 
     { key: "injuries", label: t("Sakatlik", "Injuries"), icon: <IconMed s={14} /> },
     { key: "comments", label: t("Yorumlar", "Comments"), icon: <IconChat s={14} /> },
   );
+  // Maç özeti (highlights) — yalnız oynanıp biten maçlarda, en başta.
+  if (new Set(["FT", "AET", "PEN"]).has(detail.status.shortCode)) {
+    tabs.unshift({
+      key: "highlights",
+      label: t("Maç Özeti", "Highlights"),
+      icon: <IconPlay s={14} />,
+    });
+  }
   return tabs;
 }
 
@@ -223,6 +233,8 @@ function TabContent({
   lang: "tr" | "en";
 }) {
   switch (tab) {
+    case "highlights":
+      return <HighlightsTab detail={detail} lang={lang} />;
     case "overview":
       return <OverviewTab detail={detail} lang={lang} />;
     case "stats":
