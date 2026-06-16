@@ -7,6 +7,25 @@ interface SeoLike {
   openGraph?: { image?: string | null } | null;
 }
 
+/** Backend seo.breadcrumbs listesinden Schema.org BreadcrumbList JSON-LD üretir. */
+export interface BreadcrumbStep {
+  position: number;
+  name: string;
+  url: string;
+}
+export function breadcrumbListJsonLd(items: BreadcrumbStep[]): string {
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((b) => ({
+      "@type": "ListItem",
+      position: b.position,
+      name: b.name,
+      item: b.url,
+    })),
+  });
+}
+
 function breadcrumb(name: string, url: string | undefined): Record<string, unknown> {
   const items: Record<string, unknown>[] = [
     { "@type": "ListItem", position: 1, name: "ScoresTV", item: SITE },

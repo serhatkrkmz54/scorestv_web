@@ -5,6 +5,9 @@ import { MatchDetailScreen } from "@/components/match/MatchDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { MatchSideInfo } from "@/components/match/MatchSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
+import { breadcrumbListJsonLd } from "@/lib/structured-data";
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -17,23 +20,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const seo = data.seo;
   const title = seo?.title ?? `${data.homeTeam.name} vs ${data.awayTeam.name} | ScoresTV`;
   const description = seo?.description ?? `${data.homeTeam.name} vs ${data.awayTeam.name} live score, lineups, statistics.`;
-  const image = seo?.image ?? undefined;
-  const og = seo?.openGraph ?? {};
+  // og:image her zaman dolu olsun — backend görseli yoksa site varsayılanı.
+  const image = seo?.openGraph?.image ?? `${SITE}/og-image.png`;
+  const canonical = seo?.canonicalUrl ?? undefined;
   const alternates: Record<string, string> = {};
-  for (const h of seo?.hreflang ?? []) alternates[h.hreflang] = h.href;
+  for (const h of seo?.hreflang ?? []) {
+    if (h.lang && h.href) alternates[h.lang] = h.href;
+  }
   return {
     title,
     description,
-    alternates: { canonical: seo?.canonical, languages: alternates },
+    alternates: { canonical, languages: alternates },
     openGraph: {
-      title: (og["og:title"] as string) ?? title,
-      description: (og["og:description"] as string) ?? description,
-      url: seo?.canonical,
-      images: image ? [{ url: image }] : undefined,
+      title: seo?.openGraph?.title ?? title,
+      description: seo?.openGraph?.description ?? description,
+      url: canonical,
+      images: [{ url: image }],
       locale: "en_US",
       type: "website",
     },
-    twitter: { card: "summary_large_image", title, description, images: image ? [image] : undefined },
+    twitter: {
+      card: "summary_large_image",
+      title: seo?.twitter?.title ?? title,
+      description: seo?.twitter?.description ?? description,
+      images: [image],
+    },
   };
 }
 
@@ -57,8 +68,8 @@ export default async function Page({ params }: PageProps) {
       {initial.seo?.jsonLd ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }} />
       ) : null}
-      {initial.seo?.breadcrumbJsonLd ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.breadcrumbJsonLd }} />
+      {initial.seo?.breadcrumbs && initial.seo.breadcrumbs.length > 0 ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbListJsonLd(initial.seo.breadcrumbs) }} />
       ) : null}
       <h1 className="sr-only">{initial.homeTeam.name} - {initial.awayTeam.name}</h1>
       <div className="layout">

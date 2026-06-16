@@ -228,16 +228,42 @@ export interface MatchPredictionView {
 
 // ====== SEO ======
 
+// Backend MatchSeoResponse ile birebir (openGraph/twitter NESNE, map degil).
+export interface MatchSeoOpenGraph {
+  title?: string | null;
+  description?: string | null;
+  type?: string | null;
+  url?: string | null;
+  image?: string | null;
+  siteName?: string | null;
+  locale?: string | null;
+}
+
+export interface MatchSeoTwitter {
+  card?: string | null;
+  title?: string | null;
+  description?: string | null;
+  image?: string | null;
+}
+
+export interface MatchSeoBreadcrumb {
+  position: number;
+  name: string;
+  url: string;
+}
+
 export interface MatchSeoResponse {
   title?: string;
   description?: string;
-  canonical?: string;
-  image?: string | null;
-  openGraph?: Record<string, string>;
-  twitter?: Record<string, string>;
+  keywords?: string;
+  canonicalUrl?: string;
+  slug?: string;
+  locale?: string;
+  openGraph?: MatchSeoOpenGraph | null;
+  twitter?: MatchSeoTwitter | null;
   jsonLd?: string;
-  breadcrumbJsonLd?: string;
-  hreflang?: { hreflang: string; href: string }[];
+  breadcrumbs?: MatchSeoBreadcrumb[];
+  hreflang?: { lang: string; href: string }[];
 }
 
 // ====== Bracket ======
