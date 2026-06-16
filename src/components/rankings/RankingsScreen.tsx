@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
-import { countryPath } from "@/lib/routes";
+import { teamPath } from "@/lib/routes";
 import {
   IconTrophy,
   IconGlobe,
@@ -312,8 +312,8 @@ function FifaTable({ data, lang }: { data: FifaRankingResponse | null; lang: "tr
                   <td className="rk-col-rank tnum">{r.rank ?? "—"}</td>
                   <td className="rk-col-mv"><MovementBadge m={r.movement} /></td>
                   <td className="rk-col-team">
-                    {r.countrySlug ? (
-                      <Link href={countryPath(lang, r.countrySlug)} className="rk-team-link">{teamCell}</Link>
+                    {r.teamSlug ? (
+                      <Link href={teamPath(lang, r.teamSlug)} className="rk-team-link">{teamCell}</Link>
                     ) : (
                       teamCell
                     )}

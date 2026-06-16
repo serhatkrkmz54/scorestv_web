@@ -19,6 +19,8 @@ export interface FifaRankingRow {
   flagUrl?: string | null;
   /** DB Country eslesmesi varsa /ulke linki icin slug; yoksa null (link yok). */
   countrySlug?: string | null;
+  /** teams tablosunda national=true milli takim eslesmesi varsa /takim slug'i. */
+  teamSlug?: string | null;
 }
 
 export interface FifaRankingResponse {
