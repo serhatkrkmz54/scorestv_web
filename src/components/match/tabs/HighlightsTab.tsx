@@ -58,30 +58,59 @@ export function HighlightsTab({ detail, lang }: Props) {
   return (
     <div className="match-tab match-tab-highlights">
       <ul className="hl-list">
-        {items.map((h) => (
-          <li key={h.id} className="hl-card">
-            <a
-              href={h.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hl-link"
-            >
-              <span className="hl-thumb">
-                {h.imgUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={h.imgUrl} alt={h.title} loading="lazy" />
-                ) : null}
-                <span className="hl-play" aria-hidden="true">
-                  <IconPlay s={22} />
-                </span>
-              </span>
-              <span className="hl-meta">
-                <span className="hl-title">{h.title}</span>
-                {h.source ? <span className="hl-src">{h.source}</span> : null}
-              </span>
-            </a>
-          </li>
-        ))}
+        {items.map((h) => {
+          const canEmbed = !!h.embeddable && !!h.embedUrl;
+          return (
+            <li key={h.id} className="hl-card">
+              {canEmbed ? (
+                <div className="hl-embed-wrap">
+                  <div className="hl-embed">
+                    <iframe
+                      src={h.embedUrl ?? undefined}
+                      title={h.title}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                  <div className="hl-embed-meta">
+                    <span className="hl-title">{h.title}</span>
+                    <a
+                      className="hl-ext"
+                      href={h.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t("Tarayıcıda aç", "Open in browser")}
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  href={h.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hl-link"
+                >
+                  <span className="hl-thumb">
+                    {h.imgUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={h.imgUrl} alt={h.title} loading="lazy" />
+                    ) : null}
+                    <span className="hl-play" aria-hidden="true">
+                      <IconPlay s={22} />
+                    </span>
+                  </span>
+                  <span className="hl-meta">
+                    <span className="hl-title">{h.title}</span>
+                    {h.source ? <span className="hl-src">{h.source}</span> : null}
+                  </span>
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

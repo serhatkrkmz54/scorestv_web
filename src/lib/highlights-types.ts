@@ -7,4 +7,7 @@ export interface Highlight {
   imgUrl?: string | null;
   source?: string | null;
   type?: string | null; // VERIFIED | UNVERIFIED
+  /** embedUrl uygulama içinde gömülebilir mi (ücretli plan geo-restrictions). */
+  embeddable?: boolean;
+  blockedCountries?: string[];
 }
