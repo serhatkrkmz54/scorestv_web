@@ -6,6 +6,7 @@ import type {
   CommentView,
 } from "@/lib/comment-types";
 import type { MatchDetailResponse } from "@/lib/match-detail-types";
+import { useAuth } from "@/context/auth-context";
 
 interface Props {
   detail: MatchDetailResponse;
@@ -99,6 +100,7 @@ function CommentItem({
 }
 
 export function CommentsTab({ detail, lang }: Props) {
+  const { openAuth } = useAuth();
   const [sort, setSort] = useState<SortMode>("newest");
   const [data, setData] = useState<CommentPageResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -131,7 +133,7 @@ export function CommentsTab({ detail, lang }: Props) {
   }, [detail.id, sort, lang]);
 
   const cta = {
-    title: lang === "tr" ? "Yorum yazmak ister misin?" : "Want to comment?",
+    title: lang === "tr" ? "Yorum yazmak ister misin? " : "Want to comment? ",
     sub:
       lang === "tr"
         ? "Begenmek ve yorum birakmak icin giris yap."
@@ -154,9 +156,13 @@ export function CommentsTab({ detail, lang }: Props) {
           <strong>{cta.title}</strong>
           <span>{cta.sub}</span>
         </div>
-        <a href={`/${lang === "tr" ? "giris" : "login"}`} className="btn-primary">
+        <button
+          type="button"
+          onClick={() => openAuth("signin")}
+          className="btn-primary"
+        >
           {cta.btn}
-        </a>
+        </button>
       </section>
 
       <div className="comments-toolbar">

@@ -174,6 +174,8 @@ export function Footer() {
 
       <div className="site-footer-bottom">
         <span>© {year} ScoresTV. {c.copy}</span>
+        {/* Sadece botlar/crawler icin — gorsel olarak gizli (sr-only), DOM'da var. */}
+        <a href="/sitemap.xml" className="sr-only">Sitemap</a>
       </div>
     </footer>
   );
