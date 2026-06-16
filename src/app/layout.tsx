@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Rajdhani } from "next/font/google";
+import { Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "@/context/providers";
 
-const rajdhani = Rajdhani({
+const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-rajdhani",
+  variable: "--font-poppins",
   display: "swap",
 });
 
@@ -52,7 +52,7 @@ const noFlash = `(function(){try{var t=localStorage.getItem('stv_theme');var c=t
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`theme-dark ${rajdhani.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`theme-dark ${poppins.variable}`} suppressHydrationWarning>
       <head>
         {/* Elle <head> render edildiginde Next.js otomatik viewport/charset
             meta'larini EKLEMEZ — bu yuzden acikca yaziyoruz. Viewport olmadan

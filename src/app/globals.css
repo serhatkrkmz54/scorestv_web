@@ -85,7 +85,7 @@ html, body { margin: 0; padding: 0; }
 ::selection { background: color-mix(in srgb, var(--accent) 35%, transparent); }
 
 body {
-  font-family: var(--font-rajdhani), 'Rajdhani', system-ui, sans-serif;
+  font-family: var(--font-poppins), 'Poppins', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   font-feature-settings: "tnum" 1;
@@ -752,7 +752,7 @@ a.mr-team:hover .nm { color: var(--accent); }
 .theme-light .logo-img.dark { display: none; }
 .theme-light .logo-img.light { display: block; }
 .logo-text {
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-weight: 700; font-size: 22px; letter-spacing: -.5px; line-height: 1;
   color: var(--text);
 }
@@ -2073,7 +2073,7 @@ a.evx-out-link:hover { color: var(--accent); }
 
 /* Başlık + accent çizgi */
 .static-page-inner h1 {
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: clamp(26px, 5vw, 38px); font-weight: 700; line-height: 1.08;
   letter-spacing: -.5px; color: var(--text); margin: 0;
 }
@@ -2097,7 +2097,7 @@ a.evx-out-link:hover { color: var(--accent); }
 /* Bölümler */
 .static-section { margin-top: 32px; }
 .static-section h2 {
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 19.5px; font-weight: 700; color: var(--text);
   letter-spacing: .01em; margin: 0 0 11px;
   display: flex; align-items: center; gap: 11px;
@@ -2161,7 +2161,7 @@ a.evx-out-link:hover { color: var(--accent); }
   border-radius: var(--radius); padding: 38px 24px;
 }
 .contact-success h3 {
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 22px; font-weight: 700; color: var(--text); margin: 0 0 8px;
 }
 .contact-success p {
@@ -2220,13 +2220,13 @@ a.evx-out-link:hover { color: var(--accent); }
   position: relative; width: 76px; height: 76px; margin: 0 auto 12px;
   border-radius: 22px; background: var(--accent); color: var(--accent-ink);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 36px; font-weight: 700;
   box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 .profile-id-name {
   position: relative; margin: 0;
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 20px; font-weight: 700; line-height: 1.15; color: var(--text);
   word-break: break-word;
 }
@@ -2261,7 +2261,7 @@ a.evx-out-link:hover { color: var(--accent); }
   background: var(--surface-2); border: 1px solid var(--border);
 }
 .profile-note-body h2 {
-  margin: 0 0 4px; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  margin: 0 0 4px; font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 18px; font-weight: 700; color: var(--text);
 }
 .profile-note-body p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--text-dim); }
@@ -2284,7 +2284,7 @@ a.evx-out-link:hover { color: var(--accent); }
 }
 .profile-card-head { margin-bottom: 16px; }
 .profile-card-head h2 {
-  margin: 0 0 4px; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  margin: 0 0 4px; font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 19px; font-weight: 700; color: var(--text);
 }
 .profile-card-head p { margin: 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.5; }
@@ -2339,7 +2339,7 @@ a.evx-out-link:hover { color: var(--accent); }
   background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent);
 }
 .profile-signedout h1 {
-  margin: 0 0 8px; font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  margin: 0 0 8px; font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-size: 22px; font-weight: 700; color: var(--text);
 }
 .profile-signedout p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--text-dim); }
@@ -2374,7 +2374,7 @@ a.evx-out-link:hover { color: var(--accent); }
 .site-footer-brand { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .site-footer-logo {
   display: inline-flex; align-items: center;
-  font-family: var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
   font-weight: 700; font-size: 22px; letter-spacing: -.5px;
   color: var(--text);
 }
