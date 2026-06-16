@@ -60,6 +60,7 @@ export default async function Page({ params }: PageProps) {
       {initial.seo?.breadcrumbJsonLd ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.breadcrumbJsonLd }} />
       ) : null}
+      <h1 className="sr-only">{initial.homeTeam.name} - {initial.awayTeam.name}</h1>
       <div className="layout">
         <aside className="rail-left">
           <LeftRail />

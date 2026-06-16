@@ -23,9 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const isTr = (await cookies()).get("stv_lang")?.value === "tr";
+  const h1 = isTr
+    ? "Canlı Skorlar, Puan Durumları ve Maç İstatistikleri"
+    : "Live Scores, Standings and Match Statistics";
   return (
     <HomeProvider>
+      {/* SEO: gorsel gizli ana baslik (robotlar gorur). */}
+      <h1 className="sr-only">{h1}</h1>
       <div className="layout">
         <aside className="rail-left">
           <LeftRail />

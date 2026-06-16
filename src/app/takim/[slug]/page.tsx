@@ -5,6 +5,7 @@ import { TeamDetailScreen } from "@/components/team/TeamDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { TeamSideInfo } from "@/components/team/TeamSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
+import { teamJsonLd } from "@/lib/structured-data";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -69,12 +70,13 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
   return (
     <>
-      {initial.seo?.jsonLd ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }}
-        />
-      ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: initial.seo?.jsonLd ?? teamJsonLd(initial.name, initial.seo),
+        }}
+      />
+      <h1 className="sr-only">{initial.name}</h1>
       <div className="layout">
         <aside className="rail-left">
           <LeftRail />

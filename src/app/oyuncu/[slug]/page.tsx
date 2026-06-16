@@ -5,6 +5,7 @@ import { PlayerDetailScreen } from "@/components/player/PlayerDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { PlayerSideInfo } from "@/components/player/PlayerSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
+import { playerJsonLd } from "@/lib/structured-data";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -68,12 +69,13 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
   return (
     <>
-      {initial.seo?.jsonLd ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }}
-        />
-      ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: initial.seo?.jsonLd ?? playerJsonLd(initial.name, initial.seo),
+        }}
+      />
+      <h1 className="sr-only">{initial.name}</h1>
       <div className="layout">
         <aside className="rail-left">
           <LeftRail />

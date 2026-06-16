@@ -74,6 +74,7 @@ export default async function Page({ params, searchParams }: PageProps) {
           dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }}
         />
       ) : null}
+      <h1 className="sr-only">{initial.name}</h1>
       <div className="layout">
         <aside className="rail-left">
           <LeftRail />

@@ -11,10 +11,33 @@ const rajdhani = Rajdhani({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
+const SITE_DESC =
+  "Futbol, basketbol, tenis ve voleybol canlı skorları, puan durumları, istatistikler ve daha fazlası.";
+
 export const metadata: Metadata = {
+  // metadataBase: OG/canonical gibi RELATIF URL'leri mutlak'a cevirir (Next uyarisini de keser).
+  metadataBase: new URL(SITE_URL),
   title: "ScoresTV — Canlı Skor & İstatistik",
-  description:
-    "Futbol, basketbol, tenis ve voleybol canlı skorları, puan durumları, istatistikler ve daha fazlası.",
+  description: SITE_DESC,
+  applicationName: "ScoresTV",
+  // Sayfaya ozel OG yoksa (anasayfa, statik sayfalar) bu varsayilanlar gecerli.
+  // Detay sayfalari (takim/oyuncu/lig/mac) kendi OG'lerini generateMetadata'da ezer.
+  openGraph: {
+    type: "website",
+    siteName: "ScoresTV",
+    title: "ScoresTV — Canlı Skor & İstatistik",
+    description: SITE_DESC,
+    url: SITE_URL,
+    locale: "tr_TR",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ScoresTV" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ScoresTV — Canlı Skor & İstatistik",
+    description: SITE_DESC,
+    images: ["/og-image.png"],
+  },
   // Favicon: src/app/favicon.ico (Next convention). Override KALDIRILDI —
   // Next dosyayi hash'li servis eder (favicon.ico?<hash>), boylece favicon
   // degisince URL degisir ve tarayici/CDN cache'i otomatik kirilir.

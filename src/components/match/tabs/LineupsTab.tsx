@@ -321,7 +321,7 @@ function PlayerStatSheet({
         ) : (
           <p className="player-sheet-empty">
             {isSub
-              ? t("Oyuna çıkmadı", "Did not play")
+              ? t("Oyuna girmedi", "Did not play")
               : t("Henüz istatistik verisi yok", "No stats yet")}
           </p>
         )}
