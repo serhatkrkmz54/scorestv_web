@@ -10,7 +10,8 @@ export async function GET() {
   return new Response(indexXml(files), {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      // Cache yok — yeni eklenen veriler aninda sitemap'e girsin.
+      "Cache-Control": "no-store, max-age=0",
     },
   });
 }

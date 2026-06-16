@@ -12,7 +12,8 @@ export async function GET(
   return new Response(urlsetXml(await entriesFor(name)), {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      // Cache yok — yeni veriler aninda gorunsun.
+      "Cache-Control": "no-store, max-age=0",
     },
   });
 }
