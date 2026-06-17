@@ -512,6 +512,10 @@ body.drawer-open { overflow: hidden; }
 .mr-score .sc-main b.lose { color: var(--text-dim); font-weight: 600; }
 .mr-score .sc-main i { color: var(--text-faint); font-style: normal; font-size: 13.8px; }
 .mr-score .sc-ht { font-size: 11px; font-weight: 700; color: var(--text-faint); letter-spacing: .02em; }
+/* Canlı maç → skor kırmızı (kaybeden taraf dahil; ayraç soluk kırmızı). */
+.mrow.live .mr-score .sc-main b,
+.mrow.live .mr-score .sc-main b.lose { color: var(--live); }
+.mrow.live .mr-score .sc-main i { color: color-mix(in srgb, var(--live) 55%, var(--text-faint)); }
 .mr-vs { display: flex; align-items: center; justify-content: center; color: var(--text-faint); font-weight: 700; font-size: 13.8px; letter-spacing: .1em; }
 .mr-end { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
 .cell-ic { position: relative; width: 26px; height: 32px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-faint); cursor: default; }
@@ -768,6 +772,10 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
 .fm-score .sc b { font-size: 18.4px; font-weight: 700; color: var(--text); min-width: 15px; text-align: center; }
 .fm-score .sc b.lose { color: var(--text-dim); font-weight: 600; }
 .fm-score .sc i { color: var(--text-faint); font-style: normal; font-size: 12.9px; }
+/* Canlı maç → skor kırmızı (kaybeden taraf dahil; ayraç soluk kırmızı). */
+.fm-score .sc.is-live b,
+.fm-score .sc.is-live b.lose { color: var(--live); }
+.fm-score .sc.is-live i { color: color-mix(in srgb, var(--live) 55%, var(--text-faint)); }
 .fm-time { font-size: 13.3px; font-weight: 700; color: var(--text-dim); }
 .fm-min { font-size: 9.7px; font-weight: 700; color: var(--live); display: inline-flex; align-items: center; gap: 4px; }
 .fm-league { margin-top: 7px; font-size: 10.1px; font-weight: 600; color: var(--text-faint); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

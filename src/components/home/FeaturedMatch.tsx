@@ -59,7 +59,7 @@ function FeatRow({ f }: { f: FixtureSummary }) {
           {isUpcoming ? (
             <span className="fm-time tnum">{kickoffTime(f.kickoff)}</span>
           ) : (
-            <span className="sc tnum">
+            <span className={"sc tnum" + (isLive ? " is-live" : "")}>
               <b className={homeLost ? "lose" : ""}>{f.score.home ?? 0}</b>
               <i>:</i>
               <b className={awayLost ? "lose" : ""}>{f.score.away ?? 0}</b>
