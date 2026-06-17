@@ -12,17 +12,34 @@
 
 import Link from "next/link";
 import { useLang } from "@/context/lang-context";
+import { useAuth } from "@/context/auth-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import { rankingsPath } from "@/lib/routes";
 import { LeftRail } from "@/components/home/LeftRail";
 import { IconBall, IconBars, IconHome, IconNews } from "@/components/icons";
+import { useMobileNav } from "./MobileNav";
 
 export function MobileNavContent() {
   const { lang } = useLang();
   const t = HOME_STR[lang];
+  const { user, loading, openAuth } = useAuth();
+  const { closeDrawer } = useMobileNav();
 
   return (
     <>
+      {!loading && !user ? (
+        <button
+          type="button"
+          className="mn-login"
+          onClick={() => {
+            closeDrawer();
+            openAuth("signin");
+          }}
+        >
+          {lang === "tr" ? "Giriş Yap" : "Sign In"}
+        </button>
+      ) : null}
+
       <div className="mn-quick">
         <Link href="/" className="mn-quick-item">
           <IconHome s={18} />
