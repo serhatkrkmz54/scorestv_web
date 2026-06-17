@@ -89,6 +89,24 @@ function shouldOpenWs(detail: MatchDetailResponse): boolean {
   }
 }
 
+/**
+ * Yan modullerin TAMAMI bos mu? Backend tam bu durumda cevabi cache'LEMEZ
+ * (loadCachedResponse @Cacheable unless), cunku lazy-sync henuz bitmemis
+ * demektir. Boyle bir cevap geldiyse client sessizce yeniden cekmeli.
+ */
+function isThin(d: MatchDetailResponse): boolean {
+  return (
+    d.events.length === 0 &&
+    d.lineups.length === 0 &&
+    d.statistics.length === 0 &&
+    d.playerStats.length === 0 &&
+    d.headToHead.length === 0 &&
+    d.standings.length === 0 &&
+    d.injuries.length === 0 &&
+    !d.prediction
+  );
+}
+
 function eventKey(e: {
   elapsed?: number | null;
   type: string;
@@ -105,6 +123,8 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
   const [tab, setTab] = useState<MatchTabKey>("overview");
   const [refreshing, setRefreshing] = useState(false);
   const refreshingRef = useRef(false);
+  const detailRef = useRef(detail);
+  detailRef.current = detail;
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -208,6 +228,38 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detail.id, detail.status.shortCode, lang, handleScore, handleEvent, handleLineupReady]);
+
+  // Gecmis / yeni acilan mac: backend ilk istekte arka planda lazy-sync
+  // tetikliyor, ama bitmis maclar icin WebSocket ACILMIYOR — bu yuzden veri
+  // F5 atmadan gelmiyordu. Cevap "ince" (hicbir yan modul yok) ve mac WS ile
+  // beslenmeyecekse, dolana kadar birkac kez sessizce yeniden cek (backoff).
+  useEffect(() => {
+    if (shouldOpenWs(initial)) return;       // canli/yakin → WS zaten gunceller
+    if (!isThin(detailRef.current)) return;  // veri zaten var → poll'a gerek yok
+
+    let cancelled = false;
+    let attempt = 0;
+    const delays = [1500, 2500, 4000, 6000, 9000]; // ~5 deneme / ~23sn
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const schedule = () => {
+      if (cancelled || attempt >= delays.length) return;
+      if (!isThin(detailRef.current)) return; // doldu → dur
+      const wait = delays[attempt];
+      attempt += 1;
+      timer = setTimeout(async () => {
+        if (cancelled) return;
+        await refresh();
+        schedule();
+      }, wait);
+    };
+    schedule();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detail.id]);
 
   const tabs = tabDefs(lang, detail);
 
