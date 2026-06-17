@@ -1,4 +1,4 @@
-export function Logo({ h = 28 }: { h?: number }) {
+export function Logo({ h = 40 }: { h?: number }) {
   return (
     <span className="logo-mark" aria-label="ScoresTV">
       {/* Tema'ya göre CSS ile değişir: dark tema → logo-dark, light tema → logo-light.

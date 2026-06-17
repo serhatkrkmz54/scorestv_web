@@ -28,15 +28,26 @@ interface Props {
 
 export function MatchTabs({ tabs, active, onChange }: Props) {
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const el = refs.current[active];
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const scroller = scrollerRef.current;
+    if (!el || !scroller) return;
+    // SADECE tab seridini kaydir. scrollIntoView TUM kaydirilabilir ust
+    // ogeleri (sayfa/body dahil) kaydirdigi icin, sayfada minik bir yatay
+    // tasma oldugunda mobilde tum sayfa saga kayip geri gelmiyordu. Burada
+    // yalnizca container'in scrollLeft'ini ayarlayarak pill'i ortalariz.
+    const elRect = el.getBoundingClientRect();
+    const scRect = scroller.getBoundingClientRect();
+    const delta =
+      elRect.left - scRect.left - (scroller.clientWidth - el.clientWidth) / 2;
+    scroller.scrollTo({ left: scroller.scrollLeft + delta, behavior: "smooth" });
   }, [active]);
 
   return (
     <nav className="match-tabs" role="tablist">
-      <div className="match-tabs-scroll">
+      <div className="match-tabs-scroll" ref={scrollerRef}>
         {tabs.map((tab) => {
           const isActive = tab.key === active;
           return (

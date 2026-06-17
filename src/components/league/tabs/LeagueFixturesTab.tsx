@@ -101,10 +101,19 @@ export function LeagueFixturesTab({ detail, lang }: Props) {
     return rounds.length - 1;
   });
   const tabRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const el = tabRefs.current[activeIdx];
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const scroller = scrollerRef.current;
+    if (!el || !scroller) return;
+    // Sadece chip seridini kaydir — scrollIntoView sayfayi/body'yi de kaydirip
+    // mobilde yatay kaymaya yol aciyordu.
+    const elRect = el.getBoundingClientRect();
+    const scRect = scroller.getBoundingClientRect();
+    const delta =
+      elRect.left - scRect.left - (scroller.clientWidth - el.clientWidth) / 2;
+    scroller.scrollTo({ left: scroller.scrollLeft + delta, behavior: "smooth" });
   }, [activeIdx]);
 
   if (rounds.length === 0) {
