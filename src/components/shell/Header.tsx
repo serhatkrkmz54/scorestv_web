@@ -13,6 +13,42 @@ import { MobileNavToggle } from "./MobileNav";
 import { translatePath } from "@/lib/routes";
 import type { Lang } from "@/i18n/auth-strings";
 
+// Dil bayraklari — inline SVG (emoji bayraklar Windows'ta "TR"/"GB" harf
+// olarak render edildigi icin kullanilmaz).
+function FlagTR() {
+  return (
+    <svg viewBox="0 0 24 16" aria-hidden="true">
+      <rect width="24" height="16" fill="#E30A17" />
+      <circle cx="9.5" cy="8" r="4" fill="#fff" />
+      <circle cx="10.9" cy="8" r="3.2" fill="#E30A17" />
+      <path
+        d="M15,5.9 L15.49,7.33 L17.0,7.35 L15.79,8.26 L16.23,9.70 L15,8.83 L13.77,9.70 L14.21,8.26 L13.0,7.35 L14.51,7.33 Z"
+        fill="#fff"
+      />
+    </svg>
+  );
+}
+
+function FlagGB() {
+  return (
+    <svg viewBox="0 0 60 30" aria-hidden="true">
+      <clipPath id="gb-cut">
+        <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
+      </clipPath>
+      <rect width="60" height="30" fill="#012169" />
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
+      <path
+        d="M0,0 L60,30 M60,0 L0,30"
+        clipPath="url(#gb-cut)"
+        stroke="#C8102E"
+        strokeWidth="4"
+      />
+      <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
+    </svg>
+  );
+}
+
 export function Header() {
   const { user, loading, openAuth } = useAuth();
   const { lang, setLang } = useLang();
@@ -52,12 +88,22 @@ export function Header() {
             {theme === "dark" ? <IconSun s={19} /> : <IconMoon s={19} />}
           </button>
 
-          <div className="seg-toggle" role="group" aria-label="Dil / Language">
-            <button className={lang === "tr" ? "on" : ""} onClick={() => switchLang("tr")}>
-              TR
+          <div className="seg-toggle lang-flags" role="group" aria-label="Dil / Language">
+            <button
+              className={lang === "tr" ? "on" : ""}
+              onClick={() => switchLang("tr")}
+              aria-label="Türkçe"
+              title="Türkçe"
+            >
+              <FlagTR />
             </button>
-            <button className={lang === "en" ? "on" : ""} onClick={() => switchLang("en")}>
-              EN
+            <button
+              className={lang === "en" ? "on" : ""}
+              onClick={() => switchLang("en")}
+              aria-label="English"
+              title="English"
+            >
+              <FlagGB />
             </button>
           </div>
 
