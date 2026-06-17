@@ -70,7 +70,7 @@ export function Header() {
         <MobileNavToggle label={lang === "tr" ? "Menüyü aç" : "Open menu"} />
 
         <Link href="/" className="logo" aria-label="ScoresTV">
-          <Logo h={40} />
+          <Logo h={25} />
         </Link>
 
         <SearchBox />
