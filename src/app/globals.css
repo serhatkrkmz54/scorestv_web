@@ -2448,6 +2448,35 @@ a.evx-out-link:hover { color: var(--accent); }
 }
 .hl-ext:hover { text-decoration: underline; }
 
+/* ── Maç sonucu tahmini (1X2 oylama) ── */
+.pred-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pred-total { font-size: 12px; font-weight: 700; color: var(--text-faint); white-space: nowrap; }
+.pred-vote { display: flex; gap: 10px; padding: 6px 0 2px; }
+.pred-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 14px 8px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface-2); color: var(--text); cursor: pointer;
+  transition: border-color .14s, background .14s, transform .08s;
+}
+.pred-btn:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface-2)); }
+.pred-btn:active { transform: scale(.98); }
+.pred-btn:disabled { opacity: .55; cursor: default; }
+.pred-btn-team { font-size: 14px; font-weight: 700; text-align: center; line-height: 1.2; }
+.pred-btn-hint { font-size: 10.5px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: .04em; }
+.pred-btn-draw .pred-btn-team { color: var(--text-dim); }
+.pred-result { display: flex; flex-direction: column; gap: 12px; padding: 6px 0 2px; }
+.pred-row { display: flex; flex-direction: column; gap: 5px; }
+.pred-row-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pred-row-label { font-size: 13.5px; font-weight: 600; color: var(--text-dim); }
+.pred-row.mine .pred-row-label { color: var(--accent); font-weight: 800; }
+.pred-row-pct { font-size: 13.5px; font-weight: 800; color: var(--text); }
+.pred-bar { height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.pred-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--text-faint); transition: width .4s ease; }
+.pred-row.mine .pred-bar > span { background: var(--accent); }
+.pred-foot { display: flex; justify-content: flex-end; margin-top: 2px; }
+.pred-change { background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 2px 0; }
+.pred-closed { font-size: 12px; font-weight: 700; color: var(--text-faint); }
+
 .site-footer {
   margin-top: 40px;
   background: var(--surface);

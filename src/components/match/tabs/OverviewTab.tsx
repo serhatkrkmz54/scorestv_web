@@ -9,6 +9,7 @@ import type {
   MatchDetailResponse,
   MatchEvent,
 } from "@/lib/match-detail-types";
+import { PredictionCard } from "@/components/match/PredictionCard";
 
 /** Oyuncu adi — id varsa oyuncu sayfasina link (dile gore slug), yoksa duz metin. */
 function PlayerLink({
@@ -112,6 +113,12 @@ export function OverviewTab({ detail, lang }: Props) {
   if (events.length === 0) {
     return (
       <div className="match-tab match-tab-overview">
+        <PredictionCard
+          fixtureId={detail.id}
+          homeName={detail.homeTeam.name}
+          awayName={detail.awayTeam.name}
+          lang={lang}
+        />
         <section className="match-card">
           <p className="match-empty">{t("Henuz olay yok", "No events yet")}</p>
         </section>
@@ -161,6 +168,12 @@ export function OverviewTab({ detail, lang }: Props) {
 
   return (
     <div className="match-tab match-tab-overview">
+      <PredictionCard
+        fixtureId={detail.id}
+        homeName={detail.homeTeam.name}
+        awayName={detail.awayTeam.name}
+        lang={lang}
+      />
       <section className="match-card">
         <header className="match-card-head">
           <h3>{t("Maç Olayları", "Match Events")}</h3>
