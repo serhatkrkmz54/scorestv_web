@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLang } from "@/context/lang-context";
 import { leaguePath } from "@/lib/routes";
 import { buildEntitySlug } from "@/lib/slug-utils";
+import { Logo } from "./Logo";
 
 // ---------------------------------------------------------------------------
 // Popüler ligler — footer "Popüler Ligler" kolonu. id = API-Football lig id'si;
@@ -111,8 +112,8 @@ export function Footer() {
     <footer className="site-footer">
       <div className="site-footer-inner">
         <div className="site-footer-brand">
-          <Link href="/" className="site-footer-logo">
-            ScoresTV
+          <Link href="/" className="site-footer-logo" aria-label="ScoresTV">
+            <Logo h={30} />
           </Link>
           <p className="site-footer-tag">{c.tagline}</p>
           <span className="site-footer-social-label">{c.social}</span>
@@ -123,7 +124,7 @@ export function Footer() {
                 href={s.href}
                 aria-label={s.label}
                 title={s.label}
-                className="sf-soc"
+                className={`sf-soc sf-${s.key}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
