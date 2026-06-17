@@ -1083,6 +1083,8 @@ a.evx-out-link:hover { color: var(--accent); }
   -webkit-mask-position: center; mask-position: center;
   -webkit-mask-size: contain; mask-size: contain;
 }
+/* Kendi renkli ikon (orn. kendi kalesine gol) — mask uygulanmaz, orijinal renk. */
+.ev-ic-img { width: 20px; height: 20px; display: block; object-fit: contain; }
 
 /* Devre / Uzatma / Mac Sonu ayraci */
 .evx-divider {
@@ -1106,6 +1108,7 @@ a.evx-out-link:hover { color: var(--accent); }
   .evx-sub, .evx-label { font-size: 10.1px; }
   .ev-ic { width: 29px; height: 29px; }
   .ev-ic-glyph { width: 18px; height: 18px; }
+  .ev-ic-img { width: 18px; height: 18px; }
   .evx-min { font-size: 10.6px; padding: 2px 8px; }
   .evx-score { font-size: 10.6px; }
 }

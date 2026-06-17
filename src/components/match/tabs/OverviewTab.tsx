@@ -43,11 +43,12 @@ interface Props {
  * yani ikon hem dark hem light modda net gozukur (SVG'nin ic rengi onemsiz).
  * Dosyalar: public/events/<isim>.svg  ->  servis: /events/<isim>.svg
  */
-function eventIconMeta(ev: MatchEvent): { src: string; tone: string } {
+function eventIconMeta(ev: MatchEvent): { src: string; tone: string; native?: boolean } {
   const type = (ev.type ?? "").toLowerCase();
   const detail = (ev.detail ?? "").toLowerCase();
   if (type === "goal") {
-    if (detail.includes("own")) return { src: "/events/own-goal.svg", tone: "var(--rel)" };
+    // Kendi kalesine gol — kendi renkleriyle (mask yok), kirmiziya boyanmaz.
+    if (detail.includes("own")) return { src: "/events/own-goal.svg", tone: "var(--text)", native: true };
     if (detail.includes("missed")) return { src: "/events/missed-penalty.svg", tone: "var(--text-faint)" };
     if (detail.includes("penalty")) return { src: "/events/penalty.svg", tone: "var(--text)" };
     return { src: "/events/goal.svg", tone: "var(--text)" };
@@ -63,17 +64,23 @@ function eventIconMeta(ev: MatchEvent): { src: string; tone: string } {
 }
 
 function eventIcon(ev: MatchEvent): ReactNode {
-  const { src, tone } = eventIconMeta(ev);
+  const { src, tone, native } = eventIconMeta(ev);
   return (
     <span className="ev-ic">
-      <span
-        className="ev-ic-glyph"
-        style={{
-          WebkitMaskImage: `url(${src})`,
-          maskImage: `url(${src})`,
-          backgroundColor: tone,
-        }}
-      />
+      {native ? (
+        // Kendi renkli SVG — mask uygulanmaz (orijinal haliyle gosterilir).
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="ev-ic-img" src={src} alt="" />
+      ) : (
+        <span
+          className="ev-ic-glyph"
+          style={{
+            WebkitMaskImage: `url(${src})`,
+            maskImage: `url(${src})`,
+            backgroundColor: tone,
+          }}
+        />
+      )}
     </span>
   );
 }
