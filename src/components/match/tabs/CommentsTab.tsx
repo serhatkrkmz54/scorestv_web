@@ -20,7 +20,7 @@ function timeAgo(iso: string, lang: "tr" | "en"): string {
   const now = Date.now();
   const then = new Date(iso).getTime();
   const diffSec = Math.max(0, (now - then) / 1000);
-  if (diffSec < 60) return lang === "tr" ? "simdi" : "now";
+  if (diffSec < 60) return lang === "tr" ? "şimdi" : "now";
   const diffMin = Math.floor(diffSec / 60);
   if (diffMin < 60) return lang === "tr" ? `${diffMin}dk` : `${diffMin}m`;
   const diffH = Math.floor(diffMin / 60);
@@ -91,7 +91,7 @@ export function CommentsTab({ detail, lang }: Props) {
       if (!r.ok) throw new Error(String(r.status));
       setData((await r.json()) as CommentPageResponse);
     } catch {
-      setErr(lang === "tr" ? "Yorumlar yuklenemedi" : "Failed to load comments");
+      setErr(lang === "tr" ? "Yorumlar yüklenemedi" : "Failed to load comments");
     } finally {
       setLoading(false);
     }
@@ -214,11 +214,11 @@ export function CommentsTab({ detail, lang }: Props) {
   }
 
   const sortNewest = lang === "tr" ? "En yeni" : "Newest";
-  const sortPopular = lang === "tr" ? "Populer" : "Popular";
-  const loadingTxt = lang === "tr" ? "Yukleniyor..." : "Loading...";
+  const sortPopular = lang === "tr" ? "Popüler" : "Popular";
+  const loadingTxt = lang === "tr" ? "Yükleniyor..." : "Loading...";
   const emptyTxt =
     lang === "tr"
-      ? "Henuz yorum yok. Ilk yorumu sen birak!"
+      ? "Henüz yorum yok. İlk yorumu sen bırak!"
       : "No comments yet. Be the first!";
   const countLabel = lang === "tr" ? "yorum" : "comments";
 
@@ -276,7 +276,7 @@ export function CommentsTab({ detail, lang }: Props) {
                 }}
               >
                 <IconReply s={15} />
-                {replyingTo === c.id ? t("Vazgec", "Cancel") : t("Yanitla", "Reply")}
+                {replyingTo === c.id ? t("Vazgeç", "Cancel") : t("Yanıtla", "Reply")}
               </button>
             ) : null}
           </div>
@@ -295,7 +295,7 @@ export function CommentsTab({ detail, lang }: Props) {
                 rows={2}
                 maxLength={2000}
                 autoFocus
-                placeholder={`${t("Yanitla", "Reply to")} ${c.user.displayName}…`}
+                placeholder={`${t("Yanıtla", "Reply to")} ${c.user.displayName}…`}
               />
               <div className="comment-reply-actions">
                 <button
@@ -306,7 +306,7 @@ export function CommentsTab({ detail, lang }: Props) {
                     setReplyText("");
                   }}
                 >
-                  {t("Vazgec", "Cancel")}
+                  {t("Vazgeç", "Cancel")}
                 </button>
                 <button
                   type="submit"
@@ -362,7 +362,7 @@ export function CommentsTab({ detail, lang }: Props) {
             <strong>{t("Yorum yazmak ister misin? ", "Want to comment? ")}</strong>
             <span>
               {t(
-                "Begenmek ve yorum birakmak icin giris yap.",
+                "Beğenmek ve yorum bırakmak için giriş yap.",
                 "Sign in to like and post comments.",
               )}
             </span>
@@ -372,7 +372,7 @@ export function CommentsTab({ detail, lang }: Props) {
             onClick={() => openAuth("signin")}
             className="btn-primary"
           >
-            {t("Giris Yap", "Sign In")}
+            {t("Giriş Yap", "Sign In")}
           </button>
         </section>
       )}

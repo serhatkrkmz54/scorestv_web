@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const lang = req.nextUrl.searchParams.get("lang") ?? "tr";
   const r = await backendJson<FifaRankingResponse>(`/api/v1/rankings/fifa?lang=${lang}`);
   if (!r.ok || !r.body) {
-    return NextResponse.json(r.body ?? { message: "FIFA siralama alinamadi." }, { status: r.status });
+    return NextResponse.json(r.body ?? { message: "FIFA sıralama alınamadı." }, { status: r.status });
   }
   return NextResponse.json(r.body);
 }

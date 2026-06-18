@@ -44,7 +44,7 @@ export function PlayerSidelinedTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Sakatlik kaydi yok", "No injury records")}</p>
+          <p className="match-empty">{t("Sakatlık kaydı yok", "No injury records")}</p>
         </section>
       </div>
     );
@@ -54,7 +54,7 @@ export function PlayerSidelinedTab({ detail, lang }: Props) {
       <section className="match-card">
         <header className="match-card-head">
           <h3>
-            <IconMed s={14} /> {t("Sakatlik / Cezalik Gecmisi", "Injury / Ban History")}
+            <IconMed s={14} /> {t("Sakatlık / Cezalık Geçmişi", "Injury / Ban History")}
             <span className="team-squad-count tnum">{list.length}</span>
           </h3>
         </header>

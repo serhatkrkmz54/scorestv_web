@@ -83,8 +83,8 @@ export function LeagueTopPlayersTab({ detail, lang }: Props) {
   const segs: { key: Kind; label: string; rows: LeagueTopPlayerView[] }[] = [
     { key: "scorers", label: t("Gol", "Goals"), rows: detail.topScorers ?? [] },
     { key: "assists", label: t("Asist", "Assists"), rows: detail.topAssists ?? [] },
-    { key: "yellow", label: t("Sari Kart", "Yellow"), rows: detail.topYellowCards ?? [] },
-    { key: "red", label: t("Kirmizi Kart", "Red"), rows: detail.topRedCards ?? [] },
+    { key: "yellow", label: t("Sarı Kart", "Yellow"), rows: detail.topYellowCards ?? [] },
+    { key: "red", label: t("Kırmızı Kart", "Red"), rows: detail.topRedCards ?? [] },
   ];
 
   const active = segs.find((s) => s.key === kind) ?? segs[0];

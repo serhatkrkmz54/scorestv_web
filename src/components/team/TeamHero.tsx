@@ -43,7 +43,7 @@ export function TeamHero({ detail, selectedSeason, onSeasonChange, lang }: Props
               ) : null}
               {detail.national ? (
                 <span className="team-hero-badge is-national">
-                  {t("Milli Takim", "National Team")}
+                  {t("Milli Takım", "National Team")}
                 </span>
               ) : null}
               {detail.code ? (
@@ -51,7 +51,7 @@ export function TeamHero({ detail, selectedSeason, onSeasonChange, lang }: Props
               ) : null}
               {detail.founded ? (
                 <span className="team-hero-founded">
-                  {t("Kurulus", "Founded")}: {detail.founded}
+                  {t("Kuruluş", "Founded")}: {detail.founded}
                 </span>
               ) : null}
             </div>
@@ -70,7 +70,7 @@ export function TeamHero({ detail, selectedSeason, onSeasonChange, lang }: Props
                     <span className="team-hero-venue-sep">·</span>
                     <span className="team-hero-venue-cap">
                       {detail.venue.capacity.toLocaleString(lang === "tr" ? "tr-TR" : "en-US")}{" "}
-                      {t("kisilik", "seats")}
+                      {t("kişilik", "seats")}
                     </span>
                   </>
                 ) : null}

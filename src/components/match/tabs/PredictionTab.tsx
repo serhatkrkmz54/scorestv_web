@@ -32,7 +32,7 @@ function compareRow(label: string, pair: MatchPredictionPair) {
 }
 
 const LABELS_TR: Record<string, string> = {
-  form: "Form", att: "Hucum", def: "Savunma",
+  form: "Form", att: "Hücum", def: "Savunma",
   poisson: "Poisson", h2h: "H2H", goals: "Goller", total: "Toplam",
 };
 const LABELS_EN: Record<string, string> = {
@@ -105,7 +105,7 @@ export function PredictionTab({ detail, lang }: Props) {
       {pctTotal > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Sonuc Ihtimali", "Outcome Probability")}</h3>
+            <h3>{t("Sonuç İhtimali", "Outcome Probability")}</h3>
           </header>
           <div className="prediction-pct">
             <div className="prediction-pct-bar">
@@ -165,7 +165,7 @@ export function PredictionTab({ detail, lang }: Props) {
             ) : null}
             {p.underOver ? (
               <div className="info-row">
-                <dt>{t("Alt/Ust", "Under/Over")}</dt>
+                <dt>{t("Alt/Üst", "Under/Over")}</dt>
                 <dd>{p.underOver}</dd>
               </div>
             ) : null}
@@ -182,7 +182,7 @@ export function PredictionTab({ detail, lang }: Props) {
       {compEntries.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Takim Karsilastirmasi", "Team Comparison")}</h3>
+            <h3>{t("Takım Karşılaştırması", "Team Comparison")}</h3>
           </header>
           <ul className="stat-list">
             {compEntries.map(([key, v]) => {

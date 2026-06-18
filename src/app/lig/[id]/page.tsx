@@ -16,12 +16,12 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const season = sp.season ? Number(sp.season) : undefined;
   const { data } = await fetchLeagueDetailServer(slug, "tr", season);
-  if (!data) return { title: "Lig bulunamadi | ScoresTV" };
+  if (!data) return { title: "Lig bulunamadı | ScoresTV" };
   const seo = data.seo;
   const title = seo?.title ?? `${data.name} ${data.selectedSeason ?? ""} | ScoresTV`;
   const description =
     seo?.description ??
-    `${data.name} puan durumu, fikstur, gol krallari ve detaylar.`;
+    `${data.name} puan durumu, fikstür, gol kralları ve detaylar.`;
   const image = seo?.openGraph?.image ?? undefined;
   const alternates: Record<string, string> = {};
   for (const h of seo?.hreflang ?? []) {

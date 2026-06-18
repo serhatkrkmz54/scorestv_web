@@ -28,21 +28,21 @@ export function TeamSideInfo({ detail, lang }: Props) {
           size={16}
         />
       ),
-      label: t("Ulke", "Country"),
+      label: t("Ülke", "Country"),
       value: detail.country.name ?? "—",
     });
   }
   if (detail.founded) {
     rows.push({
       icon: <IconBall s={16} />,
-      label: t("Kurulus", "Founded"),
+      label: t("Kuruluş", "Founded"),
       value: String(detail.founded),
     });
   }
   rows.push({
     icon: <IconList s={16} />,
     label: t("Tip", "Type"),
-    value: detail.national ? t("Milli Takim", "National Team") : t("Kulup", "Club"),
+    value: detail.national ? t("Milli Takım", "National Team") : t("Kulüp", "Club"),
   });
   if (detail.selectedSeason) {
     rows.push({
@@ -61,7 +61,7 @@ export function TeamSideInfo({ detail, lang }: Props) {
   if (detail.venue?.city) {
     rows.push({
       icon: <IconLineup s={16} />,
-      label: t("Sehir", "City"),
+      label: t("Şehir", "City"),
       value: detail.venue.city,
     });
   }
@@ -91,7 +91,7 @@ export function TeamSideInfo({ detail, lang }: Props) {
     <div className="rl-section">
       <header className="rl-head">
         <IconHeart2 s={14} />
-        <span>{t("Takim Bilgisi", "Team Info")}</span>
+        <span>{t("Takım Bilgisi", "Team Info")}</span>
       </header>
       {rows.map((r, i) => {
         // String degerlerde hover tooltip — uzun stadyum/koc adi vb. kesilince

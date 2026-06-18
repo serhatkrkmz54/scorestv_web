@@ -250,7 +250,7 @@ function TopRatedCard({
     <>
       <div className="lig-stat-head">
         <span className="lig-stat-icon"><IconBars s={14} /></span>
-        <span className="lig-stat-title">{t("En Yuksek Rating", "Top Rated")}</span>
+        <span className="lig-stat-title">{t("En Yüksek Rating", "Top Rated")}</span>
       </div>
       <div className="lig-stat-body lig-stat-body-player">
         {photo ? (
@@ -307,7 +307,7 @@ function ChampionshipRaceCard({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>{t("Sampiyonluk Yarisi", "Title Race")}</h3>
+        <h3>{t("Şampiyonluk Yarışı", "Title Race")}</h3>
       </header>
       <ul className="lig-race-list">
         {top.map((r, idx) => {
@@ -353,7 +353,7 @@ function SeasonMetricsCard({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>{t("Sezon Ozeti", "Season Summary")}</h3>
+        <h3>{t("Sezon Özeti", "Season Summary")}</h3>
       </header>
       <div className="lig-metric-grid">
         <div className="lig-metric">
@@ -367,7 +367,7 @@ function SeasonMetricsCard({
           <span className="lig-metric-sub">{t("bu sezon", "this season")}</span>
         </div>
         <div className="lig-metric">
-          <span className="lig-metric-label">{t("Mac Basi Gol", "Goals / Match")}</span>
+          <span className="lig-metric-label">{t("Maç Başi Gol", "Goals / Match")}</span>
           <span className="lig-metric-value tnum">
             {m.played > 0 ? fmt(m.goalsPerMatch, 2) : "—"}
           </span>
@@ -376,7 +376,7 @@ function SeasonMetricsCard({
         <div className="lig-metric">
           <span className="lig-metric-label">{t("Oynanacak", "Upcoming")}</span>
           <span className="lig-metric-value tnum">{fmt(m.upcoming)}</span>
-          <span className="lig-metric-sub">{t("mac kaldi", "remaining")}</span>
+          <span className="lig-metric-sub">{t("maç kaldı", "remaining")}</span>
         </div>
       </div>
       <div className="lig-progress">
@@ -384,7 +384,7 @@ function SeasonMetricsCard({
           <span className="lig-progress-fill" style={{ width: `${pct}%` }} />
         </div>
         <span className="lig-progress-text">
-          %{pct} {t("tamamlandi", "complete")}
+          %{pct} {t("tamamlandı", "complete")}
         </span>
       </div>
     </section>
@@ -406,12 +406,12 @@ function CupChampionCard({
     <>
       <div className="lig-champ-icon"><IconTrophy s={28} /></div>
       <TeamLogo
-        name={champ.teamName ?? "Sampiyon"}
+        name={champ.teamName ?? "Şampiyon"}
         logo={champ.teamLogo ?? null}
         size={48}
       />
       <div className="lig-champ-text">
-        <span className="lig-champ-title">{t("Sampiyon", "Champion")}</span>
+        <span className="lig-champ-title">{t("Şampiyon", "Champion")}</span>
         <span className="lig-champ-name">{champ.teamName ?? "—"}</span>
       </div>
     </>
@@ -457,7 +457,7 @@ function LeagueInfoCard({
         ) : null}
         {detail.country?.name ? (
           <div className="info-row">
-            <dt>{t("Ulke", "Country")}</dt>
+            <dt>{t("Ülke", "Country")}</dt>
             <dd>{detail.country.name}</dd>
           </div>
         ) : null}
@@ -469,13 +469,13 @@ function LeagueInfoCard({
         ) : null}
         {season?.startDate ? (
           <div className="info-row">
-            <dt>{t("Baslangic", "Start")}</dt>
+            <dt>{t("Başlangıç", "Start")}</dt>
             <dd>{season.startDate}</dd>
           </div>
         ) : null}
         {season?.endDate ? (
           <div className="info-row">
-            <dt>{t("Bitis", "End")}</dt>
+            <dt>{t("Bitiş", "End")}</dt>
             <dd>{season.endDate}</dd>
           </div>
         ) : null}
@@ -534,14 +534,14 @@ export function LeagueOverviewTab({ detail, lang }: Props) {
         <TopPlayerCard
           player={topScorer}
           icon={<IconBall s={14} />}
-          title={t("Gol Krali", "Top Scorer")}
+          title={t("Gol Kralı", "Top Scorer")}
           unit={t("Gol", "Goals")}
           lang={lang}
         />
         <TopPlayerCard
           player={topAssist}
           icon={<IconHeart2 s={14} />}
-          title={t("Asist Krali", "Top Assists")}
+          title={t("Asist Kralı", "Top Assists")}
           unit={t("Asist", "Assists")}
           lang={lang}
         />
@@ -551,8 +551,8 @@ export function LeagueOverviewTab({ detail, lang }: Props) {
           <TopPlayerCard
             player={topYellow}
             icon={<IconCard s={14} />}
-            title={t("Sari Kart Lideri", "Most Yellows")}
-            unit={t("Sari", "Yellows")}
+            title={t("Sarı Kart Lideri", "Most Yellows")}
+            unit={t("Sarı", "Yellows")}
             lang={lang}
           />
         ) : null}

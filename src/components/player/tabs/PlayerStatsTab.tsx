@@ -116,12 +116,12 @@ function StatsLeagueAccordion({
         <div className="team-stats-acc-body">
           {stat.leagueSlug ? (
             <Link href={leaguePath(lang, stat.leagueSlug)} className="team-stats-acc-deeplink">
-              {t("Lig sayfasini ac", "Open league page")} →
+              {t("Lig sayfasını aç", "Open league page")} →
             </Link>
           ) : null}
           {stat.teamSlug ? (
             <Link href={teamPath(lang, stat.teamSlug)} className="team-stats-acc-deeplink">
-              {t("Takim sayfasini ac", "Open team page")} →
+              {t("Takım sayfasını aç", "Open team page")} →
             </Link>
           ) : null}
 
@@ -136,29 +136,29 @@ function StatsLeagueAccordion({
             </div>
             <div className="team-stats-chip is-l">
               <span className="team-stats-chip-val tnum">{apps}</span>
-              <span className="team-stats-chip-lbl">{t("Mac", "Apps")}</span>
+              <span className="team-stats-chip-lbl">{t("Maç", "Apps")}</span>
             </div>
           </div>
 
           <dl className="team-stats-rows">
-            <div className="team-stats-row"><dt>{t("Ilk 11", "Lineups")}</dt><dd className="tnum">{lineups}</dd></div>
+            <div className="team-stats-row"><dt>{t("İlk 11", "Lineups")}</dt><dd className="tnum">{lineups}</dd></div>
             <div className="team-stats-row"><dt>{t("Dakika", "Minutes")}</dt><dd className="tnum">{minutes}</dd></div>
             <div className="team-stats-row"><dt>{t("Rating", "Rating")}</dt><dd className="tnum">{ratingStr}</dd></div>
-            <div className="team-stats-row"><dt>{t("Sut (Isabetli)", "Shots (On)")}</dt><dd className="tnum">{shotsTotal} ({shotsOn})</dd></div>
+            <div className="team-stats-row"><dt>{t("Şut (İsabetli)", "Shots (On)")}</dt><dd className="tnum">{shotsTotal} ({shotsOn})</dd></div>
             <div className="team-stats-row"><dt>{t("Pas (Anahtar)", "Passes (Key)")}</dt><dd className="tnum">{passesTotal} ({passesKey})</dd></div>
             {passesAcc != null ? (
               <div className="team-stats-row"><dt>{t("Pas Isabet", "Pass Accuracy")}</dt><dd className="tnum">{String(passesAcc)}%</dd></div>
             ) : null}
-            <div className="team-stats-row"><dt>{t("Mudahale", "Tackles")}</dt><dd className="tnum">{tackles}</dd></div>
+            <div className="team-stats-row"><dt>{t("Müdahale", "Tackles")}</dt><dd className="tnum">{tackles}</dd></div>
             <div className="team-stats-row"><dt>{t("Blok", "Blocks")}</dt><dd className="tnum">{blocks}</dd></div>
-            <div className="team-stats-row"><dt>{t("Pas Arasi", "Interceptions")}</dt><dd className="tnum">{intercepts}</dd></div>
-            <div className="team-stats-row"><dt>{t("Cala Den/Bas", "Dribbles Att/OK")}</dt><dd className="tnum">{drbAtt} / {drbSucc}</dd></div>
-            <div className="team-stats-row"><dt>{t("Sari Kart", "Yellow Cards")}</dt><dd className="tnum">{yellow}{yellowRed > 0 ? ` (${yellowRed} 2nd)` : ""}</dd></div>
-            <div className="team-stats-row"><dt>{t("Kirmizi Kart", "Red Cards")}</dt><dd className="tnum">{red}</dd></div>
+            <div className="team-stats-row"><dt>{t("Pas Arası", "Interceptions")}</dt><dd className="tnum">{intercepts}</dd></div>
+            <div className="team-stats-row"><dt>{t("Top Sürme Den/Bas", "Dribbles Att/OK")}</dt><dd className="tnum">{drbAtt} / {drbSucc}</dd></div>
+            <div className="team-stats-row"><dt>{t("Sarı Kart", "Yellow Cards")}</dt><dd className="tnum">{yellow}{yellowRed > 0 ? ` (${yellowRed} 2nd)` : ""}</dd></div>
+            <div className="team-stats-row"><dt>{t("Kırmızı Kart", "Red Cards")}</dt><dd className="tnum">{red}</dd></div>
             {conceded > 0 || saves > 0 ? (
               <>
-                <div className="team-stats-row"><dt>{t("Yedigi Gol", "Conceded")}</dt><dd className="tnum">{conceded}</dd></div>
-                <div className="team-stats-row"><dt>{t("Kurtaris", "Saves")}</dt><dd className="tnum">{saves}</dd></div>
+                <div className="team-stats-row"><dt>{t("Yediği Gol", "Conceded")}</dt><dd className="tnum">{conceded}</dd></div>
+                <div className="team-stats-row"><dt>{t("Kurtarış", "Saves")}</dt><dd className="tnum">{saves}</dd></div>
               </>
             ) : null}
           </dl>
@@ -175,7 +175,7 @@ export function PlayerStatsTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Istatistik yok", "No statistics")}</p>
+          <p className="match-empty">{t("İstatistik yok", "No statistics")}</p>
         </section>
       </div>
     );
@@ -184,7 +184,7 @@ export function PlayerStatsTab({ detail, lang }: Props) {
     <div className="match-tab player-tab-stats">
       <div className="team-stats-meta">
         <IconBars s={14} />
-        <span>{t("Turnuva basina sezon istatistikleri", "Per-tournament season stats")}</span>
+        <span>{t("Turnuva başına sezon istatistikleri", "Per-tournament season stats")}</span>
       </div>
       {stats.map((s, i) => (
         <StatsLeagueAccordion

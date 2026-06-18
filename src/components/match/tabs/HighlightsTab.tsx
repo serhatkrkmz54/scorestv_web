@@ -37,7 +37,7 @@ export function HighlightsTab({ detail, lang }: Props) {
   if (loading) {
     return (
       <section className="match-card">
-        <p className="match-empty">{t("Yukleniyor...", "Loading...")}</p>
+        <p className="match-empty">{t("Yükleniyor...", "Loading...")}</p>
       </section>
     );
   }

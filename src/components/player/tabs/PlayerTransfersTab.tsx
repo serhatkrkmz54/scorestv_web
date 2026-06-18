@@ -71,7 +71,7 @@ export function PlayerTransfersTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Transfer kaydi yok", "No transfers")}</p>
+          <p className="match-empty">{t("Transfer kaydı yok", "No transfers")}</p>
         </section>
       </div>
     );

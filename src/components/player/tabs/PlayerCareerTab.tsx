@@ -78,7 +78,7 @@ export function PlayerCareerTab({ detail, lang }: Props) {
       <section className="match-card">
         <header className="match-card-head">
           <h3>
-            <IconLineup s={14} /> {t("Kariyer Takimlari", "Career Teams")}
+            <IconLineup s={14} /> {t("Kariyer Takımları", "Career Teams")}
             <span className="team-squad-count tnum">{career.length}</span>
           </h3>
         </header>

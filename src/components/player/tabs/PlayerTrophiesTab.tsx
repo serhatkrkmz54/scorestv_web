@@ -65,7 +65,7 @@ export function PlayerTrophiesTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Kupa kaydi yok", "No trophies")}</p>
+          <p className="match-empty">{t("Kupa kaydı yok", "No trophies")}</p>
         </section>
       </div>
     );
@@ -76,7 +76,7 @@ export function PlayerTrophiesTab({ detail, lang }: Props) {
       <section className="match-card">
         <header className="match-card-head">
           <h3>
-            <IconTrophy s={14} /> {t("Tum Kupalar", "All Trophies")}
+            <IconTrophy s={14} /> {t("Tüm Kupalar", "All Trophies")}
           </h3>
         </header>
         <ul className="player-trophy-list">

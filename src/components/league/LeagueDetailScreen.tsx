@@ -29,7 +29,7 @@ function tabDefs(lang: "tr" | "en"): LeagueTabDef[] {
   return [
     { key: "overview", label: t("Genel", "Overview"), icon: <IconList s={14} /> },
     { key: "standings", label: t("Puan Durumu", "Standings"), icon: <IconTrophy s={14} /> },
-    { key: "fixtures", label: t("Fikstur", "Fixtures"), icon: <IconBall s={14} /> },
+    { key: "fixtures", label: t("Fikstür", "Fixtures"), icon: <IconBall s={14} /> },
     { key: "topplayers", label: t("Lider Tablosu", "Top Players"), icon: <IconBars s={14} /> },
   ];
 }

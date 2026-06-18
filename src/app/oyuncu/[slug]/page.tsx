@@ -17,12 +17,12 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const season = sp.season ? Number(sp.season) : undefined;
   const { data } = await fetchPlayerDetailServer(slug, "tr", season);
-  if (!data) return { title: "Oyuncu bulunamadi | ScoresTV" };
+  if (!data) return { title: "Oyuncu bulunamadı | ScoresTV" };
   const seo = data.seo;
   const title = seo?.title ?? `${data.name} | ScoresTV`;
   const description =
     seo?.description ??
-    `${data.name} profili, kariyer takimlari, sezon istatistikleri, transferler ve kupalar.`;
+    `${data.name} profili, kariyer takımları, sezon istatistikleri, transferler ve kupalar.`;
   const image = seo?.openGraph?.image ?? undefined;
   const alternates: Record<string, string> = {};
   for (const h of seo?.hreflang ?? []) {

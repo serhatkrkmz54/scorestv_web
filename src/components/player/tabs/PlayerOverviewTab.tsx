@@ -77,18 +77,18 @@ function SeasonTotalsCard({
     reds += num(path(st, ["cards", "red"]));
   }
   const items: { label: string; value: number; cls?: string }[] = [
-    { label: t("Mac", "Apps"), value: apps },
+    { label: t("Maç", "Apps"), value: apps },
     { label: t("Gol", "Goals"), value: goals, cls: "is-accent" },
     { label: t("Asist", "Assists"), value: assists, cls: "is-accent" },
     { label: t("Dakika", "Minutes"), value: minutes },
-    { label: t("Sari", "Yellow"), value: yellows, cls: "is-warn" },
-    { label: t("Kirmizi", "Red"), value: reds, cls: "is-danger" },
+    { label: t("Sarı", "Yellow"), value: yellows, cls: "is-warn" },
+    { label: t("Kırmızı", "Red"), value: reds, cls: "is-danger" },
   ];
   return (
     <section className="match-card">
       <header className="match-card-head">
         <h3>
-          <IconChart s={14} /> {t("Sezon Ozeti", "Season Summary")}
+          <IconChart s={14} /> {t("Sezon Özeti", "Season Summary")}
         </h3>
       </header>
       <div className="player-overview-grid">
@@ -120,7 +120,7 @@ function CurrentTeamCard({
         size={48}
       />
       <div className="player-current-team-body">
-        <span className="player-current-team-label">{t("Mevcut Takim", "Current Team")}</span>
+        <span className="player-current-team-label">{t("Mevcut Takım", "Current Team")}</span>
         <span className="player-current-team-name">{detail.currentTeam.name}</span>
       </div>
     </>
@@ -203,7 +203,7 @@ export function PlayerOverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <header className="match-card-head">
             <h3>
-              <IconMed s={14} /> {t("Son Sakatliklar", "Recent Injuries")}
+              <IconMed s={14} /> {t("Son Sakatlıklar", "Recent Injuries")}
             </h3>
           </header>
           <div className="player-overview-list">

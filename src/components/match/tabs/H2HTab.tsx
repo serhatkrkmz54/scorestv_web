@@ -85,7 +85,7 @@ export function H2HTab({ detail, lang }: Props) {
         <section className="match-card">
           <p className="match-empty">
             {t(
-              "Iki takim arasinda gecmis karsilasma bulunamadi",
+              "İki takım arasında geçmiş karşılaşma bulunamadı",
               "No previous meetings between these teams",
             )}
           </p>
@@ -165,7 +165,7 @@ export function H2HTab({ detail, lang }: Props) {
 
       <section className="match-card">
         <header className="match-card-head">
-          <h3>{t("Gecmis Maclar", "Past Meetings")}</h3>
+          <h3>{t("Geçmiş Maçlar", "Past Meetings")}</h3>
         </header>
         <ul className="h2h-list">
           {list.map((f) => {

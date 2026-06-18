@@ -34,7 +34,7 @@ function tabDefs(lang: "tr" | "en", detail: TeamDetailResponse): TeamTabDef[] {
   const tabs: TeamTabDef[] = [
     { key: "overview", label: t("Genel", "Overview"), icon: <IconList s={14} /> },
     { key: "squad", label: t("Kadro", "Squad"), icon: <IconLineup s={14} /> },
-    { key: "fixtures", label: t("Fikstur", "Fixtures"), icon: <IconBall s={14} /> },
+    { key: "fixtures", label: t("Fikstür", "Fixtures"), icon: <IconBall s={14} /> },
   ];
   if (detail.standingsPositions && detail.standingsPositions.length > 0) {
     tabs.push({
@@ -53,7 +53,7 @@ function tabDefs(lang: "tr" | "en", detail: TeamDetailResponse): TeamTabDef[] {
   if (detail.statistics && detail.statistics.length > 0) {
     tabs.push({
       key: "stats",
-      label: t("Istatistik", "Stats"),
+      label: t("İstatistik", "Stats"),
       icon: <IconBars s={14} />,
     });
   }

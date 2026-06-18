@@ -34,7 +34,7 @@ function tabDefs(lang: "tr" | "en", detail: PlayerDetailResponse): PlayerTabDef[
     { key: "overview", label: t("Genel", "Overview"), icon: <IconList s={14} /> },
   ];
   if (detail.seasonStats && detail.seasonStats.length > 0) {
-    tabs.push({ key: "stats", label: t("Istatistik", "Stats"), icon: <IconBars s={14} /> });
+    tabs.push({ key: "stats", label: t("İstatistik", "Stats"), icon: <IconBars s={14} /> });
   }
   if (detail.careerTeams && detail.careerTeams.length > 0) {
     tabs.push({ key: "career", label: t("Kariyer", "Career"), icon: <IconLineup s={14} /> });
@@ -43,7 +43,7 @@ function tabDefs(lang: "tr" | "en", detail: PlayerDetailResponse): PlayerTabDef[
     tabs.push({ key: "transfers", label: t("Transferler", "Transfers"), icon: <IconSwap s={14} /> });
   }
   if (detail.sidelined && detail.sidelined.length > 0) {
-    tabs.push({ key: "sidelined", label: t("Sakatlik", "Injuries"), icon: <IconMed s={14} /> });
+    tabs.push({ key: "sidelined", label: t("Sakatlık", "Injuries"), icon: <IconMed s={14} /> });
   }
   if (detail.trophies && detail.trophies.length > 0) {
     tabs.push({ key: "trophies", label: t("Kupalar", "Trophies"), icon: <IconTrophy s={14} /> });

@@ -55,9 +55,9 @@ function tabDefs(
   const hasOdds =
     !!detail.odds && !!detail.odds.markets && detail.odds.markets.length > 0;
   const tabs: MatchTabDef[] = [
-    { key: "overview", label: t("Ozet", "Overview"), icon: <IconList s={14} /> },
-    { key: "stats", label: t("Istatistik", "Stats"), icon: <IconBars s={14} /> },
-    { key: "lineups", label: t("Dizilis", "Lineups"), icon: <IconLineup s={14} /> },
+    { key: "overview", label: t("Özet", "Overview"), icon: <IconList s={14} /> },
+    { key: "stats", label: t("İstatistik", "Stats"), icon: <IconBars s={14} /> },
+    { key: "lineups", label: t("Diziliş", "Lineups"), icon: <IconLineup s={14} /> },
     { key: "standings", label: t("Puan Durumu", "Standings"), icon: <IconTrophy s={14} /> },
     { key: "h2h", label: "H2H", icon: <IconSwap s={14} /> },
     { key: "prediction", label: t("Tahmin", "Prediction"), icon: <IconChart s={14} /> },
@@ -86,10 +86,10 @@ function tabDefs(
     });
   }
   if (hasOdds) {
-    tabs.push({ key: "odds", label: t("Iddaa", "Odds"), icon: <IconOdds s={14} /> });
+    tabs.push({ key: "odds", label: t("İddaa", "Odds"), icon: <IconOdds s={14} /> });
   }
   tabs.push(
-    { key: "injuries", label: t("Sakatlik", "Injuries"), icon: <IconMed s={14} /> },
+    { key: "injuries", label: t("Sakatlık", "Injuries"), icon: <IconMed s={14} /> },
     { key: "comments", label: t("Yorumlar", "Comments"), icon: <IconChat s={14} /> },
   );
   // Maç özeti (highlights) — yalnız oynanıp biten maçlarda, en başta.

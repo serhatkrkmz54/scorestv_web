@@ -140,14 +140,14 @@ function CoachCard({
         <div className="team-coach-meta">
           {coach.age != null ? (
             <span>
-              {coach.age} {t("yas", "y/o")}
+              {coach.age} {t("yaş", "y/o")}
             </span>
           ) : null}
           {coach.nationality ? <span>{coach.nationality}</span> : null}
         </div>
       </div>
       {coach.trophies && coach.trophies.length > 0 ? (
-        <div className="team-coach-trophies" title={t("Kupa Sayisi", "Trophy Count")}>
+        <div className="team-coach-trophies" title={t("Kupa Sayısı", "Trophy Count")}>
           <IconTrophy s={14} />
           <span className="tnum">{coach.trophies.length}</span>
         </div>
@@ -200,7 +200,7 @@ export function TeamOverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <header className="match-card-head">
             <h3>
-              <IconBall s={14} /> {t("Siradaki Mac", "Next Match")}
+              <IconBall s={14} /> {t("Sıradaki Maç", "Next Match")}
             </h3>
           </header>
           <div className="team-fix-list">
@@ -214,7 +214,7 @@ export function TeamOverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <header className="match-card-head">
             <h3>
-              <IconTrophy s={14} /> {t("Lig Siralamasi", "League Standing")}
+              <IconTrophy s={14} /> {t("Lig Sıralaması", "League Standing")}
             </h3>
           </header>
           <div className="team-pos-grid">
@@ -230,7 +230,7 @@ export function TeamOverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <header className="match-card-head">
             <h3>
-              <IconBall s={14} /> {t("Son Maclar", "Recent Matches")}
+              <IconBall s={14} /> {t("Son Maçlar", "Recent Matches")}
             </h3>
           </header>
           <div className="team-fix-list">
@@ -246,7 +246,7 @@ export function TeamOverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <header className="match-card-head">
             <h3>
-              <IconLineup s={14} /> {t("Teknik Direktor", "Head Coach")}
+              <IconLineup s={14} /> {t("Teknik Direktör", "Head Coach")}
             </h3>
           </header>
           <CoachCard coach={detail.currentCoach!} lang={lang} />
@@ -276,7 +276,7 @@ export function TeamOverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <header className="match-card-head">
             <h3>
-              <IconMed s={14} /> {t("Sakat / Cezali", "Sidelined")}
+              <IconMed s={14} /> {t("Sakat / Cezalı", "Sidelined")}
             </h3>
           </header>
           <div className="team-side-list">

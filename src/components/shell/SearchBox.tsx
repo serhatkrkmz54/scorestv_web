@@ -290,7 +290,7 @@ export function SearchBox() {
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={onInputKeyDown}
-        placeholder={t("Takim, lig, oyuncu, mac ara...", "Search team, league, player, match...")}
+        placeholder={t("Takım, lig, oyuncu, maç ara...", "Search team, league, player, match...")}
         aria-label={t("Ara", "Search")}
         aria-autocomplete="list"
         aria-controls="search-dropdown-list"
@@ -302,13 +302,13 @@ export function SearchBox() {
       {showDropdown ? (
         <div className="search-dropdown" role="listbox" id="search-dropdown-list">
           {loading && totalHits === 0 ? (
-            <div className="sd-empty">{t("Araniyor...", "Searching...")}</div>
+            <div className="sd-empty">{t("Aranıyor...", "Searching...")}</div>
           ) : totalHits === 0 ? (
-            <div className="sd-empty">{t("Sonuc bulunamadi.", "No results.")}</div>
+            <div className="sd-empty">{t("Sonuç bulunamadı.", "No results.")}</div>
           ) : (
             <>
               <ResultGroup
-                title={t("Takimlar", "Teams")}
+                title={t("Takımlar", "Teams")}
                 items={data.teams}
                 renderItem={(h, idx) => (
                   <ResultRow
@@ -319,7 +319,7 @@ export function SearchBox() {
                     thumb={<TeamLogo name={preferred(h.name, h.nameTr, lang)} logo={h.logoUrl} size={28} />}
                     title={preferred(h.name, h.nameTr, lang)}
                     subtitle={preferred(h.country ?? "", h.countryTr ?? "", lang) || null}
-                    badge={t("Takim", "Team")}
+                    badge={t("Takım", "Team")}
                     flatIdx={idx}
                   />
                 )}
@@ -380,7 +380,7 @@ export function SearchBox() {
                 offset={data.teams.length + data.leagues.length}
               />
               <ResultGroup
-                title={t("Maclar", "Matches")}
+                title={t("Maçlar", "Matches")}
                 items={data.fixtures}
                 renderItem={(h, idx) => (
                   <ResultRow
@@ -398,14 +398,14 @@ export function SearchBox() {
                         .filter(Boolean)
                         .join(" - ") || null
                     }
-                    badge={t("Mac", "Match")}
+                    badge={t("Maç", "Match")}
                     flatIdx={idx}
                   />
                 )}
                 offset={data.teams.length + data.leagues.length + data.players.length}
               />
               <ResultGroup
-                title={t("Ulkeler", "Countries")}
+                title={t("Ülkeler", "Countries")}
                 items={data.countries}
                 renderItem={(h, idx) => (
                   <ResultRow
@@ -423,7 +423,7 @@ export function SearchBox() {
                     }
                     title={preferred(h.name, h.nameTr, lang)}
                     subtitle={h.code || null}
-                    badge={t("Ulke", "Country")}
+                    badge={t("Ülke", "Country")}
                     flatIdx={idx}
                   />
                 )}
@@ -432,7 +432,7 @@ export function SearchBox() {
                 }
               />
               <ResultGroup
-                title={t("Teknik Direktorler", "Coaches")}
+                title={t("Teknik Direktörler", "Coaches")}
                 items={data.coaches ?? []}
                 renderItem={(h, idx) => (
                   <ResultRow
@@ -454,7 +454,7 @@ export function SearchBox() {
                         .filter(Boolean)
                         .join(" - ") || null
                     }
-                    badge={t("Teknik Direktor", "Coach")}
+                    badge={t("Teknik Direktör", "Coach")}
                     flatIdx={idx}
                   />
                 )}
@@ -464,7 +464,7 @@ export function SearchBox() {
               />
               <div className="sd-foot">
                 <span className="sd-foot-hint">
-                  {t("Yon tuslari ile gez, Enter ile ac, Esc ile kapat", "Arrow keys to navigate, Enter to open, Esc to close")}
+                  {t("Yön tuşları ile gez, Enter ile aç, Esc ile kapat", "Arrow keys to navigate, Enter to open, Esc to close")}
                 </span>
                 {data.tookMs > 0 ? <span className="sd-foot-took">{data.tookMs}ms</span> : null}
               </div>

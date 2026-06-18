@@ -46,12 +46,12 @@ export function LeagueSideInfo({ detail, lang }: Props) {
   if (season?.startDate && season.endDate) {
     rows.push({
       icon: <IconBall s={16} />,
-      label: t("Baslangic", "Start"),
+      label: t("Başlangıç", "Start"),
       value: season.startDate,
     });
     rows.push({
       icon: <IconBall s={16} />,
-      label: t("Bitis", "End"),
+      label: t("Bitiş", "End"),
       value: season.endDate,
     });
   }

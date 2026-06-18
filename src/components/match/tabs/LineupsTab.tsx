@@ -370,7 +370,7 @@ function TeamBenchCard({ team, lineup, color, lang, subInMinute, onSelect }: Tea
 
       {lineup.coach?.name ? (
         <div className="lineup-coach-row">
-          <span className="lineup-coach-label">{t("Teknik Direktor", "Coach")}</span>
+          <span className="lineup-coach-label">{t("Teknik Direktör", "Coach")}</span>
           <span className="lineup-coach-name">{lineup.coach.name}</span>
         </div>
       ) : null}

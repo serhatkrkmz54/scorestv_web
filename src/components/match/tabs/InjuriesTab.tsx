@@ -30,7 +30,7 @@ export function InjuriesTab({ detail, lang }: Props) {
         <section className="match-card">
           <p className="match-empty">
             {t(
-              "Bu mac icin sakatlik/cezali bilgisi yok",
+              "Bu maç için sakatlık/cezalı bilgisi yok",
               "No injuries or suspensions for this match",
             )}
           </p>

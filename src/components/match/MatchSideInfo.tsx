@@ -95,7 +95,7 @@ export function MatchSideInfo({ detail, lang }: Props) {
   if (detail.league.country) {
     rows.push({
       icon: <IconGlobe s={16} />,
-      label: t("Ulke", "Country"),
+      label: t("Ülke", "Country"),
       value: detail.league.country,
     });
   }
@@ -115,7 +115,7 @@ export function MatchSideInfo({ detail, lang }: Props) {
             <span className="flame">
               <IconBell s={14} />
             </span>
-            {t("Yayin", "Broadcast")}
+            {t("Yayın", "Broadcast")}
           </div>
           {broadcasts.map((b, i) => (
             <div key={(b.channelId ?? i) + "-" + i} className="rl-item">
@@ -137,7 +137,7 @@ export function MatchSideInfo({ detail, lang }: Props) {
           <span className="flame">
             <IconBall s={14} />
           </span>
-          {t("Mac Bilgisi", "Match Info")}
+          {t("Maç Bilgisi", "Match Info")}
         </div>
         {rows.map((r, i) => (
           <div key={i} className="rl-item msi-row-3">

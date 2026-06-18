@@ -120,7 +120,7 @@ export function OverviewTab({ detail, lang }: Props) {
           lang={lang}
         />
         <section className="match-card">
-          <p className="match-empty">{t("Henuz olay yok", "No events yet")}</p>
+          <p className="match-empty">{t("Henüz olay yok", "No events yet")}</p>
         </section>
       </div>
     );

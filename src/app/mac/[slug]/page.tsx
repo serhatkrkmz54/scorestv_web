@@ -16,10 +16,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await fetchMatchDetailServer(slug, "tr");
-  if (!data) return { title: "Mac bulunamadi | ScoresTV" };
+  if (!data) return { title: "Maç bulunamadı | ScoresTV" };
   const seo = data.seo;
   const title = seo?.title ?? `${data.homeTeam.name} - ${data.awayTeam.name} | ScoresTV`;
-  const description = seo?.description ?? `${data.homeTeam.name} - ${data.awayTeam.name} mac detayi, canli skor, dizilisler, istatistikler.`;
+  const description = seo?.description ?? `${data.homeTeam.name} - ${data.awayTeam.name} maç detayı, canlı skor, dizilişler, istatistikler.`;
   // og:image her zaman dolu olsun — backend görseli yoksa site varsayılanı.
   const image = seo?.openGraph?.image ?? `${SITE}/og-image.png`;
   const canonical = seo?.canonicalUrl ?? undefined;

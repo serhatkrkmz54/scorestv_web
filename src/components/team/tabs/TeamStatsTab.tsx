@@ -108,7 +108,7 @@ function StatsLeagueAccordion({
         <div className="team-stats-acc-body">
           {stat.leagueSlug ? (
             <Link href={leaguePath(lang, stat.leagueSlug)} className="team-stats-league-link team-stats-acc-deeplink">
-              {t("Lig sayfasini ac", "Open league page")} →
+              {t("Lig sayfasını aç", "Open league page")} →
             </Link>
           ) : null}
 
@@ -123,7 +123,7 @@ function StatsLeagueAccordion({
             </div>
             <div className="team-stats-chip is-l">
               <span className="team-stats-chip-val tnum">{loses}</span>
-              <span className="team-stats-chip-lbl">{t("Maglubiyet", "Loses")}</span>
+              <span className="team-stats-chip-lbl">{t("Mağlubiyet", "Loses")}</span>
             </div>
           </div>
 
@@ -141,11 +141,11 @@ function StatsLeagueAccordion({
               <dd className="tnum">{played}</dd>
             </div>
             <div className="team-stats-row">
-              <dt>{t("Attigi Gol", "Goals For")}</dt>
+              <dt>{t("Attığı Gol", "Goals For")}</dt>
               <dd className="tnum">{goalsFor}</dd>
             </div>
             <div className="team-stats-row">
-              <dt>{t("Yedigi Gol", "Goals Against")}</dt>
+              <dt>{t("Yediği Gol", "Goals Against")}</dt>
               <dd className="tnum">{goalsAg}</dd>
             </div>
             <div className="team-stats-row">
@@ -156,18 +156,18 @@ function StatsLeagueAccordion({
               </dd>
             </div>
             <div className="team-stats-row">
-              <dt>{t("Gol Yemedigi Mac", "Clean Sheets")}</dt>
+              <dt>{t("Gol Yemediği Maç", "Clean Sheets")}</dt>
               <dd className="tnum">{cleanSheet}</dd>
             </div>
             <div className="team-stats-row">
-              <dt>{t("Gol Atamadigi Mac", "Failed to Score")}</dt>
+              <dt>{t("Gol Atamadığı Maç", "Failed to Score")}</dt>
               <dd className="tnum">{failedScore}</dd>
             </div>
           </dl>
 
           {penTotal > 0 ? (
             <div className="team-stats-sub">
-              <div className="team-stats-sub-head">{t("Penaltilar", "Penalties")}</div>
+              <div className="team-stats-sub-head">{t("Penaltılar", "Penalties")}</div>
               <div className="team-stats-sub-grid">
                 <div>
                   <span className="team-stats-sub-val tnum">{penTotal}</span>
@@ -175,11 +175,11 @@ function StatsLeagueAccordion({
                 </div>
                 <div>
                   <span className="team-stats-sub-val tnum">{penScored}</span>
-                  <span className="team-stats-sub-lbl">{t("Atilan", "Scored")}</span>
+                  <span className="team-stats-sub-lbl">{t("Atılan", "Scored")}</span>
                 </div>
                 <div>
                   <span className="team-stats-sub-val tnum">{penMissed}</span>
-                  <span className="team-stats-sub-lbl">{t("Kacirilan", "Missed")}</span>
+                  <span className="team-stats-sub-lbl">{t("Kaçırılan", "Missed")}</span>
                 </div>
               </div>
             </div>
@@ -199,7 +199,7 @@ function StatsLeagueAccordion({
                 </div>
                 <div>
                   <span className="team-stats-sub-val tnum is-l">{streakLoses}</span>
-                  <span className="team-stats-sub-lbl">{t("Maglubiyet", "Loses")}</span>
+                  <span className="team-stats-sub-lbl">{t("Mağlubiyet", "Loses")}</span>
                 </div>
               </div>
             </div>
@@ -217,7 +217,7 @@ export function TeamStatsTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Istatistik yok", "No statistics")}</p>
+          <p className="match-empty">{t("İstatistik yok", "No statistics")}</p>
         </section>
       </div>
     );
@@ -226,7 +226,7 @@ export function TeamStatsTab({ detail, lang }: Props) {
     <div className="match-tab team-tab-stats">
       <div className="team-stats-meta">
         <IconBars s={14} />
-        <span>{t("Lig basina detayli istatistikler", "Detailed statistics per league")}</span>
+        <span>{t("Lig başına detaylı istatistikler", "Detailed statistics per league")}</span>
       </div>
       {stats.map((s, i) => (
         <StatsLeagueAccordion

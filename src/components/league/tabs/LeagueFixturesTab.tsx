@@ -120,7 +120,7 @@ export function LeagueFixturesTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Fikstur yok", "No fixtures")}</p>
+          <p className="match-empty">{t("Fikstür yok", "No fixtures")}</p>
         </section>
       </div>
     );

@@ -28,28 +28,28 @@ export function PlayerSideInfo({ detail, lang }: Props) {
   if (detail.age != null) {
     rows.push({
       icon: <IconBall s={16} />,
-      label: t("Yas", "Age"),
+      label: t("Yaş", "Age"),
       value: String(detail.age),
     });
   }
   if (detail.birth?.date) {
     rows.push({
       icon: <IconBall s={16} />,
-      label: t("Dogum Tarihi", "Birth Date"),
+      label: t("Doğum Tarihi", "Birth Date"),
       value: detail.birth.date,
     });
   }
   if (detail.birth?.place) {
     rows.push({
       icon: <IconLineup s={16} />,
-      label: t("Dogum Yeri", "Birth Place"),
+      label: t("Doğum Yeri", "Birth Place"),
       value: detail.birth.place,
     });
   }
   if (detail.birth?.countryText || detail.birth?.country) {
     rows.push({
       icon: <IconLineup s={16} />,
-      label: t("Dogum Ulkesi", "Birth Country"),
+      label: t("Doğum Ülkesi", "Birth Country"),
       value: detail.birth.countryText ?? detail.birth.country,
     });
   }

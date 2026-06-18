@@ -71,7 +71,7 @@ export function PlayerHero({ detail, selectedSeason, onSeasonChange, lang }: Pro
               ) : null}
               {detail.age != null ? (
                 <span className="player-hero-age">
-                  {detail.age} {t("yas", "y/o")}
+                  {detail.age} {t("yaş", "y/o")}
                 </span>
               ) : null}
               {detail.height ? (

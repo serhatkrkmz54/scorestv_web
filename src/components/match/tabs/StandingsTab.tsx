@@ -178,9 +178,9 @@ function StandingsTable({
             <th title={t("Oynanan", "Played")}>O</th>
             <th title={t("Galibiyet", "Wins")}>G</th>
             <th title={t("Beraberlik", "Draws")}>B</th>
-            <th title={t("Maglubiyet", "Losses")}>M</th>
-            <th title={t("Attigi", "Goals For")}>A</th>
-            <th title={t("Yedigi", "Goals Against")}>Y</th>
+            <th title={t("Mağlubiyet", "Losses")}>M</th>
+            <th title={t("Attığı", "Goals For")}>A</th>
+            <th title={t("Yediği", "Goals Against")}>Y</th>
             <th title={t("Averaj", "Goal Diff")}>AV</th>
             <th title={t("Puan", "Points")}>P</th>
             <th className="standings-form-col">{t("Form", "Form")}</th>
@@ -353,7 +353,7 @@ export function StandingsTab({ detail, lang }: Props) {
         <div className="match-tab match-tab-standings">
           <section className="match-card">
             <header className="match-card-head">
-              <h3>{t("Eslesmeler", "Bracket")}</h3>
+              <h3>{t("Eşleşmeler", "Bracket")}</h3>
             </header>
             <BracketViewBlock bracket={bracket} />
           </section>
@@ -365,7 +365,7 @@ export function StandingsTab({ detail, lang }: Props) {
         <section className="match-card">
           <p className="match-empty">
             {t(
-              "Bu lig icin puan durumu yok",
+              "Bu lig için puan durumu yok",
               "No standings available for this competition",
             )}
           </p>
@@ -408,7 +408,7 @@ export function StandingsTab({ detail, lang }: Props) {
       {bracket && bracket.rounds && bracket.rounds.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Eslesmeler", "Bracket")}</h3>
+            <h3>{t("Eşleşmeler", "Bracket")}</h3>
           </header>
           <BracketViewBlock bracket={bracket} />
         </section>

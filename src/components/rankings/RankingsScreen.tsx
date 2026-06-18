@@ -134,7 +134,7 @@ function SeasonModal({
             </div>
             {data.numberOfMatches != null ? (
               <div className="rk-modal-stat">
-                <span className="rk-modal-stat-lbl">{t("Mac", "Matches")}</span>
+                <span className="rk-modal-stat-lbl">{t("Maç", "Matches")}</span>
                 <span className="rk-modal-stat-val tnum">{data.numberOfMatches}</span>
               </div>
             ) : null}

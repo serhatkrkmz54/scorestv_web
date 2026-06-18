@@ -80,7 +80,7 @@ export function TeamFixturesTab({ detail, lang }: Props) {
     return (
       <div className="match-tab">
         <section className="match-card">
-          <p className="match-empty">{t("Fikstur bulunamadi", "No fixtures")}</p>
+          <p className="match-empty">{t("Fikstür bulunamadı", "No fixtures")}</p>
         </section>
       </div>
     );
@@ -88,12 +88,12 @@ export function TeamFixturesTab({ detail, lang }: Props) {
   return (
     <div className="match-tab team-tab-fixtures">
       <FixtureGroup
-        title={t("Siradaki Maclar", "Upcoming Matches")}
+        title={t("Sıradakı Maçlar", "Upcoming Matches")}
         fixtures={upcoming}
         lang={lang}
       />
       <FixtureGroup
-        title={t("Son Maclar", "Recent Matches")}
+        title={t("Son Maçlar", "Recent Matches")}
         fixtures={recent}
         lang={lang}
       />

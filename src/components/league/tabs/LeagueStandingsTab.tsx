@@ -176,7 +176,7 @@ export function LeagueStandingsTab({ detail, lang }: Props) {
       <div className="match-tab">
         <section className="match-card">
           <p className="match-empty">
-            {t("Bu sezon icin puan durumu yok", "No standings for this season")}
+            {t("Bu sezon için puan durumu yok", "No standings for this season")}
           </p>
         </section>
       </div>

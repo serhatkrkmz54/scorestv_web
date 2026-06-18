@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, ctx: Ctx) {
   );
   if (!r.ok || !r.body) {
     return NextResponse.json(
-      r.body ?? { message: "Takim detay alinamadi." },
+      r.body ?? { message: "Takım detay alınamadı." },
       { status: r.status },
     );
   }

@@ -59,7 +59,7 @@ function PlayerRow({
       <span className="team-squad-name">{player.name}</span>
       {player.age != null ? (
         <span className="team-squad-age tnum">
-          {player.age} {t("yas", "y/o")}
+          {player.age} {t("yaş", "y/o")}
         </span>
       ) : null}
     </>

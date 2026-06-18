@@ -71,7 +71,7 @@ function PositionDetailCard({
           <span className="team-stand-rank tnum">
             {pos.rank != null ? pos.rank : "—"}
           </span>
-          <span className="team-stand-rank-label">{t(".sira", "rank")}</span>
+          <span className="team-stand-rank-label">{t(".sıra", "rank")}</span>
         </div>
       </header>
 

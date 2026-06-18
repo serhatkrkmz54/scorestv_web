@@ -72,16 +72,16 @@ export function RetryablePage({
       <div className="retry-shell">
         <div className="retry-shell-inner">
           <h1 className="retry-shell-title">
-            {t("Sayfa bulunamadi", "Page not found")}
+            {t("Sayfa bulunamadı", "Page not found")}
           </h1>
           <p className="retry-shell-sub">
             {t(
-              "Aradiginiz icerik mevcut degil veya tasinmis olabilir.",
+              "Aradığınız içerik mevcut değil veya taşınmış olabilir.",
               "The page you are looking for does not exist or has been moved.",
             )}
           </p>
           <a href={lang === "tr" ? "/" : "/"} className="retry-shell-link">
-            {t("Anasayfaya don", "Back to home")}
+            {t("Anasayfaya dön", "Back to home")}
           </a>
         </div>
       </div>
@@ -95,11 +95,11 @@ export function RetryablePage({
           <span /><span /><span />
         </div>
         <h2 className="retry-shell-title">
-          {t("Yukleniyor...", "Loading...")}
+          {t("Yükleniyor...", "Loading...")}
         </h2>
         <p className="retry-shell-sub">
           {t(
-            "Sunucu hazirlaniyor. Veriler hazir olur olmaz sayfa otomatik dolacaktir.",
+            "Sunucu hazırlanıyor. Veriler hazır olur olmaz sayfa otomatik dolacaktır.",
             "Server is warming up. The page will populate automatically once data is ready.",
           )}
         </p>
