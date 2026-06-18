@@ -10,6 +10,7 @@ import type {
   MatchEvent,
 } from "@/lib/match-detail-types";
 import { PredictionCard } from "@/components/match/PredictionCard";
+import { BroadcastSection } from "@/components/match/BroadcastSection";
 
 /** Oyuncu adi — id varsa oyuncu sayfasina link (dile gore slug), yoksa duz metin. */
 function PlayerLink({
@@ -119,6 +120,7 @@ export function OverviewTab({ detail, lang }: Props) {
           awayName={detail.awayTeam.name}
           lang={lang}
         />
+        <BroadcastSection fixtureId={detail.id} lang={lang} />
         <section className="match-card">
           <p className="match-empty">{t("Henuz olay yok", "No events yet")}</p>
         </section>
@@ -174,6 +176,7 @@ export function OverviewTab({ detail, lang }: Props) {
         awayName={detail.awayTeam.name}
         lang={lang}
       />
+      <BroadcastSection fixtureId={detail.id} lang={lang} />
       <section className="match-card">
         <header className="match-card-head">
           <h3>{t("Maç Olayları", "Match Events")}</h3>
