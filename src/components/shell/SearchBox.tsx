@@ -35,6 +35,21 @@ import { IconSearch } from "@/components/icons";
 /** Debounce — kullanici yazarken 180ms bekle, sonra ara. */
 const DEBOUNCE_MS = 180;
 
+/**
+ * Backend "derin arama" min sorgu uzunlugu (DeepSearchService.MIN_LEN ile ayni
+ * tutulmali). Sonuc bos + sorgu >= bu uzunluk ise backend, API-Football'un
+ * ?search= uclarindan kaydi cekip ES'e yaziyor olabilir.
+ */
+const DEEP_MIN_LEN = 3;
+
+/**
+ * Sonuc bos kalinca SESSIZ yeniden-deneme gecikmeleri (ms). Backend derin
+ * aramayi tetikledi; cekilen takim/oyuncu/lig/ulke kisa sure sonra ES'e
+ * indekslenir. Kullanici tekrar yazmadan, bu retry'ler sonuc gelir gelmez
+ * dropdown'u doldurur. Sonuc bulununca kalan denemeler iptal edilir.
+ */
+const RETRY_DELAYS_MS = [2500, 5000];
+
 /** Flat item — keyboard navigation icin tum gruplari tek listeye indirgemis hali. */
 type FlatItem =
   | { kind: "team"; href: string; hit: SearchTeamHit }
@@ -59,6 +74,15 @@ export function SearchBox() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Sessiz-retry zamanlayicilari + her sorgu icin artan run-id (eski retry'leri
+  // gecersiz kilmak icin). Sorgu degisince / temizlenince hepsi iptal edilir.
+  const retryTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const runIdRef = useRef(0);
+
+  const clearRetries = useCallback(() => {
+    for (const t of retryTimersRef.current) clearTimeout(t);
+    retryTimersRef.current = [];
+  }, []);
 
   const t = useCallback(
     (tr: string, en: string) => (lang === "tr" ? tr : en),
@@ -78,6 +102,34 @@ export function SearchBox() {
 
   const totalHits = searchHitCount(data);
 
+  // Sonuc bos kaldiginda backend derin-aramayi tetikler; bu fonksiyon kisa
+  // araliklarla sessizce yeniden sorgular. Yeni indekslenen sonuc gelir gelmez
+  // dropdown'u doldurur ve kalan denemeleri iptal eder. runId, sorgu degisince
+  // (eski) retry'lerin sonucu yazmasini engeller.
+  const scheduleSilentRetries = useCallback(
+    (q: string, runId: number) => {
+      clearRetries();
+      for (const delay of RETRY_DELAYS_MS) {
+        const tid = setTimeout(async () => {
+          if (runIdRef.current !== runId) return; // sorgu degisti
+          try {
+            const r = await searchAll(q, lang);
+            if (runIdRef.current !== runId) return;
+            if (searchHitCount(r) > 0) {
+              setData(r);
+              setActiveIdx(0);
+              clearRetries(); // sonuc geldi → kalan denemeler gereksiz
+            }
+          } catch {
+            // sessiz
+          }
+        }, delay);
+        retryTimersRef.current.push(tid);
+      }
+    },
+    [lang, clearRetries],
+  );
+
   // Debounced fetch — query degisince yeni timer; eskiyi iptal et + AbortController ile pending fetch'i kes.
   // Query bos ise effect erken cikar; data temizleme zaten onChange'de yapilir (R19 set-state-in-effect kuralina uymak icin).
   useEffect(() => {
@@ -85,6 +137,8 @@ export function SearchBox() {
     if (!q) return;
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    clearRetries();
+    const myRun = ++runIdRef.current;
     debounceRef.current = setTimeout(async () => {
       // Bir oncekini iptal et
       if (abortRef.current) abortRef.current.abort();
@@ -94,11 +148,15 @@ export function SearchBox() {
       try {
         const r = await searchAll(q, lang, ctrl.signal);
         // Bu cevap halen guncel mi? (race koruma — ctrl.signal.aborted check)
-        if (ctrl.signal.aborted) return;
+        if (ctrl.signal.aborted || runIdRef.current !== myRun) return;
         setData(r);
-        setActiveIdx(
-          r.teams.length + r.leagues.length + r.players.length + r.fixtures.length + r.countries.length > 0 ? 0 : -1
-        );
+        const hits = searchHitCount(r);
+        setActiveIdx(hits > 0 ? 0 : -1);
+        // Hic sonuc yok + sorgu yeterince uzunsa: backend derin-arama tetiklemis
+        // olabilir → sessizce yeniden dene ki yeni kayitlar otomatik gorunsun.
+        if (hits === 0 && q.length >= DEEP_MIN_LEN) {
+          scheduleSilentRetries(q, myRun);
+        }
       } catch {
         // Abort — sessiz
       } finally {
@@ -108,8 +166,9 @@ export function SearchBox() {
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      clearRetries();
     };
-  }, [query, lang]);
+  }, [query, lang, clearRetries, scheduleSilentRetries]);
 
   // Dis tik / Escape — dropdown kapat
   useEffect(() => {
@@ -143,9 +202,11 @@ export function SearchBox() {
       setQuery("");
       setData(EMPTY_SEARCH);
       setActiveIdx(-1);
+      runIdRef.current++; // bekleyen sessiz-retry'leri gecersiz kil
+      clearRetries();
       router.push(href);
     },
-    [router],
+    [router, clearRetries],
   );
 
   const onInputKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
@@ -209,6 +270,8 @@ export function SearchBox() {
             setLoading(false);
             setActiveIdx(-1);
             if (abortRef.current) abortRef.current.abort();
+            runIdRef.current++; // bekleyen sessiz-retry'leri gecersiz kil
+            clearRetries();
           }
         }}
         onFocus={() => setOpen(true)}
