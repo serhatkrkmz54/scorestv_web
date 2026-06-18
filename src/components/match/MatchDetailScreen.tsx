@@ -62,10 +62,9 @@ function tabDefs(
     { key: "h2h", label: "H2H", icon: <IconSwap s={14} /> },
     { key: "prediction", label: t("Tahmin", "Prediction"), icon: <IconChart s={14} /> },
   ];
-  // Yayınlar — yalnız veri varsa, Maç Özeti (highlights) tab'ının hemen yanında
-  // (en başta; highlights varsa onun da hemen sağında).
+  // Yayınlar — yalnız veri varsa, Puan Durumu (standings) tab'ının hemen sağında.
   if (hasBroadcasts) {
-    tabs.splice(0, 0, {
+    tabs.splice(4, 0, {
       key: "broadcasts",
       label: t("Yayınlar", "Broadcasts"),
       icon: (
