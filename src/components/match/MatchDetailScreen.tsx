@@ -15,6 +15,8 @@ import { InjuriesTab } from "./tabs/InjuriesTab";
 import { CommentsTab } from "./tabs/CommentsTab";
 import { HighlightsTab } from "./tabs/HighlightsTab";
 import { OddsTab } from "./tabs/OddsTab";
+import { BroadcastsTab } from "./tabs/BroadcastsTab";
+import type { Broadcast } from "@/lib/broadcast-types";
 import { fetchMatchDetailClient } from "@/lib/match-detail-client";
 import {
   createMatchDetailClient,
@@ -44,7 +46,11 @@ interface Props {
   lang: "tr" | "en";
 }
 
-function tabDefs(lang: "tr" | "en", detail: MatchDetailResponse): MatchTabDef[] {
+function tabDefs(
+  lang: "tr" | "en",
+  detail: MatchDetailResponse,
+  hasBroadcasts: boolean,
+): MatchTabDef[] {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const hasOdds =
     !!detail.odds && !!detail.odds.markets && detail.odds.markets.length > 0;
@@ -56,6 +62,30 @@ function tabDefs(lang: "tr" | "en", detail: MatchDetailResponse): MatchTabDef[] 
     { key: "h2h", label: "H2H", icon: <IconSwap s={14} /> },
     { key: "prediction", label: t("Tahmin", "Prediction"), icon: <IconChart s={14} /> },
   ];
+  // Yayınlar — yalnız veri varsa, Maç Özeti (highlights) tab'ının hemen yanında
+  // (en başta; highlights varsa onun da hemen sağında).
+  if (hasBroadcasts) {
+    tabs.splice(0, 0, {
+      key: "broadcasts",
+      label: t("Yayınlar", "Broadcasts"),
+      icon: (
+        <svg
+          width={14}
+          height={14}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="2" y="7" width="20" height="13" rx="2" />
+          <path d="m17 2-5 5-5-5" />
+        </svg>
+      ),
+    });
+  }
   if (hasOdds) {
     tabs.push({ key: "odds", label: t("Iddaa", "Odds"), icon: <IconOdds s={14} /> });
   }
@@ -122,6 +152,7 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
   const [detail, setDetail] = useState<MatchDetailResponse>(initial);
   const [tab, setTab] = useState<MatchTabKey>("overview");
   const [refreshing, setRefreshing] = useState(false);
+  const [broadcasts, setBroadcasts] = useState<Broadcast[]>([]);
   const refreshingRef = useRef(false);
   const detailRef = useRef(detail);
   detailRef.current = detail;
@@ -261,14 +292,30 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detail.id]);
 
-  const tabs = tabDefs(lang, detail);
+  // Yayınlar (TV kanalları) — tab koşulu + içeriği için bir kez çek.
+  useEffect(() => {
+    let aborted = false;
+    fetch(`/api/broadcasts/fixtures/${detail.id}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((j: Broadcast[]) => {
+        if (!aborted) setBroadcasts(Array.isArray(j) ? j : []);
+      })
+      .catch(() => {
+        if (!aborted) setBroadcasts([]);
+      });
+    return () => {
+      aborted = true;
+    };
+  }, [detail.id]);
+
+  const tabs = tabDefs(lang, detail, broadcasts.length > 0);
 
   return (
     <div className="match-detail-screen">
       <MatchHero detail={detail} lang={lang} />
       <MatchTabs tabs={tabs} active={tab} onChange={setTab} />
       <div className="match-detail-body">
-        <TabContent tab={tab} detail={detail} lang={lang} />
+        <TabContent tab={tab} detail={detail} lang={lang} broadcasts={broadcasts} />
       </div>
       {refreshing ? <span className="sr-only">refreshing</span> : null}
     </div>
@@ -279,16 +326,20 @@ function TabContent({
   tab,
   detail,
   lang,
+  broadcasts,
 }: {
   tab: MatchTabKey;
   detail: MatchDetailResponse;
   lang: "tr" | "en";
+  broadcasts: Broadcast[];
 }) {
   switch (tab) {
     case "highlights":
       return <HighlightsTab detail={detail} lang={lang} />;
     case "overview":
       return <OverviewTab detail={detail} lang={lang} />;
+    case "broadcasts":
+      return <BroadcastsTab broadcasts={broadcasts} lang={lang} />;
     case "stats":
       return <StatsTab detail={detail} lang={lang} />;
     case "lineups":
