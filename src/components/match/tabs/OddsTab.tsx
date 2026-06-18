@@ -8,27 +8,18 @@ interface Props {
 }
 
 /**
- * Bilyoner sponsor logosu. Logoyu su yola koy:
- *   public/sponsors/bilyoner.png      → acik tema
- *   public/sponsors/bilyoner-dark.png → koyu tema
- * (SVG kullaniyorsan uzantilari .svg yap.)
+ * Bilyoner sponsor logosu — tek görsel (public/sponsors/bilyoner.png), her
+ * temada gösterilir. (Ayrı koyu-tema görseli eklenirse tekrar tema ayrımı
+ * yapılabilir; şimdilik tek dosya olduğu için sade tutuldu.)
  */
 function SponsorLogo() {
   return (
-    <>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/sponsors/bilyoner.png"
-        alt="Bilyoner"
-        className="odds-sponsor-logo odds-sponsor-logo-light"
-      />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/sponsors/bilyoner-dark.png"
-        alt="Bilyoner"
-        className="odds-sponsor-logo odds-sponsor-logo-dark"
-      />
-    </>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/sponsors/bilyoner.png"
+      alt="Bilyoner"
+      className="odds-sponsor-logo"
+    />
   );
 }
 

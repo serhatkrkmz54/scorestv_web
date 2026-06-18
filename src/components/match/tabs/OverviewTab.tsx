@@ -120,10 +120,10 @@ export function OverviewTab({ detail, lang }: Props) {
           awayName={detail.awayTeam.name}
           lang={lang}
         />
-        <BroadcastSection fixtureId={detail.id} lang={lang} />
         <section className="match-card">
           <p className="match-empty">{t("Henuz olay yok", "No events yet")}</p>
         </section>
+        <BroadcastSection fixtureId={detail.id} lang={lang} />
       </div>
     );
   }
@@ -176,7 +176,6 @@ export function OverviewTab({ detail, lang }: Props) {
         awayName={detail.awayTeam.name}
         lang={lang}
       />
-      <BroadcastSection fixtureId={detail.id} lang={lang} />
       <section className="match-card">
         <header className="match-card-head">
           <h3>{t("Maç Olayları", "Match Events")}</h3>
@@ -268,6 +267,7 @@ export function OverviewTab({ detail, lang }: Props) {
           })}
         </ul>
       </section>
+      <BroadcastSection fixtureId={detail.id} lang={lang} />
     </div>
   );
 }
