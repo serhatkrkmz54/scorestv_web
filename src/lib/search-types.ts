@@ -62,6 +62,18 @@ export interface SearchCountryHit {
   flagUrl: string | null;
 }
 
+// Koç sonucu — detay sayfasi yok; mevcut takim biliniyorsa satira tiklayinca
+// takim sayfasina gidilir. currentTeamId/currentTeamName null olabilir.
+export interface SearchCoachHit {
+  id: number;
+  name: string;
+  nationality: string | null;
+  age: number | null;
+  photoUrl: string | null;
+  currentTeamId: number | null;
+  currentTeamName: string | null;
+}
+
 export interface SearchResponse {
   query: string;
   tookMs: number;
@@ -70,6 +82,7 @@ export interface SearchResponse {
   players: SearchPlayerHit[];
   fixtures: SearchFixtureHit[];
   countries: SearchCountryHit[];
+  coaches: SearchCoachHit[];
 }
 
 // Empty (no-result) sentinel — UI render kolaylasir.
@@ -81,6 +94,7 @@ export const EMPTY_SEARCH: SearchResponse = {
   players: [],
   fixtures: [],
   countries: [],
+  coaches: [],
 };
 
 export function searchHitCount(r: SearchResponse): number {
@@ -89,6 +103,7 @@ export function searchHitCount(r: SearchResponse): number {
     r.leagues.length +
     r.players.length +
     r.fixtures.length +
-    r.countries.length
+    r.countries.length +
+    (r.coaches?.length ?? 0)
   );
 }

@@ -15,6 +15,7 @@ import { searchAll } from "@/lib/search-client";
 import {
   EMPTY_SEARCH,
   searchHitCount,
+  type SearchCoachHit,
   type SearchCountryHit,
   type SearchFixtureHit,
   type SearchLeagueHit,
@@ -56,7 +57,17 @@ type FlatItem =
   | { kind: "league"; href: string; hit: SearchLeagueHit }
   | { kind: "player"; href: string; hit: SearchPlayerHit }
   | { kind: "fixture"; href: string; hit: SearchFixtureHit }
-  | { kind: "country"; href: string; hit: SearchCountryHit };
+  | { kind: "country"; href: string; hit: SearchCountryHit }
+  | { kind: "coach"; href: string; hit: SearchCoachHit };
+
+/**
+ * Koç sonucu icin href — koç detay sayfasi yok; mevcut takim biliniyorsa
+ * takim sayfasina yonlendiririz, bilinmiyorsa "#" (tiklama no-op, satir yine
+ * de bilgi gosterir).
+ */
+function coachHref(lang: "tr" | "en", hit: SearchCoachHit): string {
+  return hit.currentTeamId != null ? teamPath(lang, hit.currentTeamId) : "#";
+}
 
 export function SearchBox() {
   const { lang } = useLang();
@@ -97,6 +108,7 @@ export function SearchBox() {
     for (const h of data.players) out.push({ kind: "player", href: playerPath(lang, h.slug || h.id), hit: h });
     for (const h of data.fixtures) out.push({ kind: "fixture", href: matchPath(lang, h.slug), hit: h });
     for (const h of data.countries) out.push({ kind: "country", href: countryPath(lang, h.slug || h.id), hit: h });
+    for (const h of data.coaches ?? []) out.push({ kind: "coach", href: coachHref(lang, h), hit: h });
     return out;
   }, [data, lang]);
 
@@ -198,6 +210,8 @@ export function SearchBox() {
 
   const closeAndNavigate = useCallback(
     (href: string) => {
+      // Koç (takimsiz) gibi yonlendirilemeyen satirlar — no-op.
+      if (!href || href === "#") return;
       setOpen(false);
       setQuery("");
       setData(EMPTY_SEARCH);
@@ -415,6 +429,37 @@ export function SearchBox() {
                 )}
                 offset={
                   data.teams.length + data.leagues.length + data.players.length + data.fixtures.length
+                }
+              />
+              <ResultGroup
+                title={t("Teknik Direktorler", "Coaches")}
+                items={data.coaches ?? []}
+                renderItem={(h, idx) => (
+                  <ResultRow
+                    key={`co-${h.id}`}
+                    href={coachHref(lang, h)}
+                    active={flat[activeIdx]?.kind === "coach" && flat[activeIdx]?.hit.id === h.id}
+                    onSelect={closeAndNavigate}
+                    thumb={
+                      h.photoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={h.photoUrl} alt="" width={28} height={28} className="sd-thumb-img is-round" loading="lazy" />
+                      ) : (
+                        <span className="sd-thumb-fallback is-round">{(h.name?.[0] ?? "?").toUpperCase()}</span>
+                      )
+                    }
+                    title={h.name}
+                    subtitle={
+                      [h.nationality ?? "", h.currentTeamName ?? ""]
+                        .filter(Boolean)
+                        .join(" - ") || null
+                    }
+                    badge={t("Teknik Direktor", "Coach")}
+                    flatIdx={idx}
+                  />
+                )}
+                offset={
+                  data.teams.length + data.leagues.length + data.players.length + data.fixtures.length + data.countries.length
                 }
               />
               <div className="sd-foot">
