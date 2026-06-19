@@ -99,6 +99,9 @@ export interface PlayerDetailResponse {
   photo?: string | null;
   height?: string | null;
   weight?: string | null;
+  /** Ana pozisyon — API-Football games.position (ham + çevrilmiş). */
+  position?: string | null;
+  positionText?: string | null;
   injured?: boolean | null;
   birth?: PlayerBirthInfo | null;
   currentTeam?: PlayerTeamRef | null;

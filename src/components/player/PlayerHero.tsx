@@ -64,6 +64,9 @@ export function PlayerHero({ detail, selectedSeason, onSeasonChange, lang }: Pro
           <div className="player-hero-text">
             <h1 className="player-hero-name" title={detail.name !== fullName ? detail.name : undefined}>{fullName}</h1>
             <div className="player-hero-meta">
+              {detail.positionText ? (
+                <span className="player-hero-pos">{detail.positionText}</span>
+              ) : null}
               {detail.nationalityText || detail.nationality ? (
                 <span className="player-hero-nat">
                   {detail.nationalityText ?? detail.nationality}
