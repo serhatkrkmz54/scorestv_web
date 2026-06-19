@@ -102,9 +102,6 @@ export interface PlayerDetailResponse {
   /** Ana pozisyon — API-Football games.position (ham + çevrilmiş). */
   position?: string | null;
   positionText?: string | null;
-  /** Kullandığı ayak — TheSportsDB strSide (ham + çevrilmiş). Olmayabilir. */
-  foot?: string | null;
-  footText?: string | null;
   injured?: boolean | null;
   birth?: PlayerBirthInfo | null;
   currentTeam?: PlayerTeamRef | null;
