@@ -25,8 +25,13 @@ COPY . .
 # docker-compose build.args'tan (.env) gelir.
 ARG NEXT_PUBLIC_WS_URL
 ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+# SEO/canonical/OG icin site kok URL'si — kodda NEXT_PUBLIC_SITE_URL okunuyor
+# (robots, sitemap, structured-data, layout metadataBase). Bos kalirsa
+# new URL("") patlatir; bu yuzden ARG'ye guvenli default veriyoruz.
+ARG NEXT_PUBLIC_SITE_URL=https://scorestv.com
 ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN npm run build
 
 # ---- Stage 3: runner ----

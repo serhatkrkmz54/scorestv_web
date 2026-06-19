@@ -1,0 +1,49 @@
+# ===================================================================
+# scorestv_web — Next.js 16 standalone (tek servis: web)
+#
+# Akış:  Cloudflare → nginx (host) → http://127.0.0.1:3000 → bu container
+#
+# NEXT_PUBLIC_* değerleri build sırasında JS bundle'ına GÖMÜLÜR; bu yüzden
+# build.args ile geçilir (runtime env etkilemez). BACKEND_URL gibi server-side
+# değerler ise env_file (.env) ile runtime'da verilir.
+#
+# Kullanım:
+#   cp .env.example .env   # değerleri doldur (zaten varsa atla)
+#   docker compose build --no-cache web
+#   docker compose up -d --force-recreate web
+# ===================================================================
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Compose, aynı klasördeki .env'den ${...} değerlerini otomatik okur.
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+        # SEO kök URL'si (build'e gömülür). .env'de yoksa scorestv.com'a düşer.
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://scorestv.com}
+    image: scorestv-web:latest
+    container_name: scorestv-web
+    restart: unless-stopped
+
+    # Runtime env (server-side): BACKEND_URL, NODE_ENV, NEXT_TELEMETRY_DISABLED…
+    env_file:
+      - .env
+
+    # Web container → host'taki backend (127.0.0.1:8080) erişimi için.
+    # .env'de BACKEND_URL=http://host.docker.internal:8080 olmalı.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    ports:
+      # Sadece localhost'a aç — dış erişimi nginx yapıyor.
+      - "127.0.0.1:3000:3000"
+
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
