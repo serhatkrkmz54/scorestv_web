@@ -43,7 +43,8 @@ function tabDefs(lang: "tr" | "en", detail: TeamDetailResponse): TeamTabDef[] {
       icon: <IconTrophy s={14} />,
     });
   }
-  if (detail.transfers && detail.transfers.length > 0) {
+  // Milli takimlarda (ulkeler) transfer kavrami yok → Transferler tabini gizle.
+  if (!detail.national && detail.transfers && detail.transfers.length > 0) {
     tabs.push({
       key: "transfers",
       label: t("Transferler", "Transfers"),
