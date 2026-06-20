@@ -16,11 +16,15 @@ export function PredictionCard({
   homeName,
   awayName,
   lang,
+  resultChoice = null,
 }: {
   fixtureId: number;
   homeName: string;
   awayName: string;
   lang: "tr" | "en";
+  /** Maç bittiyse gerçek sonuç: "HOME" / "DRAW" / "AWAY". Null = maç bitmedi.
+   *  Kazanan satırın yanına yeşil tik koymak için. */
+  resultChoice?: PredictionChoice | null;
 }) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const [data, setData] = useState<PredictionResult | null>(null);
@@ -122,12 +126,18 @@ export function PredictionCard({
           {rows.map((row) => {
             const p = pct(row.n);
             const mine = data.myChoice === row.k;
+            const won = resultChoice === row.k;
             return (
               <div className={"pred-row" + (mine ? " mine" : "")} key={row.k}>
                 <div className="pred-row-top">
                   <span className="pred-row-label">
                     {row.label}
                     {mine ? " ✓" : ""}
+                    {won ? (
+                      <span className="pred-row-win" aria-label={t("Kazandı", "Won")}>
+                        ✓
+                      </span>
+                    ) : null}
                   </span>
                   <span className="pred-row-pct">%{p}</span>
                 </div>

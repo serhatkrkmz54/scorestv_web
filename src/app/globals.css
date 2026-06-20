@@ -2489,6 +2489,7 @@ a.evx-out-link:hover { color: var(--accent); }
 .pred-row-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .pred-row-label { font-size: 13.5px; font-weight: 600; color: var(--text-dim); }
 .pred-row.mine .pred-row-label { color: var(--accent); font-weight: 800; }
+.pred-row-win { margin-left: 6px; color: var(--win); font-weight: 900; }
 .pred-row-pct { font-size: 13.5px; font-weight: 800; color: var(--text); }
 .pred-bar { height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
 .pred-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--text-faint); transition: width .4s ease; }

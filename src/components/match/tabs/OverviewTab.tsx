@@ -97,6 +97,33 @@ type TimelineRow =
   | { kind: "event"; ev: MatchEvent; score: string | null; key: string }
   | { kind: "divider"; label: string; key: string };
 
+/** Maç bittiyse gerçek sonuç ("HOME"/"DRAW"/"AWAY"), aksi halde null.
+ *  PredictionCard kazanan satıra yeşil tik koymak için kullanır. */
+function predictionResultChoice(
+  detail: MatchDetailResponse,
+): "HOME" | "DRAW" | "AWAY" | null {
+  const sc = (detail.status?.shortCode ?? "").toUpperCase();
+  if (!["FT", "AET", "PEN", "AWD", "WO"].includes(sc)) return null;
+  const score = detail.score;
+  if (!score) return null;
+  let h: number | null | undefined;
+  let a: number | null | undefined;
+  if (sc === "PEN") {
+    // Penaltıyla biten maçta kazananı penaltı serisi belirler.
+    const pen = score.penalty;
+    if (pen == null || pen.home == null || pen.away == null) return null;
+    h = pen.home;
+    a = pen.away;
+  } else {
+    h = score.home;
+    a = score.away;
+  }
+  if (h == null || a == null) return null;
+  if (h > a) return "HOME";
+  if (a > h) return "AWAY";
+  return "DRAW";
+}
+
 export function OverviewTab({ detail, lang }: Props) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const { events: rawEvents, homeTeam } = detail;
@@ -118,6 +145,7 @@ export function OverviewTab({ detail, lang }: Props) {
           homeName={detail.homeTeam.name}
           awayName={detail.awayTeam.name}
           lang={lang}
+          resultChoice={predictionResultChoice(detail)}
         />
         <section className="match-card">
           <p className="match-empty">{t("Henüz olay yok", "No events yet")}</p>
@@ -173,6 +201,7 @@ export function OverviewTab({ detail, lang }: Props) {
         homeName={detail.homeTeam.name}
         awayName={detail.awayTeam.name}
         lang={lang}
+        resultChoice={predictionResultChoice(detail)}
       />
       <section className="match-card">
         <header className="match-card-head">
