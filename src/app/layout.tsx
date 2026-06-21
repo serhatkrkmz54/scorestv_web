@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import { headers, cookies } from "next/headers";
+import type { Lang } from "@/i18n/auth-strings";
 import "./globals.css";
 import { Providers } from "@/context/providers";
 
@@ -16,13 +18,10 @@ const SITE_DESC =
   "Futbol, basketbol, tenis ve voleybol canlı skorları, puan durumları, istatistikler ve daha fazlası.";
 
 export const metadata: Metadata = {
-  // metadataBase: OG/canonical gibi RELATIF URL'leri mutlak'a cevirir (Next uyarisini de keser).
   metadataBase: new URL(SITE_URL),
   title: "ScoresTV — Canlı Skor & İstatistik",
   description: SITE_DESC,
   applicationName: "ScoresTV",
-  // Sayfaya ozel OG yoksa (anasayfa, statik sayfalar) bu varsayilanlar gecerli.
-  // Detay sayfalari (takim/oyuncu/lig/mac) kendi OG'lerini generateMetadata'da ezer.
   openGraph: {
     type: "website",
     siteName: "ScoresTV",
@@ -38,27 +37,37 @@ export const metadata: Metadata = {
     description: SITE_DESC,
     images: ["/og-image.png"],
   },
-  // Favicon: src/app/favicon.ico (Next convention). Override KALDIRILDI —
-  // Next dosyayi hash'li servis eder (favicon.ico?<hash>), boylece favicon
-  // degisince URL degisir ve tarayici/CDN cache'i otomatik kirilir.
 };
 
-// Tema/dil "flash" önleyici: ilk boyamadan önce localStorage'tan oku.
-// Default dil: EN (her ulkeden gelen yeni ziyaretci EN gorur). Kullanici
-// acikca TR sectiyse localStorage/cookie'de durdugu icin sonraki ziyaretlerde
-// TR olarak kalir. Boş ise explicit 'en' set edilir — html lang attribute
-// SSR'de de "en" tutarli olsun diye.
-const noFlash = `(function(){try{var t=localStorage.getItem('stv_theme');var c=t==='light'?'theme-light':'theme-dark';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add(c);var l=localStorage.getItem('stv_lang');e.lang=(l==='tr'||l==='en')?l:'en';}catch(_){document.documentElement.lang='en';}})();`;
+// Ulkeye gore varsayilan dil — Cloudflare CF-IPCountry header'indan.
+// TR ve AZ -> Turkce; diger tum ulkeler -> Ingilizce.
+function geoDefaultLang(country: string | null | undefined): Lang {
+  const c = (country ?? "").toUpperCase();
+  return c === "TR" || c === "AZ" ? "tr" : "en";
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+// Tema/dil "flash" onleyici. Dil icin localStorage tercihi varsa onu, yoksa
+// sunucunun ulkeye gore belirledigi `fallback` dilini kullanir.
+const noFlash = (fallback: Lang) =>
+  `(function(){try{var t=localStorage.getItem('stv_theme');var c=t==='light'?'theme-light':'theme-dark';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add(c);var l=localStorage.getItem('stv_lang');e.lang=(l==='tr'||l==='en')?l:'${fallback}';}catch(_){document.documentElement.lang='${fallback}';}})();`;
+
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // Baslangic dili onceligi: kullanicinin kayitli tercihi (cookie) >
+  // ulkeye gore (CF-IPCountry) > en.
+  const [hdrs, cks] = await Promise.all([headers(), cookies()]);
+  const saved = cks.get("stv_lang")?.value;
+  const initialLang: Lang =
+    saved === "tr" || saved === "en"
+      ? saved
+      : geoDefaultLang(hdrs.get("cf-ipcountry"));
+
   return (
-    <html lang="en" className={`theme-dark ${poppins.variable}`} suppressHydrationWarning>
+    <html lang={initialLang} className={`theme-dark ${poppins.variable}`} suppressHydrationWarning>
       <head>
-        {/* Elle <head> render edildiginde Next.js otomatik viewport/charset
-            meta'larini EKLEMEZ — bu yuzden acikca yaziyoruz. Viewport olmadan
-            gercek telefonlar sayfayi ~980px masaustu genisliginde render edip
-            kuculttuyor; responsive breakpoint'ler tetiklenmiyor (hamburger
-            cikmiyor). */}
         <meta charSet="utf-8" />
         <meta
           name="viewport"
@@ -66,13 +75,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        {/* Tema/dil flash onleyici. next/script beforeInteractive: hydration ve
-            ilk boyamadan once calisir; ham <script> gibi React'in "script in
-            component" uyarisini tetiklemez. Inline script icin id zorunlu. */}
         <Script id="stv-no-flash" strategy="beforeInteractive">
-          {noFlash}
+          {noFlash(initialLang)}
         </Script>
-        <Providers>{children}</Providers>
+        <Providers initialLang={initialLang}>{children}</Providers>
       </body>
     </html>
   );

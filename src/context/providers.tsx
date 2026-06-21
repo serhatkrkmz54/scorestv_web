@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { Lang } from "@/i18n/auth-strings";
 import { ThemeProvider } from "./theme-context";
 import { LangProvider } from "./lang-context";
 import { AuthProvider } from "./auth-context";
@@ -14,10 +15,16 @@ import { NotificationsEngine } from "@/components/home/NotificationsEngine";
 import { MobileNavProvider, MobileNavDrawer } from "@/components/shell/MobileNav";
 import { MobileNavContent } from "@/components/shell/MobileNavContent";
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({
+  children,
+  initialLang,
+}: {
+  children: ReactNode;
+  initialLang?: Lang;
+}) {
   return (
     <ThemeProvider>
-      <LangProvider>
+      <LangProvider initialLang={initialLang}>
         <AuthProvider>
           <FavoritesProvider>
             <NotifPrefsProvider>

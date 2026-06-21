@@ -29,21 +29,29 @@ function writeCookie(name: string, value: string) {
   document.cookie = `${name}=${value}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
 }
 
-export function LangProvider({ children }: { children: ReactNode }) {
-  // Varsayilan dil: Ingilizce (her ulke icin). Kullanici TR/EN toggle'ina
-  // basinca tercih localStorage + cookie'ye yazilir ve sonraki ziyaretlerde
-  // korunur.
-  const [lang, setLangState] = useState<Lang>("en");
+export function LangProvider({
+  children,
+  initialLang = "en",
+}: {
+  children: ReactNode;
+  /** Sunucuda ulkeye gore belirlenen baslangic dili (CF-IPCountry: TR/AZ -> tr,
+   *  digerleri -> en). Kullanicinin acik tercihi (URL ?lang / localStorage /
+   *  cookie) her zaman bunu ezer. */
+  initialLang?: Lang;
+}) {
+  // Baslangic dili sunucudan (ulke) gelir; kullanici TR/EN toggle'ina basinca
+  // tercih localStorage + cookie'ye yazilir, sonraki ziyaretlerde korunur.
+  const [lang, setLangState] = useState<Lang>(initialLang);
 
   useEffect(() => {
-    // Oncelik: URL ?lang= (mobil WebView bunu gonderir, orn. /hakkimizda?lang=tr)
-    //   > kullanicinin acik secimi (localStorage > cookie) > varsayilan en.
+    // Oncelik: URL ?lang= (mobil WebView), > kullanici acik secimi
+    // (localStorage > cookie) > sunucudan gelen baslangic dili.
     let next: Lang | null = null;
     try {
       const q = new URLSearchParams(window.location.search).get("lang");
       if (q === "tr" || q === "en") next = q;
     } catch {
-      /* URL okunamadi — sessizce gec */
+      /* URL okunamadi */
     }
     if (!next) {
       const saved =
