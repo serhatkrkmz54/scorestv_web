@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
-import { headers, cookies } from "next/headers";
 import type { Lang } from "@/i18n/auth-strings";
 import { HOME_META } from "@/lib/seo";
+import { resolveLang } from "@/lib/lang-server";
 import "./globals.css";
 import { Providers } from "@/context/providers";
 
@@ -15,21 +15,6 @@ const poppins = Poppins({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
-
-// Ulkeye gore varsayilan dil — Cloudflare CF-IPCountry. TR/AZ -> tr, digerleri -> en.
-function geoDefaultLang(country: string | null | undefined): Lang {
-  const c = (country ?? "").toUpperCase();
-  return c === "TR" || c === "AZ" ? "tr" : "en";
-}
-
-// Istek basina dili coz: kayitli tercih (cookie) > ulke > en.
-async function resolveLang(): Promise<Lang> {
-  const [hdrs, cks] = await Promise.all([headers(), cookies()]);
-  const saved = cks.get("stv_lang")?.value;
-  return saved === "tr" || saved === "en"
-    ? saved
-    : geoDefaultLang(hdrs.get("cf-ipcountry"));
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const m = HOME_META[await resolveLang()];
