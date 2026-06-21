@@ -14,6 +14,7 @@ import { AuthModal } from "@/components/auth/AuthModal";
 import { NotificationsEngine } from "@/components/home/NotificationsEngine";
 import { MobileNavProvider, MobileNavDrawer } from "@/components/shell/MobileNav";
 import { MobileNavContent } from "@/components/shell/MobileNavContent";
+import { DynamicSeo } from "@/components/seo/DynamicSeo";
 
 export function Providers({
   children,
@@ -25,6 +26,7 @@ export function Providers({
   return (
     <ThemeProvider>
       <LangProvider initialLang={initialLang}>
+        <DynamicSeo />
         <AuthProvider>
           <FavoritesProvider>
             <NotifPrefsProvider>

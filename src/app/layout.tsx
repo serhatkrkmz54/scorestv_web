@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import Script from "next/script";
 import { headers, cookies } from "next/headers";
 import type { Lang } from "@/i18n/auth-strings";
+import { HOME_META } from "@/lib/seo";
 import "./globals.css";
 import { Providers } from "@/context/providers";
 
@@ -30,39 +31,22 @@ async function resolveLang(): Promise<Lang> {
     : geoDefaultLang(hdrs.get("cf-ipcountry"));
 }
 
-// Dile gore SEO baslik/aciklama (ana sayfa + kendi metadata'si olmayan sayfalar).
-const META: Record<Lang, { title: string; description: string; locale: string }> = {
-  en: {
-    title: "Scores TV | Live Scores, Results, Sports News & Video Highlights",
-    description:
-      "Follow live scores, match results, fixtures, standings, transfer news and video highlights from football, basketball, tennis and more. Scores TV delivers real-time sports coverage, breaking news and live updates from around the world.",
-    locale: "en_US",
-  },
-  tr: {
-    title:
-      "Scores TV | Canlı Skor, Spor Haberleri, Maç Sonuçları ve Video Özetler",
-    description:
-      "Futbol, basketbol, tenis ve tüm spor dallarında canlı skorlar, maç sonuçları, puan durumları, transfer haberleri ve video özetleri. Sporun yeni adresi Scores TV.",
-    locale: "tr_TR",
-  },
-};
-
 export async function generateMetadata(): Promise<Metadata> {
-  const m = META[await resolveLang()];
+  const m = HOME_META[await resolveLang()];
   return {
     metadataBase: new URL(SITE_URL),
     title: m.title,
     description: m.description,
-    applicationName: "ScoresTV",
+    applicationName: "Scores TV",
     openGraph: {
       type: "website",
-      siteName: "ScoresTV",
+      siteName: "Scores TV",
       title: m.title,
       description: m.description,
       url: SITE_URL,
       locale: m.locale,
       images: [
-        { url: "/og-image.png", width: 1200, height: 630, alt: "ScoresTV" },
+        { url: "/og-image.png", width: 1200, height: 630, alt: "Scores TV" },
       ],
     },
     twitter: {
@@ -74,8 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Tema/dil "flash" onleyici. Dil icin localStorage tercihi varsa onu, yoksa
-// sunucunun ulkeye gore belirledigi `fallback` dilini kullanir.
+// Tema/dil "flash" onleyici.
 const noFlash = (fallback: Lang) =>
   `(function(){try{var t=localStorage.getItem('stv_theme');var c=t==='light'?'theme-light':'theme-dark';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add(c);var l=localStorage.getItem('stv_lang');e.lang=(l==='tr'||l==='en')?l:'${fallback}';}catch(_){document.documentElement.lang='${fallback}';}})();`;
 
