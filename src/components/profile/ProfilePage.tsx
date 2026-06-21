@@ -6,7 +6,6 @@ import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
 import { COUNTRIES, countryLabel } from "@/lib/countries";
 import {
-  GoogleMark,
   IconCalendar,
   IconGlobe,
   IconLock,
@@ -293,7 +292,7 @@ export function ProfilePage() {
           {googleOnly ? (
             <section className="profile-card profile-note">
               <span className="profile-note-ic">
-                <GoogleMark s={20} />
+                <IconLock s={20} />
               </span>
               <div className="profile-note-body">
                 <h2>{t("Şifre", "Password")}</h2>
