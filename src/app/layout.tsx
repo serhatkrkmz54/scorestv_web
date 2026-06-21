@@ -16,6 +16,9 @@ const poppins = Poppins({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
+// Google Analytics 4 — Measurement ID. .env'e tasinabilir; sabit de calisir.
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-GS488DD8KS";
+
 export async function generateMetadata(): Promise<Metadata> {
   const m = HOME_META[await resolveLang()];
   return {
@@ -66,6 +69,19 @@ export default async function RootLayout({
         <Script id="stv-no-flash" strategy="beforeInteractive">
           {noFlash(initialLang)}
         </Script>
+
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga-gtag" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`}
+        </Script>
+
         <Providers initialLang={initialLang}>{children}</Providers>
       </body>
     </html>
