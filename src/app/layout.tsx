@@ -14,36 +14,64 @@ const poppins = Poppins({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
-const SITE_DESC =
-  "Futbol, basketbol, tenis ve voleybol canlı skorları, puan durumları, istatistikler ve daha fazlası.";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: "ScoresTV — Canlı Skor & İstatistik",
-  description: SITE_DESC,
-  applicationName: "ScoresTV",
-  openGraph: {
-    type: "website",
-    siteName: "ScoresTV",
-    title: "ScoresTV — Canlı Skor & İstatistik",
-    description: SITE_DESC,
-    url: SITE_URL,
-    locale: "tr_TR",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ScoresTV" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "ScoresTV — Canlı Skor & İstatistik",
-    description: SITE_DESC,
-    images: ["/og-image.png"],
-  },
-};
-
-// Ulkeye gore varsayilan dil — Cloudflare CF-IPCountry header'indan.
-// TR ve AZ -> Turkce; diger tum ulkeler -> Ingilizce.
+// Ulkeye gore varsayilan dil — Cloudflare CF-IPCountry. TR/AZ -> tr, digerleri -> en.
 function geoDefaultLang(country: string | null | undefined): Lang {
   const c = (country ?? "").toUpperCase();
   return c === "TR" || c === "AZ" ? "tr" : "en";
+}
+
+// Istek basina dili coz: kayitli tercih (cookie) > ulke > en.
+async function resolveLang(): Promise<Lang> {
+  const [hdrs, cks] = await Promise.all([headers(), cookies()]);
+  const saved = cks.get("stv_lang")?.value;
+  return saved === "tr" || saved === "en"
+    ? saved
+    : geoDefaultLang(hdrs.get("cf-ipcountry"));
+}
+
+// Dile gore SEO baslik/aciklama (ana sayfa + kendi metadata'si olmayan sayfalar).
+const META: Record<Lang, { title: string; description: string; locale: string }> = {
+  en: {
+    title: "Scores TV | Live Scores, Results, Sports News & Video Highlights",
+    description:
+      "Follow live scores, match results, fixtures, standings, transfer news and video highlights from football, basketball, tennis and more. Scores TV delivers real-time sports coverage, breaking news and live updates from around the world.",
+    locale: "en_US",
+  },
+  tr: {
+    title:
+      "Scores TV | Canlı Skor, Spor Haberleri, Maç Sonuçları ve Video Özetler",
+    description:
+      "Futbol, basketbol, tenis ve tüm spor dallarında canlı skorlar, maç sonuçları, puan durumları, transfer haberleri ve video özetleri. Sporun yeni adresi Scores TV.",
+    locale: "tr_TR",
+  },
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const m = META[await resolveLang()];
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: m.title,
+    description: m.description,
+    applicationName: "ScoresTV",
+    openGraph: {
+      type: "website",
+      siteName: "ScoresTV",
+      title: m.title,
+      description: m.description,
+      url: SITE_URL,
+      locale: m.locale,
+      images: [
+        { url: "/og-image.png", width: 1200, height: 630, alt: "ScoresTV" },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: m.title,
+      description: m.description,
+      images: ["/og-image.png"],
+    },
+  };
 }
 
 // Tema/dil "flash" onleyici. Dil icin localStorage tercihi varsa onu, yoksa
@@ -56,15 +84,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Baslangic dili onceligi: kullanicinin kayitli tercihi (cookie) >
-  // ulkeye gore (CF-IPCountry) > en.
-  const [hdrs, cks] = await Promise.all([headers(), cookies()]);
-  const saved = cks.get("stv_lang")?.value;
-  const initialLang: Lang =
-    saved === "tr" || saved === "en"
-      ? saved
-      : geoDefaultLang(hdrs.get("cf-ipcountry"));
-
+  const initialLang = await resolveLang();
   return (
     <html lang={initialLang} className={`theme-dark ${poppins.variable}`} suppressHydrationWarning>
       <head>
