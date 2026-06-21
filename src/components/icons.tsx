@@ -145,6 +145,14 @@ export function GoogleMark({ s = 19 }: { s?: number }) {
   );
 }
 
+export function AppleMark({ s = 19 }: { s?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={s} height={s} aria-hidden="true" fill="currentColor">
+      <path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.13.94-3.94.94-.82 0-2.07-.92-3.41-.9-1.75.03-3.37 1.02-4.27 2.59-1.83 3.17-.47 7.86 1.31 10.43.87 1.26 1.9 2.67 3.26 2.62 1.31-.05 1.8-.85 3.39-.85 1.57 0 2.03.85 3.41.82 1.41-.02 2.3-1.28 3.16-2.55.99-1.46 1.4-2.88 1.43-2.95-.03-.01-2.74-1.05-2.77-4.16zM14.6 4.5c.72-.88 1.21-2.09 1.07-3.3-1.04.04-2.3.69-3.05 1.56-.67.78-1.26 2.02-1.1 3.21 1.16.09 2.35-.59 3.08-1.47z" />
+    </svg>
+  );
+}
+
 export function IconChevronLeft({ s = 16, ...p }: IP) {
   return (
     <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" {...p}>

@@ -340,6 +340,9 @@ body.drawer-open { overflow: hidden; }
 .prov-btn:hover:not(:disabled) { background: var(--surface-3); border-color: var(--text-faint); }
 .prov-btn span { white-space: nowrap; }
 .prov-btn:disabled { opacity: .7; cursor: default; }
+/* Apple HIG: siyah buton + beyaz yazı/ikon (her iki temada da tutarlı). */
+.prov-btn.apple { background: #000; border-color: #000; color: #fff; }
+.prov-btn.apple:hover:not(:disabled) { background: #141414; border-color: #141414; }
 
 .auth-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--text-faint); }
 .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -394,6 +397,7 @@ body.drawer-open { overflow: hidden; }
 
 .spin { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid color-mix(in srgb, currentColor 30%, transparent); border-top-color: currentColor; animation: spin .7s linear infinite; display: inline-block; }
 .spin.dark { border-color: rgba(0,0,0,.25); border-top-color: var(--accent-ink); }
+.spin.light { border-color: rgba(255,255,255,.35); border-top-color: #fff; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── header kullanıcı menüsü ── */

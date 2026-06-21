@@ -8,6 +8,7 @@ export const AUTH_STR = {
     tabIn: "Giriş Yap",
     tabUp: "Kayıt Ol",
     google: "Google ile devam et",
+    apple: "Apple ile devam et",
     or: "veya e-posta ile",
     name: "Ad Soyad",
     email: "E-posta",
@@ -33,9 +34,10 @@ export const AUTH_STR = {
     genericError: "Bir şeyler ters gitti. Lütfen tekrar dene.",
     offlineError: "Sunucuya ulaşılamıyor. Backend çalışıyor mu?",
     googleUnavailable: "Google girişi henüz yapılandırılmadı.",
-    // Google ile ilk kayit — birthDate + country eksik
+    appleUnavailable: "Apple girişi henüz yapılandırılmadı.",
+    // İlk kez sosyal giriş — birthDate + country eksik (Google/Apple ortak)
     googleCompleteTitle: "Hesabını tamamla",
-    googleCompleteSub: "Google ile ilk kayıt için doğum tarihi ve ülke gerekli.",
+    googleCompleteSub: "İlk kez giriş için doğum tarihi ve ülke gerekli.",
     googleCompleteSubmit: "Tamamla ve devam et",
     authCancel: "Vazgeç",
     birthDateRequired: "Doğum tarihi seçilmedi.",
@@ -57,6 +59,7 @@ export const AUTH_STR = {
     tabIn: "Sign in",
     tabUp: "Sign up",
     google: "Continue with Google",
+    apple: "Continue with Apple",
     or: "or with email",
     name: "Full name",
     email: "Email",
@@ -82,9 +85,10 @@ export const AUTH_STR = {
     genericError: "Something went wrong. Please try again.",
     offlineError: "Cannot reach the server. Is the backend running?",
     googleUnavailable: "Google sign-in is not configured yet.",
-    // Google first-time signup — birthDate + country required
+    appleUnavailable: "Apple sign-in is not configured yet.",
+    // First-time social signup — birthDate + country required (Google/Apple)
     googleCompleteTitle: "Complete your account",
-    googleCompleteSub: "First-time Google sign-up needs a birth date and country.",
+    googleCompleteSub: "First-time sign-in needs a birth date and country.",
     googleCompleteSubmit: "Finish & continue",
     authCancel: "Cancel",
     birthDateRequired: "Please choose a birth date.",

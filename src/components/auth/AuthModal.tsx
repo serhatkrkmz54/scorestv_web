@@ -8,6 +8,7 @@ import { AUTH_STR } from "@/i18n/auth-strings";
 import { COUNTRIES, countryLabel } from "@/lib/countries";
 import { Logo } from "@/components/shell/Logo";
 import {
+  AppleMark,
   GoogleMark,
   IconCalendar,
   IconClose,
@@ -18,8 +19,9 @@ import {
   IconUser,
 } from "@/components/icons";
 import { GOOGLE_CLIENT_ID, triggerGoogleSignIn } from "./google";
+import { APPLE_CLIENT_ID, triggerAppleSignIn } from "./apple";
 
-type Busy = "google" | "email" | null;
+type Busy = "google" | "apple" | "email" | null;
 
 /** Dış kabuk: kapalıyken hiç render etmez; her açılışta inner yeniden mount olur (temiz state). */
 export function AuthModal() {
@@ -39,11 +41,19 @@ function AuthModalInner() {
     needsGoogleCompletion,
     completeGoogleSignUp,
     cancelGoogleCompletion,
+    loginWithApple,
+    needsAppleCompletion,
+    completeAppleSignUp,
+    cancelAppleCompletion,
   } = useAuth();
   const { lang } = useLang();
   const router = useRouter();
   const a = AUTH_STR[lang];
   const isUp = authMode === "signup";
+
+  // Google + Apple tamamlama paneli aynı (doğum tarihi + ülke); hangisi tetikledi
+  // ise ona göre submit/cancel yönlendiriyoruz.
+  const needsCompletion = needsGoogleCompletion || needsAppleCompletion;
 
   const [showPass, setShowPass] = useState(false);
   const [busy, setBusy] = useState<Busy>(null);
@@ -96,7 +106,23 @@ function AuthModalInner() {
     setBusy(null);
   }, [a, loginWithGoogle]);
 
-  /** Google tamamlama paneli — "Tamamla" butonu */
+  const handleApple = useCallback(async () => {
+    setError(null);
+    setBusy("apple");
+    const r = await triggerAppleSignIn();
+    if (r.status === "ok") {
+      const res = await loginWithApple(r.identityToken, r.name);
+      if (!res.ok && !res.needsCompletion) setError(res.error ?? a.genericError);
+    } else if (r.status === "unavailable") {
+      setError(a.appleUnavailable);
+    } else if (r.status === "error") {
+      setError(a.genericError);
+    }
+    // canceled → sessizce kapat (hata gösterme)
+    setBusy(null);
+  }, [a, loginWithApple]);
+
+  /** Sosyal (Google/Apple) tamamlama paneli — "Tamamla" butonu */
   const handleGoogleComplete = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -110,23 +136,23 @@ function AuthModalInner() {
         return;
       }
       setBusy("google");
-      const r = await completeGoogleSignUp({
-        birthDate: gcBirthDate,
-        country: gcCountry,
-      });
+      const r = needsAppleCompletion
+        ? await completeAppleSignUp({ birthDate: gcBirthDate, country: gcCountry })
+        : await completeGoogleSignUp({ birthDate: gcBirthDate, country: gcCountry });
       if (!r.ok) setError(r.error ?? a.genericError);
       setBusy(null);
     },
-    [a, completeGoogleSignUp, gcBirthDate, gcCountry],
+    [a, needsAppleCompletion, completeAppleSignUp, completeGoogleSignUp, gcBirthDate, gcCountry],
   );
 
-  /** Google tamamlama paneli — "Vazgec" butonu */
+  /** Sosyal tamamlama paneli — "Vazgec" butonu */
   const handleGoogleCancel = useCallback(() => {
     setError(null);
     setGcBirthDate("");
     setGcCountry("");
-    cancelGoogleCompletion();
-  }, [cancelGoogleCompletion]);
+    if (needsAppleCompletion) cancelAppleCompletion();
+    else cancelGoogleCompletion();
+  }, [needsAppleCompletion, cancelAppleCompletion, cancelGoogleCompletion]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -173,11 +199,11 @@ function AuthModalInner() {
           <div className="auth-logo">
             <Logo h={26} />
           </div>
-          <h2>{needsGoogleCompletion ? a.googleCompleteTitle : a.welcome}</h2>
-          <p>{needsGoogleCompletion ? a.googleCompleteSub : a.subtitle}</p>
+          <h2>{needsCompletion ? a.googleCompleteTitle : a.welcome}</h2>
+          <p>{needsCompletion ? a.googleCompleteSub : a.subtitle}</p>
         </div>
 
-        {!needsGoogleCompletion && (
+        {!needsCompletion && (
           <div className="auth-tabs">
             <button className={!isUp ? "on" : ""} onClick={() => switchMode("signin")}>
               {a.tabIn}
@@ -192,7 +218,7 @@ function AuthModalInner() {
           </div>
         )}
 
-        {needsGoogleCompletion ? (
+        {needsCompletion ? (
           <div className="auth-body">
             {error && (
               <div className="auth-error" role="alert" style={{ marginBottom: 13 }}>
@@ -263,6 +289,13 @@ function AuthModalInner() {
             {busy === "google" ? <span className="spin" /> : <GoogleMark s={19} />}
             <span>{busy === "google" ? a.loading : a.google}</span>
           </button>
+
+          {APPLE_CLIENT_ID && (
+            <button className="prov-btn apple" disabled={!!busy} onClick={handleApple} type="button">
+              {busy === "apple" ? <span className="spin light" /> : <AppleMark s={18} />}
+              <span>{busy === "apple" ? a.loading : a.apple}</span>
+            </button>
+          )}
 
           <div className="auth-divider">
             <span>{a.or}</span>

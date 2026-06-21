@@ -38,6 +38,8 @@ interface AuthCtxValue {
    * tamamlama panelini acar.
    */
   needsGoogleCompletion: boolean;
+  /** Apple ilk kayit akisi aktif mi? Google ile birebir ayni desen. */
+  needsAppleCompletion: boolean;
   openAuth: (mode?: AuthMode) => void;
   closeAuth: () => void;
   setAuthMode: (mode: AuthMode) => void;
@@ -48,6 +50,14 @@ interface AuthCtxValue {
     input: { birthDate: string; country: string },
   ) => Promise<AuthActionResult>;
   cancelGoogleCompletion: () => void;
+  loginWithApple: (
+    identityToken: string,
+    name: string | null,
+  ) => Promise<AuthActionResult>;
+  completeAppleSignUp: (
+    input: { birthDate: string; country: string },
+  ) => Promise<AuthActionResult>;
+  cancelAppleCompletion: () => void;
   logout: () => Promise<void>;
   forgotPassword: (email: string) => Promise<AuthActionResult>;
   refresh: () => Promise<void>;
@@ -106,6 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("signin");
   const [needsGoogleCompletion, setNeedsGoogleCompletion] = useState(false);
+  const [needsAppleCompletion, setNeedsAppleCompletion] = useState(false);
 
   /**
    * Google ile gelen idToken — backend ilk kayitta birthDate+country isteyince
@@ -114,6 +125,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * gereksiz re-render yaratir; bu deger sadece submit aninda okunur.
    */
   const pendingIdTokenRef = useRef<string | null>(null);
+
+  /** Apple identityToken + adı — ilk kayıt tamamlamada tekrar Apple popup'ı
+   *  açmamak için. (Apple adı yalnız ilk girişte gelir, kaybetmeyelim.) */
+  const pendingAppleTokenRef = useRef<string | null>(null);
+  const pendingAppleNameRef = useRef<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -145,6 +161,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Modal kapanirken tamamlama state'ini de temizle (sonraki acmada temiz).
     setNeedsGoogleCompletion(false);
     pendingIdTokenRef.current = null;
+    setNeedsAppleCompletion(false);
+    pendingAppleTokenRef.current = null;
+    pendingAppleNameRef.current = null;
   }, []);
 
   const login = useCallback(async (input: LoginInput): Promise<AuthActionResult> => {
@@ -229,6 +248,73 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setNeedsGoogleCompletion(false);
   }, []);
 
+  const loginWithApple = useCallback(
+    async (
+      identityToken: string,
+      name: string | null,
+    ): Promise<AuthActionResult> => {
+      const { res, body } = await postJson("/api/auth/apple", {
+        identityToken,
+        name,
+      });
+      if (res.ok && body) {
+        setUser((body as { user: AppUser }).user);
+        setAuthOpen(false);
+        return { ok: true };
+      }
+      // Yeni Apple kaydi — backend birthDate+country istiyor. Token + adi
+      // cache'leyip tamamlama paneline yonlendir.
+      if (isGoogleProfileMissing(res.status, body)) {
+        pendingAppleTokenRef.current = identityToken;
+        pendingAppleNameRef.current = name;
+        setNeedsAppleCompletion(true);
+        return { ok: false, needsCompletion: true };
+      }
+      return { ok: false, error: extractError(body, "Apple girişi başarısız.") };
+    },
+    [],
+  );
+
+  const completeAppleSignUp = useCallback(
+    async (
+      input: { birthDate: string; country: string },
+    ): Promise<AuthActionResult> => {
+      const identityToken = pendingAppleTokenRef.current;
+      if (!identityToken) {
+        setNeedsAppleCompletion(false);
+        return {
+          ok: false,
+          error: "Oturum süresi doldu, lütfen tekrar deneyin.",
+        };
+      }
+      const { res, body } = await postJson("/api/auth/apple", {
+        identityToken,
+        name: pendingAppleNameRef.current,
+        birthDate: input.birthDate,
+        country: input.country,
+      });
+      if (res.ok && body) {
+        setUser((body as { user: AppUser }).user);
+        setAuthOpen(false);
+        setNeedsAppleCompletion(false);
+        pendingAppleTokenRef.current = null;
+        pendingAppleNameRef.current = null;
+        return { ok: true };
+      }
+      return {
+        ok: false,
+        error: extractError(body, "Apple girişi başarısız."),
+      };
+    },
+    [],
+  );
+
+  const cancelAppleCompletion = useCallback(() => {
+    pendingAppleTokenRef.current = null;
+    pendingAppleNameRef.current = null;
+    setNeedsAppleCompletion(false);
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
@@ -260,6 +346,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         authOpen,
         authMode,
         needsGoogleCompletion,
+        needsAppleCompletion,
         openAuth,
         closeAuth,
         setAuthMode,
@@ -268,6 +355,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithGoogle,
         completeGoogleSignUp,
         cancelGoogleCompletion,
+        loginWithApple,
+        completeAppleSignUp,
+        cancelAppleCompletion,
         logout,
         forgotPassword,
         refresh,
