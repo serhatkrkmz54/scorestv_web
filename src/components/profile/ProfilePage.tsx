@@ -299,8 +299,8 @@ export function ProfilePage() {
                 <h2>{t("Şifre", "Password")}</h2>
                 <p>
                   {t(
-                    "Bu hesaba Google ile giriş yapıyorsun. Şifre yönetimi Google hesabın üzerinden yapılır; burada değiştirilemez.",
-                    "You sign in to this account with Google. Password is managed through your Google account and can't be changed here.",
+                    "Bu hesaba Google ya da Apple ile giriş yapıyorsun. Şifre yönetimi ilgili sağlayıcı (Google/Apple) üzerinden yapılır; burada değiştirilemez.",
+                    "You sign in with Google or Apple. Your password is managed through that provider and can't be changed here.",
                   )}
                 </p>
               </div>
