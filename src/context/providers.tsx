@@ -7,6 +7,7 @@ import { LangProvider } from "./lang-context";
 import { AuthProvider } from "./auth-context";
 import { FavoritesProvider } from "./favorites-context";
 import { NotifPrefsProvider } from "./notif-prefs-context";
+import { SportProvider } from "./sport-context";
 import { Header } from "@/components/shell/Header";
 import { Footer } from "@/components/shell/Footer";
 import { Subnav } from "@/components/home/Subnav";
@@ -30,17 +31,19 @@ export function Providers({
         <AuthProvider>
           <FavoritesProvider>
             <NotifPrefsProvider>
-              <MobileNavProvider>
-                <div className="app">
-                  <Header />
-                  <Subnav />
-                  <main>{children}</main>
-                  <Footer />
-                </div>
-                <MobileNavDrawerWithContent />
-                <AuthModal />
-                <NotificationsEngine />
-              </MobileNavProvider>
+              <SportProvider>
+                <MobileNavProvider>
+                  <div className="app">
+                    <Header />
+                    <Subnav />
+                    <main>{children}</main>
+                    <Footer />
+                  </div>
+                  <MobileNavDrawerWithContent />
+                  <AuthModal />
+                  <NotificationsEngine />
+                </MobileNavProvider>
+              </SportProvider>
             </NotifPrefsProvider>
           </FavoritesProvider>
         </AuthProvider>

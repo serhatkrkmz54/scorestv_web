@@ -4,10 +4,19 @@
 //   takım: TR /takim/<id>     EN /team/<id>
 //   oyuncu: TR /oyuncu/<id>   EN /player/<id>
 //   sıralama: TR /siralama    EN /rankings
+// Cok-spor mac detay rotalari (futbol DEGISMEZ):
+//   basketbol: TR /basketbol/mac/<slug>  EN /basketball/match/<slug>
+//   voleybol:  TR /voleybol/mac/<slug>   EN /volleyball/match/<slug>
 import type { Lang } from "@/i18n/auth-strings";
 
 export function matchPath(lang: Lang, slug: string): string {
   return `/${lang === "tr" ? "mac" : "match"}/${slug}`;
+}
+export function basketballMatchPath(lang: Lang, slug: string): string {
+  return `/${lang === "tr" ? "basketbol/mac" : "basketball/match"}/${slug}`;
+}
+export function volleyballMatchPath(lang: Lang, slug: string): string {
+  return `/${lang === "tr" ? "voleybol/mac" : "volleyball/match"}/${slug}`;
 }
 export function leaguePath(lang: Lang, idOrSlug: string | number): string {
   return `/${lang === "tr" ? "lig" : "league"}/${idOrSlug}`;
@@ -41,6 +50,16 @@ const SEG_MAP: Record<string, { tr: string; en: string }> = {
   country: { tr: "ulke", en: "country" },
   siralama: { tr: "siralama", en: "rankings" },
   rankings: { tr: "siralama", en: "rankings" },
+  basketbol: { tr: "basketbol", en: "basketball" },
+  basketball: { tr: "basketbol", en: "basketball" },
+  voleybol: { tr: "voleybol", en: "volleyball" },
+  volleyball: { tr: "voleybol", en: "volleyball" },
+};
+
+// Ikinci segment cevirisi (spor mac detayinda /basketbol/mac <-> /basketball/match).
+const SEG2_MAP: Record<string, { tr: string; en: string }> = {
+  mac: { tr: "mac", en: "match" },
+  match: { tr: "mac", en: "match" },
 };
 
 export function translatePath(currentPath: string, targetLang: Lang): string {
@@ -50,5 +69,11 @@ export function translatePath(currentPath: string, targetLang: Lang): string {
   const mapping = SEG_MAP[first];
   if (!mapping) return currentPath;
   parts[0] = mapping[targetLang];
+  // Spor mac detayi: /basketbol/mac/<slug> -> ikinci segmenti de cevir.
+  if ((first === "basketbol" || first === "basketball" || first === "voleybol" || first === "volleyball") && parts.length >= 2) {
+    const second = parts[1].toLowerCase();
+    const m2 = SEG2_MAP[second];
+    if (m2) parts[1] = m2[targetLang];
+  }
   return "/" + parts.join("/");
 }

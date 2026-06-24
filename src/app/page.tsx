@@ -1,5 +1,5 @@
 import { HomeProvider } from "@/context/home-context";
-import { HomeFixtures } from "@/components/home/HomeFixtures";
+import { HomeMain } from "@/components/home/HomeMain";
 import { LeftRail } from "@/components/home/LeftRail";
 import { RightRail } from "@/components/home/RightRail";
 import { ScrollToTop } from "@/components/home/ScrollToTop";
@@ -22,7 +22,7 @@ export default async function HomePage() {
         <aside className="rail-left">
           <LeftRail />
         </aside>
-        <HomeFixtures />
+        <HomeMain />
         <aside className="rail-right">
           <RightRail />
         </aside>

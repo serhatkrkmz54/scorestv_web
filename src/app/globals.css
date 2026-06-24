@@ -4643,3 +4643,104 @@ a.team-transfer-player:hover { color: var(--accent); }
   .sport-tab svg { width: 14px; height: 14px; }
   .sport-tab .cnt { font-size: 9.2px; padding: 0 4px; min-width: 16px; }
 }
+
+/* ============================================================
+   COK-SPOR (basketbol + voleybol) — anasayfa skor seridi + detay
+   ============================================================ */
+
+/* Periyot/set dagilimi (Ç1-Ç4 / S1-S5) — futbol .sc-ht'i temel alir, daha
+   genis metin sigsin diye dar ekranlarda gizlenir. */
+.mr-score .sc-ht.sport-strip {
+  font-size: 10px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 700px) {
+  .mr-score .sc-ht.sport-strip { display: none; }
+}
+
+/* ---- Sport mac detay hero: periyot/set seridi ---- */
+.sport-hero-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.sport-hero-period {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 40px;
+  padding: 5px 8px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.sport-hero-period.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+}
+.sport-hero-period-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.sport-hero-period-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ---- Sport standings: voleybol/basketbol kolonlari (futbol tablosunu paylasir) ---- */
+.standings-table .sport-pts { font-weight: 700; color: var(--text); }
+
+/* ---- Sport mac detay: takim istatistik listesi (basketbol box-score) ---- */
+.sport-stats-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sport-stats-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sport-stats-team-away { flex-direction: row; }
+.sport-stats-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sport-stats-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+}
+.sport-stats-row:first-child { border-top: none; }
+.sport-stats-val {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sport-stats-row .sport-stats-val:first-child { text-align: left; }
+.sport-stats-row .sport-stats-val:last-child { text-align: right; }
+.sport-stats-label {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  white-space: nowrap;
+}
