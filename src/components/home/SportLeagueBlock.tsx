@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/context/lang-context";
 import { categorizeSport } from "@/lib/sport-scores";
 import type { SportLeagueGroup } from "@/lib/sport-scores-types";
 import type { Sport } from "@/lib/sports";
+import { basketballLeaguePath } from "@/lib/routes";
+import { buildEntitySlug } from "@/lib/slug-utils";
 import { CountryFlag } from "@/components/shell/CountryFlag";
 import { useFavorites } from "@/context/favorites-context";
 import { HOME_STR } from "@/i18n/home-strings";
@@ -28,14 +31,32 @@ export function SportLeagueBlock({
   const ids = games.map((g) => g.id);
   const allFav = hasAll(ids);
 
+  // Basketbolda lig basligi tiklanabilir → basketbol lig sayfasi.
+  const leagueHref =
+    sport === "basketball" && league.id
+      ? basketballLeaguePath(lang, buildEntitySlug(league.name, league.id))
+      : null;
+
+  const identity = (
+    <>
+      <CountryFlag flag={league.countryFlag} country={league.country} size={24} />
+      <div className="lh-id">
+        <span className="lh-name">{league.name}</span>
+        <span className="lh-sub">{league.country}</span>
+      </div>
+    </>
+  );
+
   return (
     <div className="league-block">
       <div className="league-head">
-        <CountryFlag flag={league.countryFlag} country={league.country} size={24} />
-        <div className="lh-id">
-          <span className="lh-name">{league.name}</span>
-          <span className="lh-sub">{league.country}</span>
-        </div>
+        {leagueHref ? (
+          <Link href={leagueHref} className="lh-link">
+            {identity}
+          </Link>
+        ) : (
+          identity
+        )}
         <div className="lh-actions">
           {liveN > 0 && (
             <span className="mr-live" style={{ fontSize: 13 }}>

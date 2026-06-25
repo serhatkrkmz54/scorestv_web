@@ -2,14 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useHomeOptional } from "@/context/home-context";
 import { useSportOptional } from "@/context/sport-context";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import type { FixtureDatesResponse } from "@/lib/fixtures-types";
 import type { Sport } from "@/lib/sports";
-import { rankingsPath } from "@/lib/routes";
+import { rankingsPath, basketballHomePath } from "@/lib/routes";
 import {
   IconBall,
   IconBars,
@@ -23,10 +23,19 @@ export function Subnav() {
   const home = useHomeOptional();
   const sportCtx = useSportOptional();
   const router = useRouter();
+  const pathname = usePathname();
   const { lang } = useLang();
   const t = HOME_STR[lang];
 
-  const activeSport: Sport = sportCtx?.sport ?? "football";
+  // Aktif spor artik PATHNAME'e gore belirlenir (sport-context degil):
+  //   futbol → "/" ve "/mac/*" (ve diger futbol rotalari)
+  //   basketbol → "/basketbol*" veya "/basketball*"
+  const activeSport: Sport = useMemo(() => {
+    const p = pathname ?? "/";
+    if (p.startsWith("/basketbol") || p.startsWith("/basketball")) return "basketball";
+    if (p.startsWith("/voleybol") || p.startsWith("/volleyball")) return "volleyball";
+    return "football";
+  }, [pathname]);
 
   const ctxDate = home?.selectedDate ?? null;
   const ctxCount = home?.day?.fixtureCount ?? null;
@@ -56,13 +65,14 @@ export function Subnav() {
   }, [ctxCount, ctxDate, lang]);
 
   const dayCount = useMemo(() => {
+    if (activeSport !== "football") return 0;
     if (ctxCount != null) return ctxCount;
     if (fallback) return fallback.count;
     return 0;
-  }, [ctxCount, fallback]);
+  }, [ctxCount, fallback, activeSport]);
 
-  // GECICI: "cok yakinda" toast'i (backend canliya alininca ilgili sporun
-  // comingSoon:true bayragini kaldir, toast devre disi kalir).
+  // GECICI: "cok yakinda" toast'i (yalnizca voleybol gibi henuz acilmamis
+  // sporlar icin; backend canliya alininca comingSoon:false yap).
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -75,12 +85,6 @@ export function Subnav() {
     setToast(msg);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 2600);
-  }
-
-  // Sekmeye tiklayinca: o sporu sec + ANASAYFAYA git (mac detayindan da calisir).
-  function pickSport(id: Sport) {
-    if (sportCtx) sportCtx.setSport(id);
-    router.push("/");
   }
 
   const sports: {
@@ -98,7 +102,6 @@ export function Subnav() {
       Icon: IconBasket,
       live: 0,
       on: true,
-      comingSoon: true,
     },
     {
       id: "volleyball",
@@ -110,6 +113,17 @@ export function Subnav() {
     },
     { id: "tennis", label: t.tennis, Icon: IconTennis, live: 0, on: false },
   ];
+
+  // Sekmeye tiklayinca: o sporun KENDI URL'ine git (futbol "/", basketbol
+  // "/basketbol" | "/basketball"). Spor-context de senkron tutulur.
+  function pickSport(id: Sport) {
+    if (sportCtx) sportCtx.setSport(id);
+    if (id === "basketball") {
+      router.push(basketballHomePath(lang));
+    } else {
+      router.push("/");
+    }
+  }
 
   return (
     <nav className="subnav">

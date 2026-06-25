@@ -4,6 +4,7 @@ import { HomeShell } from "@/components/home/HomeShell";
 import { LeftRail } from "@/components/home/LeftRail";
 import { RightRail } from "@/components/home/RightRail";
 import { ScrollToTop } from "@/components/home/ScrollToTop";
+import { SetSportFootball } from "@/components/home/SetSportFootball";
 import { resolveLang } from "@/lib/lang-server";
 
 // NOT: Anasayfa title/description'i KOK layout'taki generateMetadata (HOME_META)
@@ -16,6 +17,8 @@ export default async function HomePage() {
     : "Live Scores, Standings and Match Statistics";
   return (
     <HomeProvider>
+      {/* "/" her zaman FUTBOL — spor-context'i sabitle (regression koruma). */}
+      <SetSportFootball />
       {/* SEO: gorsel gizli ana baslik (robotlar gorur). */}
       <h1 className="sr-only">{h1}</h1>
       <HomeShell left={<LeftRail />} right={<RightRail />}>

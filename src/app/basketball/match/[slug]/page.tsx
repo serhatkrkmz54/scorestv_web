@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchBasketballDetailServer } from "@/lib/basketball-detail";
 import { BasketballDetailScreen } from "@/components/match/basketball/BasketballDetailScreen";
-import { LeftRail } from "@/components/home/LeftRail";
+import { BasketballLeftRail } from "@/components/home/BasketballLeftRail";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -53,7 +53,7 @@ export default async function Page({ params }: PageProps) {
       <h1 className="sr-only">{home} - {away}</h1>
       <div className="layout">
         <aside className="rail-left">
-          <LeftRail />
+          <BasketballLeftRail />
         </aside>
         <main className="match-detail-main">
           <BasketballDetailScreen initial={initial} slug={slug} lang="en" />
