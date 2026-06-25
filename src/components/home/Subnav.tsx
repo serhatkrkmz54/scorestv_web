@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useHomeOptional } from "@/context/home-context";
 import { useSportOptional } from "@/context/sport-context";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
@@ -20,7 +19,6 @@ import {
 } from "@/components/icons";
 
 export function Subnav() {
-  const home = useHomeOptional();
   const sportCtx = useSportOptional();
   const router = useRouter();
   const pathname = usePathname();
@@ -37,39 +35,48 @@ export function Subnav() {
     return "football";
   }, [pathname]);
 
-  const ctxDate = home?.selectedDate ?? null;
-  const ctxCount = home?.day?.fixtureCount ?? null;
-
-  const [fallback, setFallback] = useState<{
-    date: string;
-    count: number;
-  } | null>(null);
+  // Canli mac sayisi badge'leri — her spor KENDI canli sayisini gosterir ve
+  // aktif sekmeye BAGLI DEGILDIR (basketbola gecince futbol badge'i kaybolmaz,
+  // basketbol da kendi canli sayisini gosterir). Bugunun canli sayisi 60sn'de
+  // bir tazelenir.
+  const [footballLive, setFootballLive] = useState(0);
+  const [basketballLive, setBasketballLive] = useState(0);
 
   useEffect(() => {
-    if (ctxCount != null && ctxDate != null) return;
     let aborted = false;
-    fetch(`/api/fixtures/dates?days=1&lang=${lang}`, { cache: "no-store" })
-      .then((r) => (r.ok ? (r.json() as Promise<FixtureDatesResponse>) : null))
-      .then((data) => {
-        if (aborted || !data) return;
-        const todayEntry =
-          data.dates.find((d) => d.date === data.today) ?? data.dates[0] ?? null;
-        if (todayEntry) {
-          setFallback({ date: todayEntry.date, count: todayEntry.fixtureCount });
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/fixtures/dates?days=1&lang=${lang}`, {
+          cache: "no-store",
+        });
+        if (r.ok) {
+          const data = (await r.json()) as FixtureDatesResponse;
+          const today =
+            data.dates.find((d) => d.date === data.today) ?? data.dates[0] ?? null;
+          if (!aborted) setFootballLive(today?.liveCount ?? 0);
         }
-      })
-      .catch(() => {});
+      } catch {
+        /* sessiz */
+      }
+      try {
+        const r = await fetch(`/api/basketball/fixtures?status=live&lang=${lang}`, {
+          cache: "no-store",
+        });
+        if (r.ok) {
+          const data = (await r.json()) as { liveCount?: number };
+          if (!aborted) setBasketballLive(data.liveCount ?? 0);
+        }
+      } catch {
+        /* sessiz */
+      }
+    };
+    void load();
+    const id = setInterval(() => void load(), 60000);
     return () => {
       aborted = true;
+      clearInterval(id);
     };
-  }, [ctxCount, ctxDate, lang]);
-
-  const dayCount = useMemo(() => {
-    if (activeSport !== "football") return 0;
-    if (ctxCount != null) return ctxCount;
-    if (fallback) return fallback.count;
-    return 0;
-  }, [ctxCount, fallback, activeSport]);
+  }, [lang]);
 
   // GECICI: "cok yakinda" toast'i (yalnizca voleybol gibi henuz acilmamis
   // sporlar icin; backend canliya alininca comingSoon:false yap).
@@ -95,12 +102,12 @@ export function Subnav() {
     on: boolean;
     comingSoon?: boolean;
   }[] = [
-    { id: "football", label: t.football, Icon: IconBall, live: dayCount, on: true },
+    { id: "football", label: t.football, Icon: IconBall, live: footballLive, on: true },
     {
       id: "basketball",
       label: t.basketball,
       Icon: IconBasket,
-      live: 0,
+      live: basketballLive,
       on: true,
     },
     {
