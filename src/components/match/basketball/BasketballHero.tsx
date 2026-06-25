@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { CountryFlag } from "@/components/shell/CountryFlag";
-import { leaguePath } from "@/lib/routes";
+import { leaguePath, basketballTeamPath } from "@/lib/routes";
+import { buildEntitySlug } from "@/lib/slug-utils";
 import type {
   BasketballGameDetailResponse,
   BasketballScoreBreakdown,
@@ -118,12 +119,15 @@ export function BasketballHero({ detail, lang }: Props) {
         </div>
 
         <div className="match-hero-main">
-          <div className="match-hero-team match-hero-team-home">
+          <Link
+            href={basketballTeamPath(lang, homeTeam.slug ?? buildEntitySlug(homeTeam.name, homeTeam.id))}
+            className="match-hero-team match-hero-team-home"
+          >
             <TeamLogo name={homeTeam.name} logo={homeTeam.logo ?? null} size={64} />
             <span className="match-hero-team-name">
               {homeTeam.displayName ?? homeTeam.name}
             </span>
-          </div>
+          </Link>
 
           <div className="match-hero-center">
             {live ? (
@@ -151,12 +155,15 @@ export function BasketballHero({ detail, lang }: Props) {
             <QuarterStrip score={score} lang={lang} />
           </div>
 
-          <div className="match-hero-team match-hero-team-away">
+          <Link
+            href={basketballTeamPath(lang, awayTeam.slug ?? buildEntitySlug(awayTeam.name, awayTeam.id))}
+            className="match-hero-team match-hero-team-away"
+          >
             <TeamLogo name={awayTeam.name} logo={awayTeam.logo ?? null} size={64} />
             <span className="match-hero-team-name">
               {awayTeam.displayName ?? awayTeam.name}
             </span>
-          </div>
+          </Link>
         </div>
       </div>
     </section>
