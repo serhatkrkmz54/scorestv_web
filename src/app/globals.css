@@ -4757,3 +4757,35 @@ a.team-transfer-player:hover { color: var(--accent); }
   animation:subnavToastIn .18s ease-out;
 }
 @keyframes subnavToastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* Basketbol/voleybol modunda rail'ler gizli → ana kolon tam genislik. */
+.layout.layout-solo { grid-template-columns: minmax(0, 1fr); }
+
+/* ── Basketbol/voleybol fikstur satiri: takimlar sola yasli + altli ustlu;
+      ceyrek/set sayilari iki satir, toplam skor sagda kalin. ── */
+.bk-row { position: relative; display: flex; align-items: stretch; gap: 10px;
+  padding: 9px 12px; min-height: 64px; cursor: pointer;
+  border-top: 1px solid var(--border); transition: background .12s; }
+.bk-row:hover { background: var(--surface-2); }
+.bk-row.live::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--live); }
+.bk-status { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 48px; gap: 4px; font-size: 12px; font-weight: 700; line-height: 1.1; color: var(--text-faint); }
+.bk-status.up { color: var(--text-dim); }
+.bk-status.live { color: var(--live); }
+.bk-teams { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 9px; }
+.bk-team { display: flex; align-items: center; gap: 8px; min-width: 0; height: 22px; }
+.bk-team .nm { min-width: 0; font-size: 13.5px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bk-team.lost .nm { color: var(--text-dim); font-weight: 500; }
+.bk-grid { display: grid; align-self: center; align-items: center; justify-items: center;
+  column-gap: 8px; row-gap: 9px; }
+.bk-q { font-size: 12.5px; font-weight: 600; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; min-width: 15px; text-align: center; height: 22px; line-height: 22px; }
+.bk-total { display: flex; flex-direction: column; justify-content: center; gap: 9px;
+  align-self: center; min-width: 26px; text-align: center; }
+.bk-total b { font-size: 16px; font-weight: 800; color: var(--text); height: 22px; line-height: 22px;
+  font-variant-numeric: tabular-nums; }
+.bk-total b.lose { color: var(--text-dim); font-weight: 700; }
+.bk-row.live .bk-total b { color: var(--live); }
+.bk-vs { align-self: center; color: var(--text-faint); font-weight: 700; font-size: 13px; padding: 0 12px; }
+.bk-fav { align-self: center; }

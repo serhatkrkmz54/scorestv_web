@@ -9,69 +9,50 @@ import {
   startTime,
   sportWinnerSide,
 } from "@/lib/sport-scores";
-import type { SportGameSummary, SportTeam } from "@/lib/sport-scores-types";
+import type { SportGameSummary } from "@/lib/sport-scores-types";
 import { basketballMatchPath, volleyballMatchPath } from "@/lib/routes";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { IconStar } from "@/components/icons";
 import type { Lang } from "@/i18n/auth-strings";
 
-// Takim adi + logosu — basketbol/voleybolda takim detay rotasi henuz yok,
-// bu yuzden sade div (futboldaki gibi Link DEGIL).
-function TeamCell({
-  team,
-  side,
-  lost,
-}: {
-  team: SportTeam;
-  side: "home" | "away";
-  lost: boolean;
-}) {
-  const cls = `mr-team ${side}` + (lost ? " lost" : "");
-  const name = <span className="nm">{team.name}</span>;
-  const logo = <TeamLogo name={team.name} logo={team.logo} size={26} />;
-  const inner =
-    side === "home" ? (
-      <>
-        {name}
-        {logo}
-      </>
-    ) : (
-      <>
-        {logo}
-        {name}
-      </>
-    );
-  return <div className={cls}>{inner}</div>;
+interface Period {
+  label: string;
+  home: number | null;
+  away: number | null;
 }
 
-// Periyot/set dagilimi (Ç1-Ç4/UZT veya S1-S5) — skorun altinda kucuk.
-function ScoreStrip({ game, lang }: { game: SportGameSummary; lang: Lang }) {
-  const segs: string[] = [];
+// Spora gore periyot dagilimi — basketbol Ç1-Ç4/UZT, voleybol S1-S5.
+// Yalnizca veri olan periyotlar dondurulur.
+function periods(game: SportGameSummary, lang: Lang): Period[] {
+  const out: Period[] = [];
   if (game.sport === "basketball") {
     const h = game.score.home;
     const a = game.score.away;
-    const labels = lang === "tr" ? ["Ç1", "Ç2", "Ç3", "Ç4", "UZT"] : ["Q1", "Q2", "Q3", "Q4", "OT"];
-    const hv = [h.q1, h.q2, h.q3, h.q4, h.ot];
-    const av = [a.q1, a.q2, a.q3, a.q4, a.ot];
-    for (let i = 0; i < labels.length; i++) {
-      if (hv[i] != null || av[i] != null) {
-        segs.push(`${labels[i]} ${hv[i] ?? 0}-${av[i] ?? 0}`);
-      }
+    const defs: [string, number | null, number | null][] = [
+      [lang === "tr" ? "Ç1" : "Q1", h.q1, a.q1],
+      [lang === "tr" ? "Ç2" : "Q2", h.q2, a.q2],
+      [lang === "tr" ? "Ç3" : "Q3", h.q3, a.q3],
+      [lang === "tr" ? "Ç4" : "Q4", h.q4, a.q4],
+      [lang === "tr" ? "UZT" : "OT", h.ot, a.ot],
+    ];
+    for (const [label, hv, av] of defs) {
+      if (hv != null || av != null) out.push({ label, home: hv, away: av });
     }
   } else {
     const h = game.score.home;
     const a = game.score.away;
-    const labels = ["S1", "S2", "S3", "S4", "S5"];
-    const hv = [h.set1, h.set2, h.set3, h.set4, h.set5];
-    const av = [a.set1, a.set2, a.set3, a.set4, a.set5];
-    for (let i = 0; i < labels.length; i++) {
-      if (hv[i] != null || av[i] != null) {
-        segs.push(`${labels[i]} ${hv[i] ?? 0}-${av[i] ?? 0}`);
-      }
+    const defs: [string, number | null, number | null][] = [
+      ["S1", h.set1, a.set1],
+      ["S2", h.set2, a.set2],
+      ["S3", h.set3, a.set3],
+      ["S4", h.set4, a.set4],
+      ["S5", h.set5, a.set5],
+    ];
+    for (const [label, hv, av] of defs) {
+      if (hv != null || av != null) out.push({ label, home: hv, away: av });
     }
   }
-  if (segs.length === 0) return null;
-  return <span className="sc-ht tnum sport-strip">{segs.join(" · ")}</span>;
+  return out;
 }
 
 export function SportMatchRow({ game }: { game: SportGameSummary }) {
@@ -91,6 +72,7 @@ export function SportMatchRow({ game }: { game: SportGameSummary }) {
   const statusMain = isUpcoming
     ? startTime(game.startAt)
     : sportStatusLabelShort(game.sport, game.status, lang);
+  const statusKind = isLive ? "live" : isUpcoming ? "up" : "fin";
 
   const detailPath =
     game.sport === "basketball"
@@ -98,11 +80,11 @@ export function SportMatchRow({ game }: { game: SportGameSummary }) {
       : volleyballMatchPath(lang, game.slug);
   const go = () => router.push(detailPath);
 
-  const statusKind = isLive ? "live" : isUpcoming ? "up" : "fin";
+  const segs = isUpcoming ? [] : periods(game, lang);
 
   return (
     <div
-      className={"mrow" + (isLive ? " live" : "")}
+      className={"bk-row" + (isLive ? " live" : "")}
       onClick={go}
       role="link"
       tabIndex={0}
@@ -110,45 +92,56 @@ export function SportMatchRow({ game }: { game: SportGameSummary }) {
         if (e.key === "Enter") go();
       }}
     >
-      <div className="mrow-line">
-        <div className={`mr-status ${statusKind}`}>
-          <span className="st-main">
-            {isLive && <span className="live-dot pulse" />}
-            <span className="tnum st-full">{statusMain}</span>
-            <span className="tnum st-compact">{statusMain}</span>
-          </span>
+      <div className={`bk-status ${statusKind}`}>
+        {isLive && <span className="live-dot pulse" />}
+        <span className="tnum">{statusMain}</span>
+      </div>
+
+      <div className="bk-teams">
+        <div className={"bk-team" + (homeLost ? " lost" : "")}>
+          <TeamLogo name={game.home.name} logo={game.home.logo} size={22} />
+          <span className="nm">{game.home.name}</span>
         </div>
-
-        <TeamCell team={game.home} side="home" lost={homeLost} />
-
-        {isUpcoming ? (
-          <span className="mr-vs">VS</span>
-        ) : (
-          <div className="mr-score">
-            <div className="sc-main tnum">
-              <b className={homeLost ? "lose" : ""}>{game.score.homeTotal ?? 0}</b>
-              <i>:</i>
-              <b className={awayLost ? "lose" : ""}>{game.score.awayTotal ?? 0}</b>
-            </div>
-            <ScoreStrip game={game} lang={lang} />
-          </div>
-        )}
-
-        <TeamCell team={game.away} side="away" lost={awayLost} />
-
-        <div className="mr-end">
-          <button
-            className={"iconbtn fav" + (fav ? " on" : "")}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggle(game.id);
-            }}
-            aria-label={fav ? "Favorilerden çıkar" : "Favorilere ekle"}
-          >
-            <IconStar s={17} fill={fav ? "currentColor" : "none"} />
-          </button>
+        <div className={"bk-team" + (awayLost ? " lost" : "")}>
+          <TeamLogo name={game.away.name} logo={game.away.logo} size={22} />
+          <span className="nm">{game.away.name}</span>
         </div>
       </div>
+
+      {isUpcoming ? (
+        <div className="bk-vs">VS</div>
+      ) : (
+        <>
+          {segs.length > 0 && (
+            <div
+              className="bk-grid"
+              style={{ gridTemplateColumns: `repeat(${segs.length}, minmax(15px, 1fr))` }}
+            >
+              {segs.map((p, i) => (
+                <span key={"h" + i} className="bk-q">{p.home ?? 0}</span>
+              ))}
+              {segs.map((p, i) => (
+                <span key={"a" + i} className="bk-q">{p.away ?? 0}</span>
+              ))}
+            </div>
+          )}
+          <div className="bk-total">
+            <b className={homeLost ? "lose" : ""}>{game.score.homeTotal ?? 0}</b>
+            <b className={awayLost ? "lose" : ""}>{game.score.awayTotal ?? 0}</b>
+          </div>
+        </>
+      )}
+
+      <button
+        className={"iconbtn fav bk-fav" + (fav ? " on" : "")}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggle(game.id);
+        }}
+        aria-label={fav ? "Favorilerden çıkar" : "Favorilere ekle"}
+      >
+        <IconStar s={16} fill={fav ? "currentColor" : "none"} />
+      </button>
     </div>
   );
 }

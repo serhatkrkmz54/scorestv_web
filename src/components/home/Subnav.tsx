@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useHomeOptional } from "@/context/home-context";
 import { useSportOptional } from "@/context/sport-context";
 import { useLang } from "@/context/lang-context";
@@ -21,6 +22,7 @@ import {
 export function Subnav() {
   const home = useHomeOptional();
   const sportCtx = useSportOptional();
+  const router = useRouter();
   const { lang } = useLang();
   const t = HOME_STR[lang];
 
@@ -77,6 +79,12 @@ export function Subnav() {
     toastTimer.current = setTimeout(() => setToast(null), 2600);
   }
 
+  // Sekmeye tiklayinca: o sporu sec + ANASAYFAYA git (mac detayindan da calisir).
+  function pickSport(id: Sport) {
+    if (sportCtx) sportCtx.setSport(id);
+    router.push("/");
+  }
+
   const sports: {
     id: Sport | "tennis";
     label: string;
@@ -118,7 +126,7 @@ export function Subnav() {
                   );
                   return;
                 }
-                if (sportCtx) sportCtx.setSport(sp.id as Sport);
+                pickSport(sp.id as Sport);
               }}
             >
               <sp.Icon s={17} />
