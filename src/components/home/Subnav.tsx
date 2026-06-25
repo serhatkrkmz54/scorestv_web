@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useHomeOptional } from "@/context/home-context";
 import { useSportOptional } from "@/context/sport-context";
@@ -61,19 +61,40 @@ export function Subnav() {
     return 0;
   }, [ctxCount, fallback]);
 
-  // Canli sayisi yalnizca futbol tab'inda gosteriliyor (futbol day count'undan).
-  // Basketbol/voleybol canli rozeti anasayfa feed'inden ayrica gosterilebilir;
-  // burada sade tutuyoruz.
+  // GECICI: "yakinda hizmetinizde" toast'i (voleybol backend canliya alininca
+  // asagidaki comingSoon:true bayragini kaldir, toast devre disi kalir).
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    },
+    [],
+  );
+  function showToast(msg: string) {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2600);
+  }
+
   const sports: {
     id: Sport | "tennis";
     label: string;
     Icon: typeof IconBall;
     live: number;
     on: boolean;
+    comingSoon?: boolean;
   }[] = [
     { id: "football", label: t.football, Icon: IconBall, live: dayCount, on: true },
     { id: "basketball", label: t.basketball, Icon: IconBasket, live: 0, on: true },
-    { id: "volleyball", label: t.volleyball, Icon: IconVolley, live: 0, on: true },
+    {
+      id: "volleyball",
+      label: t.volleyball,
+      Icon: IconVolley,
+      live: 0,
+      on: true,
+      comingSoon: true,
+    },
     { id: "tennis", label: t.tennis, Icon: IconTennis, live: 0, on: false },
   ];
 
@@ -82,7 +103,7 @@ export function Subnav() {
       <div className="subnav-in">
         {sports.map((sp) => {
           const isSport = sp.id !== "tennis";
-          const selected = isSport && sp.id === activeSport;
+          const selected = isSport && !sp.comingSoon && sp.id === activeSport;
           return (
             <button
               key={sp.id}
@@ -90,7 +111,14 @@ export function Subnav() {
               className={"sport-tab" + (sp.on ? " on" : "") + (selected ? " selected" : "")}
               disabled={!sp.on}
               onClick={() => {
-                if (sp.on && isSport && sportCtx) sportCtx.setSport(sp.id as Sport);
+                if (!sp.on || !isSport) return;
+                if (sp.comingSoon) {
+                  showToast(
+                    `${sp.label} ${lang === "tr" ? "yakında hizmetinizde" : "coming soon"}`,
+                  );
+                  return;
+                }
+                if (sportCtx) sportCtx.setSport(sp.id as Sport);
               }}
             >
               <sp.Icon s={17} />
@@ -109,6 +137,11 @@ export function Subnav() {
           <span>{t.news}</span>
         </Link>
       </div>
+      {toast ? (
+        <div className="subnav-toast" role="status" aria-live="polite">
+          {toast}
+        </div>
+      ) : null}
     </nav>
   );
 }

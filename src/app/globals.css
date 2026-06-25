@@ -4744,3 +4744,16 @@ a.team-transfer-player:hover { color: var(--accent); }
   text-align: center;
   white-space: nowrap;
 }
+
+/* Gecici "yakinda hizmetinizde" toast (Subnav voleybol). */
+.subnav-toast{
+  position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+  z-index:1000; max-width:90vw; text-align:center;
+  background:rgba(15,23,42,.96); color:#fff;
+  font-size:13px; font-weight:600; letter-spacing:.2px;
+  padding:11px 18px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  animation:subnavToastIn .18s ease-out;
+}
+@keyframes subnavToastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
