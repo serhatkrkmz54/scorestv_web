@@ -804,7 +804,7 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
 .sport-tab:hover { color: var(--text-dim); }
 .sport-tab svg { opacity: .85; }
 .sport-tab.on { color: var(--text); }
-.sport-tab.on::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2.5px; border-radius: 3px; background: var(--accent); }
+.sport-tab.selected::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2.5px; border-radius: 3px; background: var(--accent); }
 .sport-tab .cnt { font-size: 10.1px; font-weight: 700; color: var(--text-faint); background: var(--surface-2); border-radius: 999px; padding: 1px 6px; }
 .sport-tab .cnt.live { color: #fff; background: var(--live); }
 .subnav-spacer { flex: 1; }

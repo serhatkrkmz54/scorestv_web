@@ -28,11 +28,9 @@ export function Subnav() {
 
   const activeSport: Sport = sportCtx?.sport ?? "football";
 
-  // 1) HomeContext varsa selectedDate'i ve day.fixtureCount'i oncelikli kullan.
   const ctxDate = home?.selectedDate ?? null;
   const ctxCount = home?.day?.fixtureCount ?? null;
 
-  // 2) HomeContext yoksa veya count gelmediyse, bagimsiz fetch.
   const [fallback, setFallback] = useState<{
     date: string;
     count: number;
@@ -63,8 +61,8 @@ export function Subnav() {
     return 0;
   }, [ctxCount, fallback]);
 
-  // GECICI: "yakinda hizmetinizde" toast'i (voleybol backend canliya alininca
-  // asagidaki comingSoon:true bayragini kaldir, toast devre disi kalir).
+  // GECICI: "cok yakinda" toast'i (backend canliya alininca ilgili sporun
+  // comingSoon:true bayragini kaldir, toast devre disi kalir).
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -94,7 +92,14 @@ export function Subnav() {
     comingSoon?: boolean;
   }[] = [
     { id: "football", label: t.football, Icon: IconBall, live: dayCount, on: true },
-    { id: "basketball", label: t.basketball, Icon: IconBasket, live: 0, on: true },
+    {
+      id: "basketball",
+      label: t.basketball,
+      Icon: IconBasket,
+      live: 0,
+      on: true,
+      comingSoon: true,
+    },
     {
       id: "volleyball",
       label: t.volleyball,
@@ -122,7 +127,7 @@ export function Subnav() {
                 if (!sp.on || !isSport) return;
                 if (sp.comingSoon) {
                   showToast(
-                    `${sp.label} ${lang === "tr" ? "yakında hizmetinizde" : "coming soon"}`,
+                    `${sp.label} ${lang === "tr" ? "çok yakında" : "coming soon"}`,
                   );
                   return;
                 }
