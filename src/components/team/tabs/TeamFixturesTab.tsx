@@ -62,7 +62,7 @@ function FixtureGroup({
             <div className="team-fix-date-head">{formatDateHeader(g.date, lang)}</div>
             <div className="team-fix-list">
               {g.list.map((f) => (
-                <MatchRow key={f.id} fixture={f} />
+                <MatchRow key={f.id} fixture={f} showLeague />
               ))}
             </div>
           </div>

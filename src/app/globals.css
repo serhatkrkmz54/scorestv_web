@@ -494,6 +494,10 @@ body.drawer-open { overflow: hidden; }
 /* maç satırı (web, ferah, simetrik) */
 .mrow { border-top: 1px solid var(--border); position: relative; transition: background .12s; cursor: pointer; }
 .mrow-line { display: grid; grid-template-columns: 96px 1fr 88px 1fr 92px; align-items: center; gap: 6px; padding: 0 12px; min-height: var(--row-h, 60px); }
+/* Takim fikstur tabinda: macin ait oldugu lig/turnuva (logo + ad) satir ustunde. */
+.mrow-league { display: flex; align-items: center; gap: 6px; padding: 7px 14px 0; min-width: 0; }
+.mrow-league-logo { width: 16px; height: 16px; object-fit: contain; flex: 0 0 auto; }
+.mrow-league-name { font-size: 11.5px; font-weight: 700; color: var(--text-dim); letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mrow:first-child { border-top: none; }
 .mrow:hover { background: var(--surface-2); }
 .mrow.live::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--live); }
@@ -507,8 +511,13 @@ body.drawer-open { overflow: hidden; }
 .mr-team { display: flex; align-items: center; gap: 11px; min-width: 0; }
 .mr-team.home { justify-content: flex-end; }
 .mr-team.home .nm { text-align: right; }
-.mr-team .nm { flex: 1 1 auto; min-width: 0; font-size: 14.3px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mr-team .nm { flex: 0 1 auto; min-width: 0; font-size: 14.3px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mr-team.home .nm { flex: 1 1 auto; }
 .mr-team.lost .nm { color: var(--text-dim); }
+/* Kırmızı kart rozeti — takım adının (skora bakan) yanında. */
+.mr-redcard { display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+.mr-redcard-card { width: 9px; height: 13px; border-radius: 2px; background: #E5384D; box-shadow: 0 1px 3px rgba(229, 56, 77, .35); }
+.mr-redcard-n { font-size: 11px; font-weight: 800; color: #E5384D; line-height: 1; }
 .mr-team.lost .badge { opacity: .75; }
 .mr-score { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
 .mr-score .sc-main { display: flex; align-items: center; justify-content: center; gap: 7px; }
@@ -895,6 +904,10 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .match-hero-team:hover .match-hero-team-name { color: var(--accent); }
+/* Hero'da takım adının yanında kırmızı kart rozeti. */
+.match-hero-redcard { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; }
+.match-hero-redcard-card { width: 12px; height: 17px; border-radius: 2.5px; background: #E5384D; box-shadow: 0 1px 4px rgba(229, 56, 77, .4); }
+.match-hero-redcard-n { font-size: 14px; font-weight: 800; color: #E5384D; line-height: 1; }
 
 .match-hero-center {
   display: flex; flex-direction: column; align-items: center; gap: 6px;

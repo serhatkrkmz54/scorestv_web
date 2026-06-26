@@ -162,6 +162,17 @@ export function MatchHero({ detail, lang }: Props) {
   const statusText = statusDisplayText(status, kickoff, lang);
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
 
+  // Kırmızı kart sayıları — maç olaylarından (type 'Card' + detail 'red').
+  const redCount = (teamId: number) =>
+    (detail.events ?? []).filter(
+      (e) =>
+        e.teamId === teamId &&
+        e.type?.toLowerCase() === "card" &&
+        (e.detail ?? "").toLowerCase().includes("red"),
+    ).length;
+  const homeReds = redCount(homeTeam.id);
+  const awayReds = redCount(awayTeam.id);
+
   return (
     <section className="match-hero">
       <div className="match-hero-bg" aria-hidden>
@@ -197,6 +208,14 @@ export function MatchHero({ detail, lang }: Props) {
           >
             <TeamLogo name={homeTeam.name} logo={homeTeam.logo ?? null} size={64} />
             <span className="match-hero-team-name">{homeTeam.name}</span>
+            {homeReds > 0 ? (
+              <span className="match-hero-redcard" aria-label={`${homeReds} kırmızı kart`}>
+                <span className="match-hero-redcard-card" />
+                {homeReds > 1 ? (
+                  <span className="match-hero-redcard-n">{homeReds}</span>
+                ) : null}
+              </span>
+            ) : null}
           </Link>
 
           <div className="match-hero-center">
@@ -231,6 +250,14 @@ export function MatchHero({ detail, lang }: Props) {
           >
             <TeamLogo name={awayTeam.name} logo={awayTeam.logo ?? null} size={64} />
             <span className="match-hero-team-name">{awayTeam.name}</span>
+            {awayReds > 0 ? (
+              <span className="match-hero-redcard" aria-label={`${awayReds} kırmızı kart`}>
+                <span className="match-hero-redcard-card" />
+                {awayReds > 1 ? (
+                  <span className="match-hero-redcard-n">{awayReds}</span>
+                ) : null}
+              </span>
+            ) : null}
           </Link>
         </div>
       </div>

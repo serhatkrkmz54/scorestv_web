@@ -63,6 +63,10 @@ export interface FixtureSummary {
   awayTeam: FixtureTeam;
   score: FixtureScore;
   venue: FixtureVenue | null;
+  // Bu maçta ev/deplasman takımının gördüğü kırmızı kart sayısı (0+).
+  // Eski cache'lerden null gelebilir; UI 0 sayar.
+  homeRedCards: number | null;
+  awayRedCards: number | null;
 }
 
 export interface LeagueGroup {

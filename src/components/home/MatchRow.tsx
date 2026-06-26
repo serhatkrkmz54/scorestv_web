@@ -19,29 +19,45 @@ import { IconInfo, IconStadium, IconStar } from "@/components/icons";
 import type { Lang } from "@/i18n/auth-strings";
 
 // Takım adı + logosu → takım sayfasına slug linki (satır tıklamasını engelle).
+// Kırmızı kart rozeti — küçük kırmızı kart; >1 ise yanında sayı.
+function RedCardBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="mr-redcard" aria-label={`${count} kırmızı kart`}>
+      <span className="mr-redcard-card" />
+      {count > 1 ? <span className="mr-redcard-n">{count}</span> : null}
+    </span>
+  );
+}
+
 function TeamCell({
   team,
   side,
   lost,
   lang,
+  redCards,
 }: {
   team: FixtureTeam;
   side: "home" | "away";
   lost: boolean;
   lang: Lang;
+  redCards: number;
 }) {
   const cls = `mr-team ${side}` + (lost ? " lost" : "");
   const name = <span className="nm">{team.name}</span>;
   const logo = <TeamLogo name={team.name} logo={team.logo} size={26} />;
+  const rc = redCards > 0 ? <RedCardBadge count={redCards} /> : null;
   const inner =
     side === "home" ? (
       <>
         {name}
+        {rc}
         {logo}
       </>
     ) : (
       <>
         {logo}
+        {rc}
         {name}
       </>
     );
@@ -56,7 +72,13 @@ function TeamCell({
   return <div className={cls}>{inner}</div>;
 }
 
-export function MatchRow({ fixture }: { fixture: FixtureSummary }) {
+export function MatchRow({
+  fixture,
+  showLeague = false,
+}: {
+  fixture: FixtureSummary;
+  showLeague?: boolean;
+}) {
   const router = useRouter();
   const { lang } = useLang();
   const { has, toggle } = useFavorites();
@@ -115,6 +137,20 @@ export function MatchRow({ fixture }: { fixture: FixtureSummary }) {
         if (e.key === "Enter") goMatch();
       }}
     >
+      {showLeague && fixture.leagueRef && (
+        <div className="mrow-league">
+          {fixture.leagueRef.logo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={fixture.leagueRef.logo}
+              alt=""
+              className="mrow-league-logo"
+              loading="lazy"
+            />
+          ) : null}
+          <span className="mrow-league-name">{fixture.leagueRef.name}</span>
+        </div>
+      )}
       <div className="mrow-line">
         <div className={`mr-status ${statusKind}`}>
           <span className="st-main">
@@ -124,7 +160,13 @@ export function MatchRow({ fixture }: { fixture: FixtureSummary }) {
           </span>
         </div>
 
-        <TeamCell team={fixture.homeTeam} side="home" lost={homeLost} lang={lang} />
+        <TeamCell
+          team={fixture.homeTeam}
+          side="home"
+          lost={homeLost}
+          lang={lang}
+          redCards={fixture.homeRedCards ?? 0}
+        />
 
         {isUpcoming ? (
           <span className="mr-vs">VS</span>
@@ -139,7 +181,13 @@ export function MatchRow({ fixture }: { fixture: FixtureSummary }) {
           </div>
         )}
 
-        <TeamCell team={fixture.awayTeam} side="away" lost={awayLost} lang={lang} />
+        <TeamCell
+          team={fixture.awayTeam}
+          side="away"
+          lost={awayLost}
+          lang={lang}
+          redCards={fixture.awayRedCards ?? 0}
+        />
 
         <div className="mr-end">
           {scoreTips.length > 0 && (
