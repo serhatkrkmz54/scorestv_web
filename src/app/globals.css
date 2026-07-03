@@ -4991,16 +4991,19 @@ a.team-transfer-player:hover { color: var(--accent); }
   flex: 0 0 42px; font-size: 0.78rem; font-weight: 700;
   color: var(--text-dim); font-variant-numeric: tabular-nums;
 }
-/* Sola gruplu matchup: [ev adı][logo] skor [logo][depl adı] — logolar skora
-   komşu, isimler ferah (kırpma yok). Kanal en sağa itilir. */
+/* Matchup ORTADA: [ev adı][logo] skor [logo][depl adı] — logolar skora komşu,
+   isimler ferah (kırpma yok). Saat solda sabit, kanal (varsa) en sağda; matchup
+   ikisinin ortasında dengeli durur. */
 .tvg-teams {
   flex: 1 1 auto; display: flex; align-items: center; gap: 9px; min-width: 0;
-  justify-content: flex-start;
+  justify-content: center;
 }
 .tvg-team {
   display: inline-flex; align-items: center; gap: 6px; min-width: 0;
   flex: 0 1 auto;
 }
+/* Ev sahibi bloğu sağa (skora) yaslı — matchup gerçekten ortalanır. */
+.tvg-team:not(.away) { justify-content: flex-end; }
 .tvg-tn {
   font-size: 0.84rem; font-weight: 500; color: var(--text);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
