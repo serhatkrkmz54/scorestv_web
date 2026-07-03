@@ -160,7 +160,7 @@ export default async function Page({ searchParams }: PageProps) {
           dangerouslySetInnerHTML={{ __html: itemListJsonLd(data, lang) }}
         />
       ) : null}
-      <div className="layout">
+      <div className="layout tvg-layout">
         <aside className="rail-left">
           <LeftRail />
         </aside>
@@ -206,18 +206,18 @@ export default async function Page({ searchParams }: PageProps) {
                         <span className="tvg-league-country">{lg.country}</span>
                       ) : null}
                     </Link>
-                    {lg.channels.length > 0 ? (
-                      <div
-                        className="tvg-chans"
-                        aria-label={channelLabel}
-                      >
-                        {lg.channels.map((ch) => (
-                          <span key={ch} className="tvg-chan">
-                            {ch}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
+                    <div className="tvg-head-right">
+                      {lg.channels.length > 0 ? (
+                        <div className="tvg-chans" aria-label={channelLabel}>
+                          {lg.channels.map((ch) => (
+                            <span key={ch} className="tvg-chan">
+                              {ch}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                      <span className="tvg-league-count">{lg.matches.length}</span>
+                    </div>
                   </div>
 
                   <ul className="tvg-matches">
@@ -263,7 +263,6 @@ export default async function Page({ searchParams }: PageProps) {
             </div>
           )}
         </main>
-        <aside className="rail-right" />
       </div>
     </>
   );
