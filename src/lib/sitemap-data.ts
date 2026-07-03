@@ -108,6 +108,49 @@ function matchPriority(iso?: string | null): string {
   return "0.3";
 }
 
+// Ligler icin popularite sinyali: config'teki populer lig ID'leri (sol ray ile
+// ayni kaynak). Bu set'i sitemap uretiminde bir kez cekip ID'ye gore oncelik
+// veririz — boylece Google tarama butcesi onemli liglere (Super Lig, Premier,
+// UCL...) yonelir, binlerce kucuk/atil lig geride kalir. Hata olursa bos set
+// (tum ligler tazelik-bazli dereceye duser) — nazik degradasyon.
+async function fetchPopularLeagueIds(): Promise<Set<number>> {
+  try {
+    const r = await fetch(`${BACKEND}/api/v1/leagues/popular?lang=en`, {
+      cache: "no-store",
+    });
+    if (!r.ok) return new Set();
+    const list = (await r.json()) as { id?: number }[];
+    const out = new Set<number>();
+    for (const l of list) {
+      if (typeof l.id === "number") out.add(l.id);
+    }
+    return out;
+  } catch {
+    return new Set();
+  }
+}
+
+// URL path'inin sonundaki "-{id}" kismindan lig ID'sini cikarir (/league/x-203).
+function idFromPath(path: string): number | null {
+  const m = /-(\d+)$/.exec(path);
+  return m ? Number(m[1]) : null;
+}
+
+// Lig oncelik/changefreq: populer -> yuksek+sik; degilse son guncelleme
+// tazeligine gore (aktif ligler orta, atil ligler dusuk).
+function leaguePriority(popular: boolean, iso?: string | null): string {
+  if (popular) return "0.9";
+  const d = daysSince(iso);
+  if (d < 30) return "0.5";
+  return "0.3";
+}
+function leagueChangefreq(popular: boolean, iso?: string | null): string {
+  if (popular) return "daily";
+  const d = daysSince(iso);
+  if (d < 30) return "weekly";
+  return "monthly";
+}
+
 export async function entriesFor(name: string): Promise<UrlEntry[]> {
   if (name === "static") {
     return STATIC.map((s) => ({
@@ -132,11 +175,14 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
       lastmod: string | null;
     }[];
     const isMatch = type === "matches";
-    // Mac disi tipler: mevcut statik degerler. Maclar: entry basina dinamik.
+    const isLeague = type === "leagues";
+    // Ligler: config'teki populer set'e gore oncelik (yuksek) vs tazelik (dusuk).
+    const popularLeagueIds = isLeague ? await fetchPopularLeagueIds() : null;
+    // Mac/lig disi tipler: mevcut statik degerler. Mac + lig: entry basina dinamik.
     const staticFreq =
       type === "players" || type === "matches" ? "monthly" : "weekly";
     const staticPrio =
-      type === "leagues" ? "0.7" : type === "matches" ? "0.4" : "0.5";
+      type === "matches" ? "0.4" : "0.5";
     const out: UrlEntry[] = [];
     for (const e of list) {
       const enUrl = SITE + e.enPath;
@@ -148,8 +194,20 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
         { hreflang: "x-default", href: enUrl },
       ];
       const lm = e.lastmod ?? undefined;
-      const freq = isMatch ? matchChangefreq(lm) : staticFreq;
-      const prio = isMatch ? matchPriority(lm) : staticPrio;
+      let freq: string;
+      let prio: string;
+      if (isMatch) {
+        freq = matchChangefreq(lm);
+        prio = matchPriority(lm);
+      } else if (isLeague) {
+        const id = idFromPath(e.enPath);
+        const popular = id != null && (popularLeagueIds?.has(id) ?? false);
+        freq = leagueChangefreq(popular, lm);
+        prio = leaguePriority(popular, lm);
+      } else {
+        freq = staticFreq;
+        prio = staticPrio;
+      }
       out.push({ loc: enUrl, lastmod: lm, changefreq: freq, priority: prio, alternates });
       out.push({ loc: trUrl, lastmod: lm, changefreq: freq, priority: prio, alternates });
     }
