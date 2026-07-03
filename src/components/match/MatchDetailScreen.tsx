@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { matchPath } from "@/lib/routes";
 import { MatchHero } from "./MatchHero";
+import { MatchStickyScore } from "./MatchStickyScore";
 import { MatchTabs, type MatchTabKey, type MatchTabDef } from "./MatchTabs";
 import { OverviewTab } from "./tabs/OverviewTab";
 import { StatsTab } from "./tabs/StatsTab";
@@ -155,8 +156,26 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
   const refreshingRef = useRef(false);
   const detailRef = useRef(detail);
   detailRef.current = detail;
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const [heroOut, setHeroOut] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Hero ekrandan cikinca (yukari kayinca) kompakt sticky skor barini goster.
+  // rootMargin ust ofseti = fixed header + subnav yuksekligi (CSS degiskeni).
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const cs = getComputedStyle(document.documentElement);
+    const px = (v: string) => parseInt(cs.getPropertyValue(v), 10) || 0;
+    const offset = px("--header-h") + px("--subnav-h") + 4;
+    const io = new IntersectionObserver(
+      ([entry]) => setHeroOut(!entry.isIntersecting),
+      { rootMargin: `-${offset}px 0px 0px 0px`, threshold: 0 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   // Canonical slug redirect: dile gore dogru mac slug'i (TR ev/dep
   // takimlar TR adi, EN ham ad). URL'deki slug yanlissa, sessizce duzelt.
@@ -311,7 +330,10 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
 
   return (
     <div className="match-detail-screen">
-      <MatchHero detail={detail} lang={lang} />
+      <div ref={heroRef}>
+        <MatchHero detail={detail} lang={lang} />
+      </div>
+      <MatchStickyScore detail={detail} lang={lang} visible={heroOut} />
       <MatchTabs tabs={tabs} active={tab} onChange={setTab} />
       <div className="match-detail-body">
         <TabContent tab={tab} detail={detail} lang={lang} broadcasts={broadcasts} />
