@@ -3,6 +3,7 @@ import Link from "next/link";
 import { resolveLang } from "@/lib/lang-server";
 import { fetchTvGuideServer, type TvGuideResponse } from "@/lib/tv-guide";
 import { LeftRail } from "@/components/home/LeftRail";
+import { NewsList } from "@/components/home/NewsList";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { matchPath, leaguePath } from "@/lib/routes";
 import { formatKickoffShort } from "@/lib/match-format";
@@ -160,7 +161,7 @@ export default async function Page({ searchParams }: PageProps) {
           dangerouslySetInnerHTML={{ __html: itemListJsonLd(data, lang) }}
         />
       ) : null}
-      <div className="layout tvg-layout">
+      <div className="layout">
         <aside className="rail-left">
           <LeftRail />
         </aside>
@@ -263,6 +264,9 @@ export default async function Page({ searchParams }: PageProps) {
             </div>
           )}
         </main>
+        <aside className="rail-right">
+          <NewsList />
+        </aside>
       </div>
     </>
   );
