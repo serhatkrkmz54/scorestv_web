@@ -4973,13 +4973,15 @@ a.team-transfer-player:hover { color: var(--accent); }
 }
 .tvg-team {
   display: inline-flex; align-items: center; gap: 6px; min-width: 0;
-  flex: 1 1 0;
+  flex: 1 1 0; justify-content: flex-end;
 }
 .tvg-team.away { justify-content: flex-start; }
 .tvg-tn {
   font-size: 0.82rem; font-weight: 500; color: var(--text);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+/* Ev sahibi adı sağa (skora) yaslı; deplasman adı sola. */
+.tvg-team:not(.away) .tvg-tn { text-align: right; }
 .tvg-vs { flex: 0 0 auto; color: var(--text-faint); font-size: 0.78rem; }
 .tvg-score {
   flex: 0 0 auto; font-size: 0.82rem; font-weight: 700; color: var(--text);

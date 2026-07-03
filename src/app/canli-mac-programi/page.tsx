@@ -233,8 +233,8 @@ export default async function Page({ searchParams }: PageProps) {
                             <span className="tvg-time">{time}</span>
                             <span className="tvg-teams">
                               <span className="tvg-team">
-                                <TeamLogo name={m.homeName} logo={m.homeLogo} size={18} />
                                 <span className="tvg-tn">{m.homeName}</span>
+                                <TeamLogo name={m.homeName} logo={m.homeLogo} size={18} />
                               </span>
                               {finishedOrLive ? (
                                 <span className="tvg-score">
