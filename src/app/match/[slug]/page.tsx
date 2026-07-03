@@ -6,6 +6,10 @@ import { LeftRail } from "@/components/home/LeftRail";
 import { MatchSideInfo } from "@/components/match/MatchSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import { fetchHighlightsServer } from "@/lib/highlights-server";
+import { videoObjectJsonLd } from "@/lib/video-jsonld";
+
+const FINISHED = new Set(["FT", "AET", "PEN"]);
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -63,10 +67,17 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   }
+  // VideoObject JSON-LD — yalnız biten maçlarda highlight varsa (SSR, cache'li).
+  const videoLd = FINISHED.has(initial.status.shortCode)
+    ? videoObjectJsonLd(initial, await fetchHighlightsServer(initial.id), "en")
+    : null;
   return (
     <>
       {initial.seo?.jsonLd ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }} />
+      ) : null}
+      {videoLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: videoLd }} />
       ) : null}
       {initial.seo?.breadcrumbs && initial.seo.breadcrumbs.length > 0 ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbListJsonLd(initial.seo.breadcrumbs) }} />
