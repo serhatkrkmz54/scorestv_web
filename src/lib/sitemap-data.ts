@@ -58,6 +58,7 @@ export function sitemapFiles(c: Counts): string[] {
 // Statik sayfalar tek URL (TR/EN ayni adreste, cookie ile dil) — alternates yok.
 const STATIC: { path: string; priority: string; freq: string }[] = [
   { path: "/", priority: "1.0", freq: "hourly" },
+  { path: "/canli-mac-programi", priority: "0.8", freq: "hourly" },
   { path: "/siralama", priority: "0.7", freq: "daily" },
   { path: "/haberler", priority: "0.6", freq: "daily" },
   { path: "/hakkimizda", priority: "0.4", freq: "monthly" },
@@ -77,6 +78,34 @@ function xmlEscape(s: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+/** lastmod (ISO) uzerinden bugune kadar gecen gun sayisi; yoksa cok buyuk. */
+function daysSince(iso?: string | null): number {
+  if (!iso) return Number.POSITIVE_INFINITY;
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return Number.POSITIVE_INFINITY;
+  return (Date.now() - t) / 86400000;
+}
+
+// Maclarda oncelik ve changefreq son guncelleme (lastmod=updatedAt) tazeligine
+// gore dinamiktir: canli/yeni biten/kadro aciklanan maclar taze -> yuksek
+// oncelik + sik tarama; atil/eski maclar -> dusuk. Boylece Google tarama
+// butcesi guncel iceriklere yonelir.
+function matchChangefreq(iso?: string | null): string {
+  const d = daysSince(iso);
+  if (d < 1) return "hourly";
+  if (d < 3) return "daily";
+  if (d < 14) return "weekly";
+  return "monthly";
+}
+function matchPriority(iso?: string | null): string {
+  const d = daysSince(iso);
+  if (d < 1) return "0.9";
+  if (d < 3) return "0.8";
+  if (d < 14) return "0.6";
+  if (d < 60) return "0.4";
+  return "0.3";
 }
 
 export async function entriesFor(name: string): Promise<UrlEntry[]> {
@@ -102,8 +131,12 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
       trPath: string;
       lastmod: string | null;
     }[];
-    const freq = type === "players" || type === "matches" ? "monthly" : "weekly";
-    const prio = type === "leagues" ? "0.7" : type === "matches" ? "0.4" : "0.5";
+    const isMatch = type === "matches";
+    // Mac disi tipler: mevcut statik degerler. Maclar: entry basina dinamik.
+    const staticFreq =
+      type === "players" || type === "matches" ? "monthly" : "weekly";
+    const staticPrio =
+      type === "leagues" ? "0.7" : type === "matches" ? "0.4" : "0.5";
     const out: UrlEntry[] = [];
     for (const e of list) {
       const enUrl = SITE + e.enPath;
@@ -115,6 +148,8 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
         { hreflang: "x-default", href: enUrl },
       ];
       const lm = e.lastmod ?? undefined;
+      const freq = isMatch ? matchChangefreq(lm) : staticFreq;
+      const prio = isMatch ? matchPriority(lm) : staticPrio;
       out.push({ loc: enUrl, lastmod: lm, changefreq: freq, priority: prio, alternates });
       out.push({ loc: trUrl, lastmod: lm, changefreq: freq, priority: prio, alternates });
     }

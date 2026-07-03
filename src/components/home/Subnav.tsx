@@ -13,6 +13,7 @@ import {
   IconBall,
   IconBars,
   IconBasket,
+  IconCalendar,
   IconNews,
   IconTennis,
   IconVolley,
@@ -26,8 +27,8 @@ export function Subnav() {
   const t = HOME_STR[lang];
 
   // Aktif spor artik PATHNAME'e gore belirlenir (sport-context degil):
-  //   futbol → "/" ve "/mac/*" (ve diger futbol rotalari)
-  //   basketbol → "/basketbol*" veya "/basketball*"
+  //   futbol -> "/" ve "/mac/*" (ve diger futbol rotalari)
+  //   basketbol -> "/basketbol*" veya "/basketball*"
   const activeSport: Sport = useMemo(() => {
     const p = pathname ?? "/";
     if (p.startsWith("/basketbol") || p.startsWith("/basketball")) return "basketball";
@@ -162,6 +163,10 @@ export function Subnav() {
           );
         })}
         <span className="subnav-spacer" />
+        <Link href="/canli-mac-programi" className="sport-tab">
+          <IconCalendar s={17} />
+          <span>{t.tvGuide}</span>
+        </Link>
         <Link href={rankingsPath(lang)} className="sport-tab">
           <IconBars s={17} />
           <span>{t.rankings}</span>

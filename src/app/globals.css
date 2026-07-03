@@ -4895,3 +4895,104 @@ a.team-transfer-player:hover { color: var(--accent); }
   color: var(--text-faint);
   padding-left: 36px;
 }
+
+/* ── Canlı Maç Programı hub (/canli-mac-programi) ── */
+.tvguide-main { min-width: 0; }
+.tvg-head { margin: 4px 0 14px; }
+.tvg-h1 {
+  font-size: 1.35rem; font-weight: 700; color: var(--text);
+  line-height: 1.25; margin: 0 0 8px;
+}
+.tvg-intro {
+  font-size: 0.83rem; color: var(--text-dim); line-height: 1.5;
+  max-width: 70ch; margin: 0;
+}
+.tvg-days {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
+  margin-bottom: 14px; scrollbar-width: none;
+}
+.tvg-days::-webkit-scrollbar { height: 0; }
+.tvg-day {
+  flex: 0 0 auto; padding: 7px 13px; border-radius: 10px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-dim); font-size: 0.78rem; font-weight: 600;
+  white-space: nowrap; transition: background .14s, color .14s, border-color .14s;
+}
+.tvg-day:hover { background: var(--surface-3); color: var(--text); }
+.tvg-day.on {
+  background: var(--accent); border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.tvg-sub {
+  font-size: 0.95rem; font-weight: 700; color: var(--text);
+  margin: 0 0 10px;
+}
+.tvg-empty {
+  font-size: 0.85rem; color: var(--text-dim);
+  padding: 24px 0; text-align: center;
+}
+.tvg-leagues { display: flex; flex-direction: column; gap: 12px; }
+.tvg-league {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+.tvg-league-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 10px 12px; background: var(--surface-2);
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.tvg-league-name {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.86rem; font-weight: 700; color: var(--text); min-width: 0;
+}
+.tvg-league-name:hover { color: var(--accent); }
+.tvg-league-country {
+  font-size: 0.72rem; font-weight: 500; color: var(--text-faint);
+}
+.tvg-chans { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+.tvg-chan {
+  font-size: 0.7rem; font-weight: 700; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: 7px; padding: 3px 8px; white-space: nowrap;
+}
+.tvg-matches { list-style: none; margin: 0; padding: 0; }
+.tvg-match { border-bottom: 1px solid var(--border); }
+.tvg-match:last-child { border-bottom: none; }
+.tvg-match-link {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  color: var(--text); transition: background .12s;
+}
+.tvg-match-link:hover { background: var(--surface-2); }
+.tvg-time {
+  flex: 0 0 42px; font-size: 0.78rem; font-weight: 700;
+  color: var(--text-dim); font-variant-numeric: tabular-nums;
+}
+.tvg-teams {
+  flex: 1 1 auto; display: flex; align-items: center; gap: 8px; min-width: 0;
+}
+.tvg-team {
+  display: inline-flex; align-items: center; gap: 6px; min-width: 0;
+  flex: 1 1 0;
+}
+.tvg-team.away { justify-content: flex-start; }
+.tvg-tn {
+  font-size: 0.82rem; font-weight: 500; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tvg-vs { flex: 0 0 auto; color: var(--text-faint); font-size: 0.78rem; }
+.tvg-score {
+  flex: 0 0 auto; font-size: 0.82rem; font-weight: 700; color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.tvg-match-chan {
+  flex: 0 0 auto; max-width: 120px; font-size: 0.7rem; font-weight: 600;
+  color: var(--text-dim); overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; text-align: right;
+}
+.tvg-match-chan.empty { width: 0; }
+@media (max-width: 560px) {
+  .tvg-time { flex-basis: 38px; }
+  .tvg-tn { font-size: 0.78rem; }
+  .tvg-match-chan { display: none; }
+}
