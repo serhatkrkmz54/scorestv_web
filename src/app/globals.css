@@ -946,6 +946,25 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
   font-size: 20.2px; font-weight: 700; color: var(--text-faint);
   letter-spacing: .04em;
 }
+/* Baslamamis maclarda "vs" yerine geri sayim sayaci. */
+.match-hero-countdown {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.mhcd-clock {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  font-size: 22px; font-weight: 800; line-height: 1;
+  color: var(--accent); letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+}
+.mhcd-d { font-size: 15px; font-weight: 800; color: var(--text-dim); }
+.mhcd-label {
+  font-size: 9.6px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text-faint);
+}
+@media (max-width: 600px) {
+  .mhcd-clock { font-size: 18px; }
+  .mhcd-label { font-size: 9px; }
+}
 .match-hero-breakdown {
   display: inline-flex; align-items: center; gap: 8px;
   margin-top: 4px;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { CountryFlag } from "@/components/shell/CountryFlag";
 import { leaguePath, basketballTeamPath } from "@/lib/routes";
+import { MatchCountdown } from "../MatchCountdown";
 import { buildEntitySlug } from "@/lib/slug-utils";
 import type {
   BasketballGameDetailResponse,
@@ -149,7 +150,11 @@ export function BasketballHero({ detail, lang }: Props) {
                 <span>{score!.away!.total}</span>
               </div>
             ) : (
-              <div className="match-hero-vs">{t("vs", "vs")}</div>
+              <MatchCountdown
+                kickoff={kickoff}
+                lang={lang}
+                fallback={<div className="match-hero-vs">{t("vs", "vs")}</div>}
+              />
             )}
 
             <QuarterStrip score={score} lang={lang} />

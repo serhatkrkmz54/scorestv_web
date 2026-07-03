@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { CountryFlag } from "@/components/shell/CountryFlag";
+import { MatchCountdown } from "../MatchCountdown";
 import { leaguePath } from "@/lib/routes";
 import type {
   VolleyballGameDetailResponse,
@@ -123,7 +124,11 @@ export function VolleyballHero({ detail, lang }: Props) {
                 <span>{score!.awaySets}</span>
               </div>
             ) : (
-              <div className="match-hero-vs">{t("vs", "vs")}</div>
+              <MatchCountdown
+                kickoff={kickoff}
+                lang={lang}
+                fallback={<div className="match-hero-vs">{t("vs", "vs")}</div>}
+              />
             )}
 
             <SetStrip score={score} />

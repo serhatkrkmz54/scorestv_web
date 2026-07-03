@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { CountryFlag } from "@/components/shell/CountryFlag";
+import { MatchCountdown } from "./MatchCountdown";
 import { leaguePath, teamPath } from "@/lib/routes";
 import { buildEntitySlug } from "@/lib/slug-utils";
 import type {
@@ -238,7 +239,11 @@ export function MatchHero({ detail, lang }: Props) {
                 <span>{score.away}</span>
               </div>
             ) : (
-              <div className="match-hero-vs">{t("vs", "vs")}</div>
+              <MatchCountdown
+                kickoff={kickoff}
+                lang={lang}
+                fallback={<div className="match-hero-vs">{t("vs", "vs")}</div>}
+              />
             )}
 
             <ScoreBreakdown score={score} status={status} lang={lang} />
