@@ -6,6 +6,7 @@ import { LeftRail } from "@/components/home/LeftRail";
 import { MatchSideInfo } from "@/components/match/MatchSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import { escapeJsonLd } from "@/lib/jsonld";
 import { fetchHighlightsServer } from "@/lib/highlights-server";
 import { videoObjectJsonLd } from "@/lib/video-jsonld";
 
@@ -74,13 +75,13 @@ export default async function Page({ params }: PageProps) {
   return (
     <>
       {initial.seo?.jsonLd ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.jsonLd) }} />
       ) : null}
       {videoLd ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: videoLd }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(videoLd) }} />
       ) : null}
       {initial.seo?.breadcrumbs && initial.seo.breadcrumbs.length > 0 ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbListJsonLd(initial.seo.breadcrumbs) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(breadcrumbListJsonLd(initial.seo.breadcrumbs)) }} />
       ) : null}
       <h1 className="sr-only">{initial.homeTeam.name} - {initial.awayTeam.name}</h1>
       <div className="layout">

@@ -7,6 +7,7 @@ import { NewsList } from "@/components/home/NewsList";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { matchPath, leaguePath } from "@/lib/routes";
 import { formatKickoffShort } from "@/lib/match-format";
+import { escapeJsonLd } from "@/lib/jsonld";
 import type { Lang } from "@/i18n/auth-strings";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
@@ -158,7 +159,7 @@ export default async function Page({ searchParams }: PageProps) {
       {data && data.leagues.length > 0 ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: itemListJsonLd(data, lang) }}
+          dangerouslySetInnerHTML={{ __html: escapeJsonLd(itemListJsonLd(data, lang)) }}
         />
       ) : null}
       <div className="layout">

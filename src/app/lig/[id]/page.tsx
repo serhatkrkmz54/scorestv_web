@@ -5,6 +5,7 @@ import { LeagueDetailScreen } from "@/components/league/LeagueDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { LeagueSideInfo } from "@/components/league/LeagueSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
+import { escapeJsonLd } from "@/lib/jsonld";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -71,7 +72,7 @@ export default async function Page({ params, searchParams }: PageProps) {
       {initial.seo?.jsonLd ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }}
+          dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.jsonLd) }}
         />
       ) : null}
       <h1 className="sr-only">{initial.name}</h1>

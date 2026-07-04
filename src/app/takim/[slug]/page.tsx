@@ -6,6 +6,7 @@ import { LeftRail } from "@/components/home/LeftRail";
 import { TeamSideInfo } from "@/components/team/TeamSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { teamJsonLd } from "@/lib/structured-data";
+import { escapeJsonLd } from "@/lib/jsonld";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -73,7 +74,7 @@ export default async function Page({ params, searchParams }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: initial.seo?.jsonLd ?? teamJsonLd(initial.name, initial.seo),
+          __html: escapeJsonLd(initial.seo?.jsonLd ?? teamJsonLd(initial.name, initial.seo)),
         }}
       />
       <h1 className="sr-only">{initial.name}</h1>

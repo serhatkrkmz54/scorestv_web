@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchVolleyballDetailServer } from "@/lib/volleyball-detail";
+import { escapeJsonLd } from "@/lib/jsonld";
 import { VolleyballDetailScreen } from "@/components/match/volleyball/VolleyballDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 
@@ -63,10 +64,10 @@ export default async function Page({ params }: PageProps) {
   return (
     <>
       {initial.seo?.jsonLd ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.jsonLd }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.jsonLd) }} />
       ) : null}
       {initial.seo?.breadcrumbsJsonLd ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: initial.seo.breadcrumbsJsonLd }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.breadcrumbsJsonLd) }} />
       ) : null}
       <h1 className="sr-only">{home} - {away}</h1>
       <div className="layout">
