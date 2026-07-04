@@ -17,6 +17,21 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const ANDROID_PACKAGE = "com.scorestv.mobile";
 
+// Yalnız Apple'ın gönderdiği beklenen alanlar intent'e aktarılır — rastgele
+// param yansıtmayı (injection) engeller. id_token JWT + user JSON büyük olabilir.
+const ALLOWED_FIELDS = new Set(["code", "id_token", "state", "user"]);
+const MAX_FIELD_LEN = 8192;
+
+function pickAllowed(entries: Iterable<[string, string]>): URLSearchParams {
+  const out = new URLSearchParams();
+  for (const [key, value] of entries) {
+    if (ALLOWED_FIELDS.has(key) && value.length <= MAX_FIELD_LEN) {
+      out.append(key, value);
+    }
+  }
+  return out;
+}
+
 function buildIntentRedirect(params: URLSearchParams): NextResponse {
   const intentUrl =
     `intent://callback?${params.toString()}` +
@@ -31,15 +46,14 @@ function buildIntentRedirect(params: URLSearchParams): NextResponse {
 
 export async function POST(req: NextRequest) {
   const form = await req.formData();
-  const params = new URLSearchParams();
+  const entries: [string, string][] = [];
   for (const [key, value] of form.entries()) {
-    if (typeof value === "string") params.append(key, value);
+    if (typeof value === "string") entries.push([key, value]);
   }
-  return buildIntentRedirect(params);
+  return buildIntentRedirect(pickAllowed(entries));
 }
 
 export async function GET(req: NextRequest) {
   // Bazı durumlarda response_mode=query ile gelebilir — defansif.
-  const params = new URLSearchParams(req.nextUrl.search);
-  return buildIntentRedirect(params);
+  return buildIntentRedirect(pickAllowed(req.nextUrl.searchParams.entries()));
 }
