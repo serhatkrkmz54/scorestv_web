@@ -9,6 +9,8 @@ import { breadcrumbListJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { fetchHighlightsServer } from "@/lib/highlights-server";
 import { videoObjectJsonLd } from "@/lib/video-jsonld";
+import { getNewsByFixture } from "@/lib/news-server";
+import { RelatedNews } from "@/components/news/RelatedNews";
 
 const FINISHED = new Set(["FT", "AET", "PEN"]);
 
@@ -72,6 +74,8 @@ export default async function Page({ params }: PageProps) {
   const videoLd = FINISHED.has(initial.status.shortCode)
     ? videoObjectJsonLd(initial, await fetchHighlightsServer(initial.id), "tr")
     : null;
+  // Bu maça bağlı ilgili haberler (SSR, hata → boş; boşsa render edilmez).
+  const relatedNews = await getNewsByFixture(initial.id, "tr");
   return (
     <>
       {initial.seo?.jsonLd ? (
@@ -90,6 +94,7 @@ export default async function Page({ params }: PageProps) {
         </aside>
         <main className="match-detail-main">
           <MatchDetailScreen initial={initial} slug={slug} lang="tr" />
+          <RelatedNews items={relatedNews} lang="tr" />
         </main>
         <aside className="rail-right">
           <MatchSideInfo detail={initial} lang="tr" />

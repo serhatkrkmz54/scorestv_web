@@ -20,7 +20,13 @@ export async function searchAll(
   const q = query.trim();
   if (!q) return EMPTY_SEARCH;
   try {
-    const qs = new URLSearchParams({ q, lang });
+    // types: mevcut gruplar + haber (news). Bos birakilsa backend hepsini
+    // dondururdu; haberi acikca istemek icin listeye ekliyoruz.
+    const qs = new URLSearchParams({
+      q,
+      lang,
+      types: "team,league,player,fixture,country,coach,news",
+    });
     const res = await fetch(`/api/search?${qs.toString()}`, {
       cache: "no-store",
       signal,

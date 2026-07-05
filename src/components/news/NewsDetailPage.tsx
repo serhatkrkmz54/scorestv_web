@@ -1,6 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getNewsBySlug, getRelatedByTeam, getRelatedByLeague } from "@/lib/news-server";
+import {
+  getNewsBySlug,
+  getRelatedBySlug,
+  getRelatedByTeam,
+  getRelatedByLeague,
+} from "@/lib/news-server";
 import { newsPath, newsListPath } from "@/lib/news-format";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { newsArticleJsonLd } from "@/lib/structured-data";
@@ -48,20 +53,25 @@ export async function buildNewsMetadata(
   };
 }
 
-// İlgili haberler: ilk bagli takim → yoksa ilk bagli lig üzerinden. Kendisini
-// hariç tutar. Hata olursa bos.
+// İlgili haberler: once ES-tabanli /related (slug) — en alakalisi. Bos donerse
+// eski davranisa duser: ilk bagli takim → yoksa ilk bagli lig. Kendisini haric
+// tutar. Hata olursa bos.
 async function fetchRelated(
   detail: NewsDetail,
   lang: Lang,
 ): Promise<NewsListItem[]> {
-  let items: NewsListItem[] = [];
-  const teamId = detail.teams?.[0]?.id;
-  const leagueId = detail.leagues?.[0]?.id;
-  if (teamId != null) {
-    items = await getRelatedByTeam(teamId, lang, 6);
-  }
-  if (items.length === 0 && leagueId != null) {
-    items = await getRelatedByLeague(leagueId, lang, 6);
+  // Once slug-tabanli ilgili haberler (ES ranked, backend DB fallback saglar).
+  let items = await getRelatedBySlug(detail.slug, 6);
+  // Bos ise (ES kapali + fallback de bos) takim/lig uzerinden nazik yedek.
+  if (items.length === 0) {
+    const teamId = detail.teams?.[0]?.id;
+    const leagueId = detail.leagues?.[0]?.id;
+    if (teamId != null) {
+      items = await getRelatedByTeam(teamId, lang, 6);
+    }
+    if (items.length === 0 && leagueId != null) {
+      items = await getRelatedByLeague(leagueId, lang, 6);
+    }
   }
   return items.filter((n) => n.id !== detail.id).slice(0, 5);
 }

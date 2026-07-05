@@ -74,6 +74,18 @@ export interface SearchCoachHit {
   currentTeamName: string | null;
 }
 
+// Haber sonucu — slug ile /haber/<slug> (TR) veya /news/<slug> (EN) detayina
+// gidilir. coverImageUrl kart gorseli, publishedAt tarih rozeti, lang dil.
+export interface SearchNewsHit {
+  id: number;
+  slug: string;
+  lang: string | null;
+  title: string;
+  summary: string | null;
+  coverImageUrl: string | null;
+  publishedAt: string | null;
+}
+
 export interface SearchResponse {
   query: string;
   tookMs: number;
@@ -83,6 +95,8 @@ export interface SearchResponse {
   fixtures: SearchFixtureHit[];
   countries: SearchCountryHit[];
   coaches: SearchCoachHit[];
+  // Haberler (news) — backend YENI ekledi; eski payload'larda gelmeyebilir.
+  news?: SearchNewsHit[];
 }
 
 // Empty (no-result) sentinel — UI render kolaylasir.
@@ -95,6 +109,7 @@ export const EMPTY_SEARCH: SearchResponse = {
   fixtures: [],
   countries: [],
   coaches: [],
+  news: [],
 };
 
 export function searchHitCount(r: SearchResponse): number {
@@ -104,6 +119,7 @@ export function searchHitCount(r: SearchResponse): number {
     r.players.length +
     r.fixtures.length +
     r.countries.length +
-    (r.coaches?.length ?? 0)
+    (r.coaches?.length ?? 0) +
+    (r.news?.length ?? 0)
   );
 }

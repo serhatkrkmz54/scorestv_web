@@ -94,3 +94,35 @@ export async function getRelatedByLeague(
   const r = await backendJson<NewsPageResponse>(`/api/v1/news?${qs.toString()}`);
   return r.ok && r.body ? r.body.items : [];
 }
+
+/**
+ * Slug ile ilgili haberler — GET /api/v1/news/{slug}/related. ES ranked;
+ * backend DB fallback saglar. Ayni dil + yayinda + kendisi haric. Bu uc
+ * dogrudan NewsListItem[] doner (sayfali degil). Hata → bos dizi.
+ */
+export async function getRelatedBySlug(
+  slug: string,
+  limit = 6,
+): Promise<NewsListItem[]> {
+  const qs = new URLSearchParams({ limit: String(limit) });
+  const r = await backendJson<NewsListItem[]>(
+    `/api/v1/news/${encodeURIComponent(slug)}/related?${qs.toString()}`,
+  );
+  return r.ok && Array.isArray(r.body) ? r.body : [];
+}
+
+/** Maca (fixture) bagli haberler (mac detay sayfasi). Hata → bos dizi. */
+export async function getNewsByFixture(
+  fixtureId: number,
+  lang: Lang,
+  limit = 5,
+): Promise<NewsListItem[]> {
+  const qs = new URLSearchParams({
+    lang,
+    fixtureId: String(fixtureId),
+    page: "0",
+    size: String(limit),
+  });
+  const r = await backendJson<NewsPageResponse>(`/api/v1/news?${qs.toString()}`);
+  return r.ok && r.body ? r.body.items : [];
+}

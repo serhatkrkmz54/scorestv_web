@@ -19,6 +19,7 @@ import {
   type SearchCountryHit,
   type SearchFixtureHit,
   type SearchLeagueHit,
+  type SearchNewsHit,
   type SearchPlayerHit,
   type SearchResponse,
   type SearchTeamHit,
@@ -30,6 +31,7 @@ import {
   playerPath,
   teamPath,
 } from "@/lib/routes";
+import { newsPath } from "@/lib/news-format";
 import { TeamLogo } from "./TeamLogo";
 import { IconSearch } from "@/components/icons";
 
@@ -58,7 +60,8 @@ type FlatItem =
   | { kind: "player"; href: string; hit: SearchPlayerHit }
   | { kind: "fixture"; href: string; hit: SearchFixtureHit }
   | { kind: "country"; href: string; hit: SearchCountryHit }
-  | { kind: "coach"; href: string; hit: SearchCoachHit };
+  | { kind: "coach"; href: string; hit: SearchCoachHit }
+  | { kind: "news"; href: string; hit: SearchNewsHit };
 
 /**
  * Koç sonucu icin href — koç detay sayfasi yok; mevcut takim biliniyorsa
@@ -109,6 +112,7 @@ export function SearchBox() {
     for (const h of data.fixtures) out.push({ kind: "fixture", href: matchPath(lang, h.slug), hit: h });
     for (const h of data.countries) out.push({ kind: "country", href: countryPath(lang, h.slug || h.id), hit: h });
     for (const h of data.coaches ?? []) out.push({ kind: "coach", href: coachHref(lang, h), hit: h });
+    for (const h of data.news ?? []) out.push({ kind: "news", href: newsPath(lang, h.slug), hit: h });
     return out;
   }, [data, lang]);
 
@@ -460,6 +464,33 @@ export function SearchBox() {
                 )}
                 offset={
                   data.teams.length + data.leagues.length + data.players.length + data.fixtures.length + data.countries.length
+                }
+              />
+              <ResultGroup
+                title={t("Haberler", "News")}
+                items={data.news ?? []}
+                renderItem={(h, idx) => (
+                  <ResultRow
+                    key={`n-${h.id}`}
+                    href={newsPath(lang, h.slug)}
+                    active={flat[activeIdx]?.kind === "news" && flat[activeIdx]?.hit.id === h.id}
+                    onSelect={closeAndNavigate}
+                    thumb={
+                      h.coverImageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={h.coverImageUrl} alt="" width={28} height={28} className="sd-thumb-img" loading="lazy" />
+                      ) : (
+                        <span className="sd-thumb-fallback">{(h.title?.[0] ?? "H").toUpperCase()}</span>
+                      )
+                    }
+                    title={h.title}
+                    subtitle={formatKickoff(h.publishedAt, lang) || null}
+                    badge={t("Haber", "News")}
+                    flatIdx={idx}
+                  />
+                )}
+                offset={
+                  data.teams.length + data.leagues.length + data.players.length + data.fixtures.length + data.countries.length + (data.coaches?.length ?? 0)
                 }
               />
               <div className="sd-foot">
