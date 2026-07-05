@@ -15,12 +15,6 @@ import { TeamLogo } from "@/components/shell/TeamLogo";
 /** Canli sayilan durum kodlari — ScoresTV Puani kartinda "Canli" rozeti icin. */
 const LIVE_STATUSES = new Set(["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "INT"]);
 
-/** Oyuncu fotografi — lineups/playerStats ile ayni CDN. */
-function playerPhotoUrl(id: number | null | undefined): string | null {
-  return id != null
-    ? `https://media.api-sports.io/football/players/${id}.png`
-    : null;
-}
 
 /** Oyuncu adi — id varsa oyuncu sayfasina link (dile gore slug), yoksa duz metin. */
 function PlayerLink({
@@ -147,7 +141,7 @@ function PlayerOfMatchCard({
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const motm = detail.playerOfTheMatch;
   if (!motm) return null;
-  const photo = motm.photo || playerPhotoUrl(motm.playerId);
+  const photo = motm.photo; // backend CDN-önce çözer; yoksa baş harf gösterilir
   const showPhoto = photo != null && !failed;
   return (
     <section className="match-card motm-card">
