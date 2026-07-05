@@ -43,7 +43,7 @@ export async function fetchCounts(): Promise<Counts> {
 }
 
 export function sitemapFiles(c: Counts): string[] {
-  const files = ["static"];
+  const files = ["static", "news"];
   const add = (type: string, count: number) => {
     const pages = count > 0 ? Math.ceil(count / PAGE_SIZE) : 0;
     for (let p = 0; p < pages; p++) files.push(`${type}-${p}`);
@@ -151,6 +151,43 @@ function leagueChangefreq(popular: boolean, iso?: string | null): string {
   return "monthly";
 }
 
+// Haber (news) alt sitemap'i — yayindaki haber detay URL'leri. Haber DILE OZEL
+// (TR haber /haber/<slug>, EN haber /news/<slug>). Her iki dilin listesini ayri
+// ceker; hata olursa o dil bos (nazik degradasyon). Yeni haberler taze ->
+// yuksek oncelik + sik tarama.
+async function newsEntries(): Promise<UrlEntry[]> {
+  const out: UrlEntry[] = [];
+  const langs: { lang: "tr" | "en"; prefix: string }[] = [
+    { lang: "tr", prefix: "/haber" },
+    { lang: "en", prefix: "/news" },
+  ];
+  for (const { lang, prefix } of langs) {
+    try {
+      const r = await fetch(
+        `${BACKEND}/api/v1/news?lang=${lang}&page=0&size=1000`,
+        { cache: "no-store" },
+      );
+      if (!r.ok) continue;
+      const j = (await r.json()) as {
+        items?: { slug: string; publishedAt: string | null }[];
+      };
+      for (const it of j.items ?? []) {
+        if (!it.slug) continue;
+        const lm = it.publishedAt ?? undefined;
+        out.push({
+          loc: `${SITE}${prefix}/${it.slug}`,
+          lastmod: lm,
+          changefreq: matchChangefreq(lm),
+          priority: matchPriority(lm),
+        });
+      }
+    } catch {
+      /* o dil icin bos — devam */
+    }
+  }
+  return out;
+}
+
 export async function entriesFor(name: string): Promise<UrlEntry[]> {
   if (name === "static") {
     return STATIC.map((s) => ({
@@ -158,6 +195,9 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
       changefreq: s.freq,
       priority: s.priority,
     }));
+  }
+  if (name === "news") {
+    return newsEntries();
   }
   const m = /^(leagues|teams|players|matches)-(\d+)$/.exec(name);
   if (!m) return [];

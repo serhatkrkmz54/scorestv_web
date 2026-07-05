@@ -65,6 +65,8 @@ const SEG_MAP: Record<string, { tr: string; en: string }> = {
   country: { tr: "ulke", en: "country" },
   siralama: { tr: "siralama", en: "rankings" },
   rankings: { tr: "siralama", en: "rankings" },
+  haber: { tr: "haber", en: "news" },
+  news: { tr: "haber", en: "news" },
   basketbol: { tr: "basketbol", en: "basketball" },
   basketball: { tr: "basketbol", en: "basketball" },
   voleybol: { tr: "voleybol", en: "volleyball" },

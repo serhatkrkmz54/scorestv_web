@@ -3,13 +3,14 @@
 import { FeaturedMatch } from "./FeaturedMatch";
 import { TwitterFeed } from "./TwitterFeed";
 import { NewsList } from "./NewsList";
+import type { NewsListItem } from "@/lib/news-types";
 
-export function RightRail() {
+export function RightRail({ news = [] }: { news?: NewsListItem[] }) {
   return (
     <>
       <FeaturedMatch />
       <TwitterFeed />
-      <NewsList />
+      <NewsList items={news} />
     </>
   );
 }

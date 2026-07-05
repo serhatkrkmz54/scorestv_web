@@ -6,6 +6,8 @@ import { LeftRail } from "@/components/home/LeftRail";
 import { LeagueSideInfo } from "@/components/league/LeagueSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { escapeJsonLd } from "@/lib/jsonld";
+import { getRelatedByLeague } from "@/lib/news-server";
+import { RelatedNews } from "@/components/news/RelatedNews";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -67,6 +69,7 @@ export default async function Page({ params, searchParams }: PageProps) {
       </div>
     );
   }
+  const relatedNews = await getRelatedByLeague(initial.id, "en");
   return (
     <>
       {initial.seo?.jsonLd ? (
@@ -82,6 +85,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         </aside>
         <main className="league-detail-main">
           <LeagueDetailScreen initial={initial} slug={slug} lang="en" />
+          <RelatedNews items={relatedNews} lang="en" />
         </main>
         <aside className="rail-right">
           <LeagueSideInfo detail={initial} lang="en" />

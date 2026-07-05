@@ -7,6 +7,8 @@ import { TeamSideInfo } from "@/components/team/TeamSideInfo";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { teamJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
+import { getRelatedByTeam } from "@/lib/news-server";
+import { RelatedNews } from "@/components/news/RelatedNews";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -69,6 +71,8 @@ export default async function Page({ params, searchParams }: PageProps) {
       </div>
     );
   }
+  // İlgili haberler (bu takıma bağlı) — SSR, hata olursa boş.
+  const relatedNews = await getRelatedByTeam(initial.id, "tr");
   return (
     <>
       <script
@@ -84,7 +88,8 @@ export default async function Page({ params, searchParams }: PageProps) {
         </aside>
         <main className="team-detail-main">
           <TeamDetailScreen initial={initial} slug={slug} lang="tr" />
-        </main>
+          <RelatedNews items={relatedNews} lang="tr" />
+      </main>
         <aside className="rail-right">
           <TeamSideInfo detail={initial} lang="tr" />
         </aside>
