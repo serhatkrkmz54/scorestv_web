@@ -349,6 +349,20 @@ export interface MatchOdds {
   markets: MatchOddMarket[];
 }
 
+// ====== Player of the Match / ScoresTV Rating ======
+
+export interface PlayerOfMatch {
+  playerId: number;
+  name: string;
+  photo: string | null;
+  teamId: number | null;
+  teamName: string | null;
+  rating: string;
+  goals: number;
+  assists: number;
+  position: string | null;
+}
+
 // ====== Ana yanit ======
 
 export interface MatchDetailResponse {
@@ -377,4 +391,7 @@ export interface MatchDetailResponse {
   broadcasts: MatchBroadcast[];  bracket?: MatchBracketView | null;
   seo?: MatchSeoResponse | null;
   odds?: MatchOdds | null;
+  playerOfTheMatch?: PlayerOfMatch | null;
+  homeScorestvRating?: number | null;
+  awayScorestvRating?: number | null;
 }
