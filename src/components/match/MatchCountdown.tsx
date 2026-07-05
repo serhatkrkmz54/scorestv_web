@@ -49,16 +49,14 @@ export function MatchCountdown({
   const m = Math.floor((totalSec % 3600) / 60);
   const s = totalSec % 60;
   const pad = (n: number) => String(n).padStart(2, "0");
-  const dayUnit = lang === "tr" ? "g" : "d";
+  const dayUnit = lang === "tr" ? "G" : "D";
   const label = lang === "tr" ? "Başlamasına" : "Starts in";
-  const clock = `${d > 0 ? `${d}${dayUnit} ` : ""}${pad(h)}:${pad(m)}:${pad(s)}`;
+  // Gün varsa saatin ONUNE aynı boyut/renkte inline yazılır: "1G:03:31:25".
+  const clock = `${d > 0 ? `${d}${dayUnit}:` : ""}${pad(h)}:${pad(m)}:${pad(s)}`;
 
   return (
     <div className="match-hero-countdown" role="timer" aria-label={`${label} ${clock}`}>
-      <span className="mhcd-clock tnum">
-        {d > 0 ? <span className="mhcd-d">{d}{dayUnit}</span> : null}
-        <span>{pad(h)}:{pad(m)}:{pad(s)}</span>
-      </span>
+      <span className="mhcd-clock tnum">{clock}</span>
       <span className="mhcd-label">{label}</span>
     </div>
   );
