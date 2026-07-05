@@ -4,6 +4,7 @@ import { resolveLang } from "@/lib/lang-server";
 import { fetchTvGuideServer, type TvGuideResponse } from "@/lib/tv-guide";
 import { LeftRail } from "@/components/home/LeftRail";
 import { NewsList } from "@/components/home/NewsList";
+import { getLatestNews } from "@/lib/news-server";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { matchPath, leaguePath } from "@/lib/routes";
 import { formatKickoffShort } from "@/lib/match-format";
@@ -140,6 +141,8 @@ export default async function Page({ searchParams }: PageProps) {
 
   const data = await fetchTvGuideServer(selected, lang);
   const heading = selectedHeading(selected, days, lang);
+  // Sag ray haber listesi (SSR; hata olursa bos → NewsList render etmez).
+  const news = await getLatestNews(lang, 5);
 
   const h1 =
     lang === "tr"
@@ -266,7 +269,7 @@ export default async function Page({ searchParams }: PageProps) {
           )}
         </main>
         <aside className="rail-right">
-          <NewsList />
+          <NewsList items={news} />
         </aside>
       </div>
     </>
