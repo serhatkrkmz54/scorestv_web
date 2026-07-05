@@ -84,6 +84,58 @@ function ratingText(r: string | null | undefined): string | null {
   return isFinite(v) ? v.toFixed(1) : null;
 }
 
+/** ScoresTV Puanı renk skalası (mobil ile aynı): >=8 mavi, >=7 yeşil,
+ *  >=6.5 amber, altı kırmızı. */
+function scorestvColor(v: number): string {
+  if (v >= 8) return "#2e7df7";
+  if (v >= 7) return "#2e9e5b";
+  if (v >= 6.5) return "#d39a16";
+  return "#d9534f";
+}
+
+/** Maçın Oyuncusu (Player of the Match) — Diziliş sekmesinin en üstünde,
+ *  yalnızca veri varsa. (Özet sekmesinden buraya taşındı.) */
+function PlayerOfMatchCard({
+  detail,
+  lang,
+}: {
+  detail: MatchDetailResponse;
+  lang: "tr" | "en";
+}) {
+  const [failed, setFailed] = useState(false);
+  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+  const motm = detail.playerOfTheMatch;
+  if (!motm) return null;
+  const photo = motm.photo; // backend CDN-önce çözer; yoksa baş harf gösterilir
+  const showPhoto = photo != null && !failed;
+  return (
+    <section className="match-card motm-card">
+      <div className="motm-row">
+        <span className="motm-avatar">
+          {showPhoto ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={photo} alt={motm.name} loading="lazy" onError={() => setFailed(true)} />
+          ) : (
+            <span className="motm-avatar-fallback">{motm.name.charAt(0)}</span>
+          )}
+        </span>
+        <div className="motm-info">
+          <span className="motm-label">{t("Maçın Oyuncusu", "Player of the Match")}</span>
+          <span className="motm-name">{motm.name}</span>
+          {motm.teamName ? <span className="motm-team">{motm.teamName}</span> : null}
+          {motm.goals > 0 || motm.assists > 0 ? (
+            <span className="motm-chips">
+              {motm.goals > 0 ? <span className="motm-chip">⚽ {motm.goals}</span> : null}
+              {motm.assists > 0 ? <span className="motm-chip">🅰 {motm.assists}</span> : null}
+            </span>
+          ) : null}
+        </div>
+        <span className="motm-rating">{motm.rating}</span>
+      </div>
+    </section>
+  );
+}
+
 /** Takim formasi rengi (#rrggbb) — gecersizse null. */
 function parseColor(hex: string | null | undefined): string | null {
   if (!hex) return null;
@@ -478,6 +530,7 @@ export function LineupsTab({ detail, lang }: Props) {
 
   return (
     <div className="match-tab match-tab-lineups">
+      <PlayerOfMatchCard detail={detail} lang={lang} />
       <section className="match-card">
         <header className="match-card-head pitch-head">
           <span className="pitch-head-team pitch-head-home">
@@ -533,6 +586,30 @@ export function LineupsTab({ detail, lang }: Props) {
               />
             ) : null}
           </div>
+          {/* ScoresTV Puanı — saha köşesinde (ev sağ-üst, deplasman sol-alt;
+              masaüstünde ev sol / deplasman sağ). Özet sekmesinden buraya taşındı. */}
+          {detail.homeScorestvRating != null ? (
+            <div className="pitch-stvr pitch-stvr-home">
+              <span className="pitch-stvr-label">Scores TV</span>
+              <span
+                className="pitch-stvr-val"
+                style={{ backgroundColor: scorestvColor(detail.homeScorestvRating) }}
+              >
+                {detail.homeScorestvRating.toFixed(1)}
+              </span>
+            </div>
+          ) : null}
+          {detail.awayScorestvRating != null ? (
+            <div className="pitch-stvr pitch-stvr-away">
+              <span
+                className="pitch-stvr-val"
+                style={{ backgroundColor: scorestvColor(detail.awayScorestvRating) }}
+              >
+                {detail.awayScorestvRating.toFixed(1)}
+              </span>
+              <span className="pitch-stvr-label">Scores TV</span>
+            </div>
+          ) : null}
         </div>
         <p className="lineup-hint">
           {t("Oyuncuya dokunarak istatistiklerini gör", "Tap a player to see their stats")}

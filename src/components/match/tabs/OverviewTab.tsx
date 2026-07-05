@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Link from "next/link";
 import { formatMinute } from "@/lib/match-format";
 import { playerPath } from "@/lib/routes";
@@ -10,10 +10,6 @@ import type {
   MatchEvent,
 } from "@/lib/match-detail-types";
 import { PredictionCard } from "@/components/match/PredictionCard";
-import { TeamLogo } from "@/components/shell/TeamLogo";
-
-/** Canli sayilan durum kodlari — ScoresTV Puani kartinda "Canli" rozeti icin. */
-const LIVE_STATUSES = new Set(["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "INT"]);
 
 
 /** Oyuncu adi — id varsa oyuncu sayfasina link (dile gore slug), yoksa duz metin. */
@@ -129,86 +125,6 @@ function predictionResultChoice(
   return "DRAW";
 }
 
-/** Maçın Oyuncusu (Player of the Match) — yalnizca veri varsa render edilir. */
-function PlayerOfMatchCard({
-  detail,
-  lang,
-}: {
-  detail: MatchDetailResponse;
-  lang: "tr" | "en";
-}) {
-  const [failed, setFailed] = useState(false);
-  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
-  const motm = detail.playerOfTheMatch;
-  if (!motm) return null;
-  const photo = motm.photo; // backend CDN-önce çözer; yoksa baş harf gösterilir
-  const showPhoto = photo != null && !failed;
-  return (
-    <section className="match-card motm-card">
-      <div className="motm-row">
-        <span className="motm-avatar">
-          {showPhoto ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={photo} alt={motm.name} loading="lazy" onError={() => setFailed(true)} />
-          ) : (
-            <span className="motm-avatar-fallback">{motm.name.charAt(0)}</span>
-          )}
-        </span>
-        <div className="motm-info">
-          <span className="motm-label">{t("Maçın Oyuncusu", "Player of the Match")}</span>
-          <span className="motm-name">{motm.name}</span>
-          {motm.teamName ? <span className="motm-team">{motm.teamName}</span> : null}
-          {motm.goals > 0 || motm.assists > 0 ? (
-            <span className="motm-chips">
-              {motm.goals > 0 ? <span className="motm-chip">⚽ {motm.goals}</span> : null}
-              {motm.assists > 0 ? <span className="motm-chip">🅰 {motm.assists}</span> : null}
-            </span>
-          ) : null}
-        </div>
-        <span className="motm-rating">{motm.rating}</span>
-      </div>
-    </section>
-  );
-}
-
-/** ScoresTV Puanı — iki takimin canli 0-10 puani (home solda, away sagda). */
-function ScorestvRatingCard({
-  detail,
-  lang,
-}: {
-  detail: MatchDetailResponse;
-  lang: "tr" | "en";
-}) {
-  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
-  const home = detail.homeScorestvRating;
-  const away = detail.awayScorestvRating;
-  if (home == null && away == null) return null;
-  const live = LIVE_STATUSES.has((detail.status?.shortCode ?? "").toUpperCase());
-  const homeBetter = home != null && away != null && home > away;
-  const awayBetter = home != null && away != null && away > home;
-  return (
-    <section className="match-card stvr-card">
-      <header className="match-card-head">
-        <h3>{t("ScoresTV Puanı", "ScoresTV Rating")}</h3>
-        {live ? <span className="stvr-live">{t("Canlı", "Live")}</span> : null}
-      </header>
-      <div className="stvr-body">
-        <div className={`stvr-team is-home${homeBetter ? " is-better" : ""}`}>
-          <TeamLogo name={detail.homeTeam.name} logo={detail.homeTeam.logo ?? null} size={24} />
-          <span className="stvr-team-name">{detail.homeTeam.name}</span>
-          <span className="stvr-val">{home != null ? home.toFixed(1) : "–"}</span>
-        </div>
-        <span className="stvr-vs">vs</span>
-        <div className={`stvr-team is-away${awayBetter ? " is-better" : ""}`}>
-          <span className="stvr-val">{away != null ? away.toFixed(1) : "–"}</span>
-          <span className="stvr-team-name">{detail.awayTeam.name}</span>
-          <TeamLogo name={detail.awayTeam.name} logo={detail.awayTeam.logo ?? null} size={24} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function OverviewTab({ detail, lang }: Props) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const { events: rawEvents, homeTeam } = detail;
@@ -232,8 +148,6 @@ export function OverviewTab({ detail, lang }: Props) {
           lang={lang}
           resultChoice={predictionResultChoice(detail)}
         />
-        <PlayerOfMatchCard detail={detail} lang={lang} />
-        <ScorestvRatingCard detail={detail} lang={lang} />
         <section className="match-card">
           <p className="match-empty">{t("Henüz olay yok", "No events yet")}</p>
         </section>
@@ -290,8 +204,6 @@ export function OverviewTab({ detail, lang }: Props) {
         lang={lang}
         resultChoice={predictionResultChoice(detail)}
       />
-      <PlayerOfMatchCard detail={detail} lang={lang} />
-      <ScorestvRatingCard detail={detail} lang={lang} />
       <section className="match-card">
         <header className="match-card-head">
           <h3>{t("Maç Olayları", "Match Events")}</h3>
