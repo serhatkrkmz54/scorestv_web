@@ -182,6 +182,7 @@ export interface TeamDetailResponse {
   logo?: string | null;
   founded?: number | null;
   national: boolean;
+  fifaRank?: number | null;
   code?: string | null;
   country?: TeamCountryInfo | null;
   venue?: TeamVenueInfo | null;

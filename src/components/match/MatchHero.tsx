@@ -209,6 +209,13 @@ export function MatchHero({ detail, lang }: Props) {
           >
             <TeamLogo name={homeTeam.name} logo={homeTeam.logo ?? null} size={64} />
             <span className="match-hero-team-name">{homeTeam.name}</span>
+            {detail.homeFifaRank != null ? (
+              <span className="match-hero-fifa">
+                {lang === "tr"
+                  ? `FIFA Sıralaması: #${detail.homeFifaRank}`
+                  : `FIFA Ranking: #${detail.homeFifaRank}`}
+              </span>
+            ) : null}
             {homeReds > 0 ? (
               <span className="match-hero-redcard" aria-label={`${homeReds} kırmızı kart`}>
                 <span className="match-hero-redcard-card" />
@@ -255,6 +262,13 @@ export function MatchHero({ detail, lang }: Props) {
           >
             <TeamLogo name={awayTeam.name} logo={awayTeam.logo ?? null} size={64} />
             <span className="match-hero-team-name">{awayTeam.name}</span>
+            {detail.awayFifaRank != null ? (
+              <span className="match-hero-fifa">
+                {lang === "tr"
+                  ? `FIFA Sıralaması: #${detail.awayFifaRank}`
+                  : `FIFA Ranking: #${detail.awayFifaRank}`}
+              </span>
+            ) : null}
             {awayReds > 0 ? (
               <span className="match-hero-redcard" aria-label={`${awayReds} kırmızı kart`}>
                 <span className="match-hero-redcard-card" />

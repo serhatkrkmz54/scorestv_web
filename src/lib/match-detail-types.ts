@@ -360,6 +360,8 @@ export interface MatchDetailResponse {
   status: MatchStatus;
   homeTeam: MatchTeam;
   awayTeam: MatchTeam;
+  homeFifaRank?: number | null;
+  awayFifaRank?: number | null;
   score: MatchScore;
   venue?: MatchVenue | null;
   league: MatchLeagueRef;

@@ -904,6 +904,13 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .match-hero-team:hover .match-hero-team-name { color: var(--accent); }
+/* FIFA sıralaması — takım adının altında ince satır (home sağa / away sola hizalı). */
+.match-hero-fifa {
+  flex-basis: 100%;
+  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  margin-top: 3px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
 /* Hero'da takım adının yanında kırmızı kart rozeti. */
 .match-hero-redcard { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; }
 .match-hero-redcard-card { width: 12px; height: 17px; border-radius: 2.5px; background: #E5384D; box-shadow: 0 1px 4px rgba(229, 56, 77, .4); }
@@ -3562,6 +3569,10 @@ a.fm-league:hover { color: var(--accent); }
   margin: 0; font-size: 23.9px; font-weight: 700;
   line-height: 1.12; color: var(--text);
   letter-spacing: -.01em;
+}
+.team-hero-fifa {
+  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  margin-top: 3px;
 }
 .team-hero-venue {
   display: inline-flex; align-items: center; gap: 6px;

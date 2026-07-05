@@ -56,6 +56,11 @@ export function TeamHero({ detail, selectedSeason, onSeasonChange, lang }: Props
               ) : null}
             </div>
             <h1 className="team-hero-name">{detail.name}</h1>
+            {detail.fifaRank != null ? (
+              <div className="team-hero-fifa">
+                {t("FIFA Sıralaması", "FIFA Ranking")}: #{detail.fifaRank}
+              </div>
+            ) : null}
             {detail.venue?.name ? (
               <div className="team-hero-venue">
                 <span className="team-hero-venue-name">{detail.venue.name}</span>
