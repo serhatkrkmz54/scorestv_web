@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Lang } from "@/i18n/auth-strings";
 import type { NewsDetail, NewsEntityRef, NewsListItem } from "@/lib/news-types";
 import {
-  categoryLabel,
   formatNewsDate,
   newsListPath,
   newsPath,
@@ -52,7 +51,6 @@ export function NewsArticle({
 }) {
   const isTr = lang === "tr";
   const t = (tr: string, en: string) => (isTr ? tr : en);
-  const cat = categoryLabel(detail.category, lang);
   const date = formatNewsDate(detail.publishedAt, lang);
   const reading = readingLabel(detail.readingMinutes, lang);
 
@@ -71,7 +69,7 @@ export function NewsArticle({
         <span>/</span>
         <Link href={newsListPath(lang)}>{t("Haberler", "News")}</Link>
         <span>/</span>
-        <span className="news-crumbs-cur">{cat}</span>
+        <span className="news-crumbs-cur">{detail.title}</span>
       </nav>
 
       {/* Chips */}
@@ -86,7 +84,6 @@ export function NewsArticle({
             {t("Öne Çıkan", "Featured")}
           </span>
         ) : null}
-        <span className="news-chip news-chip-cat">{cat}</span>
       </div>
 
       <h1 className="news-article-title">{detail.title}</h1>
