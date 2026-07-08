@@ -104,7 +104,8 @@ export async function NewsListView({
 
   return (
     <div className="news-page">
-      <header className="news-page-head">
+      {/* Başlık görsel olarak gizli ama SEO/erişilebilirlik için DOM'da kalır (sr-only). */}
+      <header className="news-page-head sr-only">
         <h1>{t("Haberler", "News")}</h1>
         <p className="news-page-sub">
           {t(
