@@ -39,11 +39,28 @@ export interface NewsPageResponse {
   hasNext: boolean;
 }
 
-// NewsDetail.EntityRef — bagli varlik hafif referansi.
+// NewsDetail.EntityRef — bagli varlik hafif referansi + türe özel alt-bilgi.
 export interface NewsEntityRef {
   id: number;
   name: string;
   logo: string | null;
+  subtitle?: string | null; // takım/lig→ülke, oyuncu→uyruk, ülke→kod
+}
+
+// NewsDetail.FixtureRef — bağlı maç (zengin kart için).
+export interface NewsFixtureRef {
+  id: number;
+  name: string; // "Ev - Deplasman"
+  logo: string | null;
+  kickoff: string | null; // ISO Instant
+  slug: string | null; // /mac/<slug> linki için
+  homeName: string;
+  homeLogo: string | null;
+  awayName: string;
+  awayLogo: string | null;
+  homeGoals: number | null;
+  awayGoals: number | null;
+  statusShort: string | null;
 }
 
 // NewsDetail — detay yaniti (sanitize edilmis body + bagli varliklar).
@@ -72,4 +89,5 @@ export interface NewsDetail {
   leagues: NewsEntityRef[] | null;
   countries: NewsEntityRef[] | null;
   players: NewsEntityRef[] | null;
+  fixtures: NewsFixtureRef[] | null;
 }

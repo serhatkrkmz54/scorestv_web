@@ -9,7 +9,8 @@ import {
 import { newsPath, newsListPath } from "@/lib/news-format";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { newsArticleJsonLd } from "@/lib/structured-data";
-import { LeftRail } from "@/components/home/LeftRail";
+import { NewsCategoryRail } from "./NewsCategoryRail";
+import { NewsEntityCards } from "./NewsEntityCards";
 import { NewsArticle } from "./NewsArticle";
 import type { Lang } from "@/i18n/auth-strings";
 import type { NewsDetail, NewsListItem } from "@/lib/news-types";
@@ -124,12 +125,14 @@ export async function NewsDetailPage({
       />
       <div className="layout">
         <aside className="rail-left">
-          <LeftRail />
+          <NewsCategoryRail lang={lang} />
         </aside>
         <main className="news-detail-main">
           <NewsArticle detail={data} related={related} lang={lang} />
         </main>
-        <aside className="rail-right" />
+        <aside className="rail-right">
+          <NewsEntityCards detail={data} lang={lang} />
+        </aside>
       </div>
     </>
   );

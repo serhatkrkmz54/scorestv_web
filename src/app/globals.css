@@ -5258,6 +5258,66 @@ a.nl-item:hover { background: var(--surface-2); }
 
 /* ── Liste sayfasi (/haberler) ── */
 .news-page { max-width: 1000px; margin: 0 auto; width: 100%; padding: 20px 18px 60px; }
+
+/* Haber listesi 2-kolon: sol kategori rail + ana içerik (sağ rail yok) */
+.layout-2col { grid-template-columns: var(--rail-l) minmax(0, 1fr); }
+@media (max-width: 1023.98px) {
+  .layout-2col { grid-template-columns: minmax(0, 1fr); }
+}
+.news-list-main { min-width: 0; }
+/* Layout içinde .news-page dış boşluk/genişlik kısıtını bırakır (kolonu doldurur) */
+.news-list-main .news-page { max-width: none; margin: 0; padding: 0; }
+/* Yatay kategori çipleri yalnız rail'in gizli olduğu (mobil/tablet) genişlikte */
+@media (min-width: 1024px) {
+  .news-page .news-filters { display: none; }
+}
+/* Sol rail'de aktif kategori vurgusu */
+.news-cat-item.on { background: var(--surface-2); }
+.news-cat-item.on .nm { color: var(--accent); font-weight: 700; }
+
+/* İlgili varlık kartları (haber detay sağ rail) */
+.news-ec { display: flex; flex-direction: column; gap: 10px; }
+.news-ec-title { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--text-dim); padding: 0 2px 2px; }
+.news-ec-card {
+  display: flex; align-items: center; gap: 11px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 11px 12px; text-decoration: none; color: inherit;
+  transition: border-color .14s, transform .1s, box-shadow .14s;
+}
+.news-ec-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+.news-ec-card.is-static, .news-ec-card.is-static:hover { cursor: default; border-color: var(--border); transform: none; box-shadow: none; }
+.news-ec-logo {
+  width: 42px; height: 42px; flex-shrink: 0; border-radius: 10px;
+  background: var(--surface-3); display: grid; place-items: center; overflow: hidden;
+}
+.news-ec-logo.round { border-radius: 50%; }
+.news-ec-logo img { width: 100%; height: 100%; object-fit: contain; }
+.news-ec-logo.round img { object-fit: cover; }
+.news-ec-logo-fb { font-size: 16px; font-weight: 800; color: var(--text-dim); }
+.news-ec-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.news-ec-kind { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.news-ec-name { font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.news-ec-sub { font-size: 11.5px; font-weight: 500; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.news-ec-go { flex-shrink: 0; font-size: 20px; line-height: 1; color: var(--text-faint); }
+.news-ec-card:hover .news-ec-go { color: var(--accent); }
+
+/* Fikstür kartı */
+.news-ec-fxcard { flex-direction: column; align-items: stretch; gap: 8px; }
+.news-ec-fx { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.news-ec-fx-team { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+.news-ec-fx-team img, .news-ec-fx-fb { width: 30px; height: 30px; object-fit: contain; }
+.news-ec-fx-fb { background: var(--surface-3); border-radius: 6px; display: block; }
+.news-ec-fx-nm { font-size: 11.5px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.15;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.news-ec-fx-mid { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.news-ec-fx-mid b { font-size: 16px; font-weight: 800; color: var(--text); white-space: nowrap; }
+.news-ec-fx-mid > span { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; }
+.news-ec-fx-st { font-size: 9.5px; font-weight: 700; text-transform: uppercase; color: var(--text-faint); }
+
+/* Masaüstünde eski basit ilgili-çipleri gizle (yerini sağ raildeki kartlar aldı) */
+@media (min-width: 768px) {
+  .news-entities { display: none; }
+}
 .news-page-head { margin: 0 0 16px; }
 .news-page-head h1 { margin: 0 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
 .news-page-sub { margin: 0; font-size: 13px; font-weight: 500; color: var(--text-dim); }
