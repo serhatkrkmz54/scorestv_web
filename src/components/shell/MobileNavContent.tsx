@@ -15,6 +15,7 @@ import { useLang } from "@/context/lang-context";
 import { useAuth } from "@/context/auth-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import { rankingsPath } from "@/lib/routes";
+import { newsListPath } from "@/lib/news-format";
 import { LeftRail } from "@/components/home/LeftRail";
 import { IconBall, IconBars, IconHome, IconNews } from "@/components/icons";
 import { useMobileNav } from "./MobileNav";
@@ -49,7 +50,7 @@ export function MobileNavContent() {
           <IconBars s={18} />
           <span>{t.rankings}</span>
         </Link>
-        <Link href="/haberler" className="mn-quick-item">
+        <Link href={newsListPath(lang)} className="mn-quick-item">
           <IconNews s={18} />
           <span>{t.news}</span>
         </Link>

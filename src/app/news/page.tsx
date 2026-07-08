@@ -4,18 +4,18 @@ import {
   buildNewsListMetadata,
 } from "@/components/news/NewsListView";
 
-// Haber listesi — TR rota: /haberler. Dil sabit "tr" (EN karşılığı /news).
+// Haber listesi — EN rota: /news. Dil sabit "en" (TR karşılığı /haberler).
 interface PageProps {
   searchParams: Promise<{ category?: string; page?: string }>;
 }
 
 export function generateMetadata(): Metadata {
-  return buildNewsListMetadata("tr");
+  return buildNewsListMetadata("en");
 }
 
-export default async function NewsListPageTr({ searchParams }: PageProps) {
+export default async function NewsListPageEn({ searchParams }: PageProps) {
   const sp = await searchParams;
   return (
-    <NewsListView lang="tr" categoryParam={sp.category} pageParam={sp.page} />
+    <NewsListView lang="en" categoryParam={sp.category} pageParam={sp.page} />
   );
 }

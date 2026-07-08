@@ -8,10 +8,10 @@ export function newsPath(lang: Lang, slug: string): string {
   return `/${lang === "tr" ? "haber" : "news"}/${slug}`;
 }
 
-// Haber liste yolu — TR/EN tek adres /haberler (cookie/geo diliyle calisir,
-// tıpkı /siralama sitemap'te tek URL oldugu gibi). Dil cookie ile belirlenir.
-export function newsListPath(_lang: Lang): string {
-  return "/haberler";
+// Haber liste yolu — dile gore ayri adres: TR /haberler, EN /news.
+// (Detay /haber/<slug> ↔ /news/<slug> ile paralel.)
+export function newsListPath(lang: Lang): string {
+  return lang === "tr" ? "/haberler" : "/news";
 }
 
 // Kategori etiketleri (TR/EN). Backend enum → gorunur ad.

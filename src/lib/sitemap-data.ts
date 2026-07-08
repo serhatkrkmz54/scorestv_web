@@ -61,6 +61,7 @@ const STATIC: { path: string; priority: string; freq: string }[] = [
   { path: "/canli-mac-programi", priority: "0.8", freq: "hourly" },
   { path: "/siralama", priority: "0.7", freq: "daily" },
   { path: "/haberler", priority: "0.6", freq: "daily" },
+  { path: "/news", priority: "0.6", freq: "daily" },
   { path: "/hakkimizda", priority: "0.4", freq: "monthly" },
   { path: "/iletisim", priority: "0.4", freq: "monthly" },
   { path: "/reklam", priority: "0.3", freq: "monthly" },

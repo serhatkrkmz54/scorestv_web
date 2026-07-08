@@ -88,6 +88,12 @@ export function translatePath(currentPath: string, targetLang: Lang): string {
   const parts = currentPath.split("/").filter(Boolean);
   if (parts.length === 0) return "/";
   const first = parts[0].toLowerCase();
+  // Haber LISTESI ozel durum: TR /haberler <-> EN /news (tek segment). Detay
+  // /haber|news/<slug> (iki segment) asagidaki SEG_MAP (haber<->news) ile cevrilir.
+  if (parts.length === 1) {
+    if (first === "haberler") return targetLang === "en" ? "/news" : "/haberler";
+    if (first === "news") return targetLang === "tr" ? "/haberler" : "/news";
+  }
   const mapping = SEG_MAP[first];
   if (!mapping) return currentPath;
   parts[0] = mapping[targetLang];

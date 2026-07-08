@@ -9,6 +9,7 @@ import { HOME_STR } from "@/i18n/home-strings";
 import type { FixtureDatesResponse } from "@/lib/fixtures-types";
 import type { Sport } from "@/lib/sports";
 import { rankingsPath, basketballHomePath } from "@/lib/routes";
+import { newsListPath } from "@/lib/news-format";
 import {
   IconBall,
   IconBars,
@@ -171,7 +172,7 @@ export function Subnav() {
           <IconBars s={17} />
           <span>{t.rankings}</span>
         </Link>
-        <Link href="/haberler" className="sport-tab">
+        <Link href={newsListPath(lang)} className="sport-tab">
           <IconNews s={17} />
           <span>{t.news}</span>
         </Link>

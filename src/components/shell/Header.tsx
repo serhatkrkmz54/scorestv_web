@@ -59,9 +59,19 @@ export function Header() {
   const switchLang = (target: Lang) => {
     if (target === lang) return;
     setLang(target);
-    if (!pathname) return;
-    const next = translatePath(pathname, target);
-    if (next !== pathname) router.push(next);
+    // Sunucu bileşenleri (haber listesi, skorlar, meta...) YENİ dille yeniden
+    // render edilsin diye: cookie'yi HEMEN yaz (context effect'ini bekleme) ve
+    // sayfayı yönlendir/tazele. Aksi halde tek-URL sayfalarda (/haberler gibi)
+    // sadece client metinleri değişir, sunucu içeriği eski dilde kalırdı.
+    document.cookie = `stv_lang=${target}; path=/; max-age=${
+      60 * 60 * 24 * 365
+    }; samesite=lax`;
+    const next = pathname ? translatePath(pathname, target) : null;
+    if (next && next !== pathname) {
+      router.push(next); // yol dile göre değişiyorsa (haber/news) oraya git
+    } else {
+      router.refresh(); // yol aynıysa sunucu içeriğini yeni dille tazele
+    }
   };
 
   return (
