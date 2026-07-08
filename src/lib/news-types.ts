@@ -26,6 +26,8 @@ export interface NewsListItem {
   sport: string | null;
   isBreaking: boolean;
   isFeatured: boolean;
+  inSlider?: boolean; // web slider'da göster
+  sliderOrder?: number; // slider sırası
   publishedAt: string | null; // ISO-8601 (Instant)
   readingMinutes: number | null;
 }

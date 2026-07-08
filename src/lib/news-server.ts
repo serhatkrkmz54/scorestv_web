@@ -42,6 +42,21 @@ export async function getNewsList(
 }
 
 /**
+ * Haber slider'i (web /haberler ust bandi) — inSlider isaretli yayinda haberler,
+ * slider sirasina gore. Hata → bos dizi (sayfayi yikmaz).
+ */
+export async function getSliderNews(
+  lang: Lang,
+  limit = 8,
+): Promise<NewsListItem[]> {
+  const qs = new URLSearchParams({ lang, limit: String(limit) });
+  const r = await backendJson<NewsListItem[]>(
+    `/api/v1/news/slider?${qs.toString()}`,
+  );
+  return r.ok && Array.isArray(r.body) ? r.body : [];
+}
+
+/**
  * Haber detayi (slug ile). Bulunamazsa {data:null, status}. Sayfa 404'u
  * status uzerinden ayirt eder (mac/takim detay deseniyle ayni).
  */

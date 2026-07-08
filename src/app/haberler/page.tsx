@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { resolveLang } from "@/lib/lang-server";
-import { getNewsList } from "@/lib/news-server";
+import { getNewsList, getSliderNews } from "@/lib/news-server";
 import { NewsCard } from "@/components/news/NewsCard";
+import NewsSlider from "@/components/news/NewsSlider";
 import {
   NEWS_CATEGORIES,
   categoryLabel,
@@ -68,14 +69,20 @@ export default async function NewsListPage({ searchParams }: PageProps) {
     category,
   });
 
-  // Öne çıkan / son dakika vurgusu — yalnız ilk sayfada ve filtre yokken.
+  // Slider — yalnız ilk sayfada ve filtre yokken; panelden işaretli haberler.
+  const sliderItems =
+    page === 0 && !category ? await getSliderNews(lang, 8) : [];
+  const sliderIds = new Set(sliderItems.map((s) => s.id));
+
+  // Slider yoksa tek büyük "öne çıkan" kart (eski davranış) — filtre yokken.
   const featured =
-    page === 0 && !category
+    sliderItems.length === 0 && page === 0 && !category
       ? data.items.find((n) => n.isFeatured || n.isBreaking) ?? null
       : null;
-  const rest = featured
-    ? data.items.filter((n) => n.id !== featured.id)
-    : data.items;
+  // Grid'de slider'daki ve öne çıkan haberi tekrar gösterme.
+  const rest = data.items.filter(
+    (n) => n.id !== featured?.id && !sliderIds.has(n.id),
+  );
 
   const t = (tr: string, en: string) => (isTr ? tr : en);
 
@@ -131,6 +138,10 @@ export default async function NewsListPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <>
+          {sliderItems.length > 0 ? (
+            <NewsSlider slides={sliderItems} lang={lang} />
+          ) : null}
+
           {featured ? (
             <Link
               href={newsPath(lang, featured.slug)}
