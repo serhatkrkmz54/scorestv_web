@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
+import { TopPlayersCard } from "@/components/match/TopPlayersCard";
 import { teamPath } from "@/lib/routes";
 import type {
   MatchDetailResponse,
@@ -102,6 +103,7 @@ export function PredictionTab({ detail, lang }: Props) {
 
   return (
     <div className="match-tab match-tab-prediction">
+      <TopPlayersCard detail={detail} lang={lang} />
       {pctTotal > 0 ? (
         <section className="match-card">
           <header className="match-card-head">

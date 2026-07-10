@@ -10,6 +10,7 @@ import type {
   MatchEvent,
 } from "@/lib/match-detail-types";
 import { PredictionCard } from "@/components/match/PredictionCard";
+import { RecentForm } from "@/components/match/RecentForm";
 
 
 /** Oyuncu adi — id varsa oyuncu sayfasina link (dile gore slug), yoksa duz metin. */
@@ -151,6 +152,7 @@ export function OverviewTab({ detail, lang }: Props) {
         <section className="match-card">
           <p className="match-empty">{t("Henüz olay yok", "No events yet")}</p>
         </section>
+        <RecentForm detail={detail} lang={lang} />
       </div>
     );
   }
@@ -295,6 +297,7 @@ export function OverviewTab({ detail, lang }: Props) {
           })}
         </ul>
       </section>
+      <RecentForm detail={detail} lang={lang} />
     </div>
   );
 }

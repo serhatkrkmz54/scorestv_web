@@ -363,6 +363,42 @@ export interface PlayerOfMatch {
   position: string | null;
 }
 
+// ====== Son 5 Maç formu + Öne çıkan oyuncular ======
+
+export interface MatchFormItem {
+  fixtureId: number;
+  slug: string;
+  kickoff?: string | null;
+  leagueId?: number | null;
+  leagueName: string;
+  leagueLogo?: string | null;
+  opponentId?: number | null;
+  opponentName?: string | null;
+  opponentLogo?: string | null;
+  home: boolean;
+  goalsFor?: number | null;
+  goalsAgainst?: number | null;
+  redFor: number;
+  redAgainst: number;
+  result?: string | null; // "W" | "D" | "L"
+}
+
+export interface MatchTopPlayer {
+  playerId: number;
+  name: string;
+  photo?: string | null;
+  teamId?: number | null;
+  value: number;
+  appearances?: number | null;
+}
+
+export interface MatchTopPlayers {
+  homeScorer?: MatchTopPlayer | null;
+  awayScorer?: MatchTopPlayer | null;
+  homeAssist?: MatchTopPlayer | null;
+  awayAssist?: MatchTopPlayer | null;
+}
+
 // ====== Ana yanit ======
 
 export interface MatchDetailResponse {
@@ -394,4 +430,7 @@ export interface MatchDetailResponse {
   playerOfTheMatch?: PlayerOfMatch | null;
   homeScorestvRating?: number | null;
   awayScorestvRating?: number | null;
+  homeForm?: MatchFormItem[];
+  awayForm?: MatchFormItem[];
+  topPlayers?: MatchTopPlayers | null;
 }
