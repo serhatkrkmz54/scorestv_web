@@ -89,7 +89,7 @@ export function AiInsightCard({ fixtureId, lang, homeName, awayName }: Props) {
 
   if (!data || !data.available) return null;
 
-  const chips = buildChips(data, lang);
+  const chips = buildChips(data, lang, home, away);
 
   const onAsk = (c: Chip) => {
     if (typing) return;
@@ -164,30 +164,38 @@ function openingText(
   away: string,
 ): string {
   const h = d.homeWinPct ?? 0;
-  const dr = d.drawPct ?? 0;
   const a = d.awayWinPct ?? 0;
   const fav = d.favorite;
   if (lang === "tr") {
     let lead: string;
-    if (fav === "HOME") lead = `${home} %${h} ihtimalle önde görünüyor.`;
-    else if (fav === "AWAY") lead = `${away} %${a} ihtimalle önde görünüyor.`;
-    else lead = `Dengeli bir maç — sonuç her yöne gidebilir (ev %${h}, ber %${dr}, dep %${a}).`;
-    const score = d.expectedScore ? ` Beklenen skor ${d.expectedScore} civarı.` : "";
-    return `Merhaba! Bu maçı senin için analiz ettim. ${lead}${score} Aşağıdaki sorulara dokunarak detaya inebilirsin.`;
+    if (fav === "HOME") lead = `Bence ${home} önde — kazanma ihtimalini %${h} görüyorum.`;
+    else if (fav === "AWAY") lead = `Bence ${away} önde — kazanma ihtimalini %${a} görüyorum.`;
+    else lead = "Bence çok dengeli bir maç; sonuç her yöne gidebilir.";
+    const score = d.expectedScore
+      ? ` Skorun yaklaşık ${d.expectedScore} olmasını bekliyorum.`
+      : "";
+    return `Merhaba! Bu maçı senin için inceledim. ${lead}${score} Merak ettiğin soruyu aşağıdan seç, hemen açıklayayım.`;
   }
   let lead: string;
-  if (fav === "HOME") lead = `${home} looks favoured at ${h}%.`;
-  else if (fav === "AWAY") lead = `${away} looks favoured at ${a}%.`;
-  else lead = `It's a balanced game — could go either way (home ${h}%, draw ${dr}%, away ${a}%).`;
-  const score = d.expectedScore ? ` Expected score around ${d.expectedScore}.` : "";
-  return `Hi! I analysed this match for you. ${lead}${score} Tap a question below to dig deeper.`;
+  if (fav === "HOME") lead = `I think ${home} are ahead — I put their win chance at ${h}%.`;
+  else if (fav === "AWAY") lead = `I think ${away} are ahead — I put their win chance at ${a}%.`;
+  else lead = "I think it's very even; it could go either way.";
+  const score = d.expectedScore
+    ? ` I expect the score to be around ${d.expectedScore}.`
+    : "";
+  return `Hi! I took a look at this match for you. ${lead}${score} Pick a question below and I'll explain.`;
 }
 
-function buildChips(d: MatchInsight, lang: "tr" | "en"): Chip[] {
+function buildChips(
+  d: MatchInsight,
+  lang: "tr" | "en",
+  home: string,
+  away: string,
+): Chip[] {
   const tr = lang === "tr";
   const chips: Chip[] = [];
 
-  // Kazanan
+  // Kim kazanacak?
   {
     const h = d.homeWinPct ?? 0;
     const dr = d.drawPct ?? 0;
@@ -195,91 +203,95 @@ function buildChips(d: MatchInsight, lang: "tr" | "en"): Chip[] {
     const favLine =
       d.favorite === "HOME"
         ? tr
-          ? "Model hafif ev sahibinden yana."
-          : "The model leans slightly to the home side."
+          ? `Yani hafif favori ${home}.`
+          : `So ${home} are slight favourites.`
         : d.favorite === "AWAY"
           ? tr
-            ? "Model deplasmandan yana."
-            : "The model leans to the away side."
+            ? `Yani hafif favori ${away}.`
+            : `So ${away} are slight favourites.`
           : tr
-            ? "Net favori yok, başa baş."
-            : "No clear favourite — it's even.";
+            ? "Yani net bir favori yok, başa baş."
+            : "So there's no clear favourite — it's even.";
     chips.push({
       id: "win",
-      q: tr ? "Kazanan kim?" : "Who wins?",
+      q: tr ? "Kim kazanacak?" : "Who will win?",
       a: tr
-        ? `1X2 olasılıkları: ev %${h}, beraberlik %${dr}, deplasman %${a}. ${favLine}`
-        : `1X2 probabilities: home ${h}%, draw ${dr}%, away ${a}%. ${favLine}`,
+        ? `Kazanma ihtimalleri: ${home} %${h}, beraberlik %${dr}, ${away} %${a}. ${favLine}`
+        : `Win chances: ${home} ${h}%, draw ${dr}%, ${away} ${a}%. ${favLine}`,
     });
   }
 
-  // Beklenen skor
+  // Kaç kaç biter?
   if (d.expectedScore) {
-    const eg =
-      d.expectedGoalsHome != null && d.expectedGoalsAway != null
-        ? tr
-          ? ` Gol beklentisi ${d.expectedGoalsHome.toFixed(1)} - ${d.expectedGoalsAway.toFixed(1)}.`
-          : ` Expected goals ${d.expectedGoalsHome.toFixed(1)} - ${d.expectedGoalsAway.toFixed(1)}.`
-        : "";
+    let total = "";
+    if (d.expectedGoalsHome != null && d.expectedGoalsAway != null) {
+      const tg = Math.round(d.expectedGoalsHome + d.expectedGoalsAway);
+      total = tr
+        ? ` Yani maçta toplam ${tg} civarı gol demek.`
+        : ` That's about ${tg} goals in the match in total.`;
+    }
     chips.push({
       id: "score",
-      q: tr ? "Beklenen skor?" : "Expected score?",
-      a: (tr ? `Yaklaşık ${d.expectedScore}.` : `Around ${d.expectedScore}.`) + eg,
+      q: tr ? "Kaç kaç biter?" : "Final score?",
+      a:
+        (tr
+          ? `Skorun yaklaşık ${d.expectedScore} olmasını bekliyorum.`
+          : `I expect the score to be around ${d.expectedScore}.`) + total,
     });
   }
 
-  // 2.5 Alt/Üst
+  // Çok gol olur mu?
   if (d.over25Pct != null) {
     const o = d.over25Pct;
     const u = d.under25Pct ?? 100 - o;
     const line =
       o >= u
         ? tr
-          ? "Bol gollü bir maç beklentisi ağır basıyor."
-          : "It leans towards a high-scoring game."
+          ? "Yani bol gollü bir maç bekliyorum."
+          : "So I expect plenty of goals."
         : tr
-          ? "Az gollü geçebilir."
-          : "It could be a low-scoring game.";
+          ? "Yani az gollü, temkinli bir maç olabilir."
+          : "So it could be a cautious, low-scoring game.";
     chips.push({
       id: "ou",
-      q: tr ? "2.5 alt/üst?" : "Over/Under 2.5?",
+      q: tr ? "Çok gol olur mu?" : "Many goals?",
       a: tr
-        ? `2.5 Üst %${o}, Alt %${u}. ${line}`
-        : `Over 2.5 ${o}%, Under 2.5 ${u}%. ${line}`,
+        ? `Maçta 3 veya daha fazla gol olma ihtimali %${o}, 2 ve daha az gol olma ihtimali %${u}. ${line}`
+        : `Chance of 3+ goals is ${o}%, and 2 or fewer is ${u}%. ${line}`,
     });
   }
 
-  // Karşılıklı gol
+  // Karşılıklı gol olur mu?
   if (d.bttsYesPct != null) {
     const y = d.bttsYesPct;
     const n = d.bttsNoPct ?? 100 - y;
     const line =
       y >= 50
         ? tr
-          ? "İki takımın da gol atması muhtemel."
-          : "Both teams are likely to score."
+          ? "Yani büyük ihtimalle iki takım da gol atar."
+          : "So both teams will probably score."
         : tr
-          ? "En az bir takım gol atamayabilir."
-          : "At least one side may be kept out.";
+          ? "Yani bir takım kalesini gole kapatabilir."
+          : "So one side may keep a clean sheet.";
     chips.push({
       id: "btts",
-      q: tr ? "KG var mı?" : "Both teams score?",
+      q: tr ? "Karşılıklı gol olur mu?" : "Both teams score?",
       a: tr
-        ? `Karşılıklı gol: Var %${y}, Yok %${n}. ${line}`
-        : `Both teams to score: Yes ${y}%, No ${n}%. ${line}`,
+        ? `İki takımın da gol atma ihtimali %${y}, en az birinin gol atamama ihtimali %${n}. ${line}`
+        : `Chance both teams score: ${y}%; at least one kept out: ${n}%. ${line}`,
     });
   }
 
-  // Kısa yorum (backend özeti)
+  // Özet yorum (backend özeti)
   if (d.summary && d.summary.trim()) {
     chips.push({
       id: "sum",
-      q: tr ? "Kısa yorum" : "Quick take",
+      q: tr ? "Özet yorum" : "Quick take",
       a: d.summary.trim(),
     });
   }
 
-  // Güvenilirlik / feragat
+  // Ne kadar emin?
   {
     const conf = d.confidence
       ? tr
@@ -288,12 +300,12 @@ function buildChips(d: MatchInsight, lang: "tr" | "en"): Chip[] {
       : "";
     chips.push({
       id: "trust",
-      q: tr ? "Güvenilir mi?" : "How reliable?",
+      q: tr ? "Ne kadar emin?" : "How sure are you?",
       a:
         conf +
         (tr
-          ? "Bunlar geçmiş maçlar, form ve xG'den üretilen istatistiksel olasılıklar — kesin sonuç değil, futbol her zaman sürpriz yapabilir."
-          : "These are statistical probabilities from past results, form and xG — not a certainty; football always springs surprises."),
+          ? "Bu tahminleri geçmiş maçlara, güncel forma ve gol verilerine bakarak yapıyorum — kesin değil, futbolda her zaman sürpriz olabilir."
+          : "I base these on past matches, current form and goal data — nothing is certain; football always has surprises."),
     });
   }
 
