@@ -86,14 +86,6 @@ export function PredictionTab({ detail, lang }: Props) {
   const pctTotal = pctHome + pctDraw + pctAway;
   const norm = (v: number) => (pctTotal > 0 ? (v / pctTotal) * 100 : 33.33);
 
-  const winnerId = p.winner?.teamId;
-  const winnerTeam =
-    winnerId === detail.homeTeam.id
-      ? detail.homeTeam
-      : winnerId === detail.awayTeam.id
-        ? detail.awayTeam
-        : null;
-
   const labels = lang === "tr" ? LABELS_TR : LABELS_EN;
   const comparison = p.comparison ?? {};
   const rawEntries: Array<[string, MatchPredictionPair | null | undefined]> = [
@@ -146,38 +138,12 @@ export function PredictionTab({ detail, lang }: Props) {
         </section>
       ) : null}
 
-      {winnerTeam || p.advice || p.underOver || p.winner?.commentText ? (
+      {p.underOver || (p.goals && (p.goals.home || p.goals.away)) ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Uzman Tahmini", "Expert Prediction")}</h3>
+            <h3>{t("Gol Tahmini", "Goal Prediction")}</h3>
           </header>
           <dl className="info-grid">
-            {winnerTeam ? (
-              <div className="info-row">
-                <dt>{t("Favori", "Favorite")}</dt>
-                <dd>
-                  {winnerTeam.slug ? (
-                    <Link href={teamPath(lang, winnerTeam.slug)} className="prediction-fav-link">
-                      {winnerTeam.name}
-                    </Link>
-                  ) : (
-                    winnerTeam.name
-                  )}
-                </dd>
-              </div>
-            ) : null}
-            {p.winner?.commentText || p.winner?.comment ? (
-              <div className="info-row">
-                <dt>{t("Yorum", "Comment")}</dt>
-                <dd>{p.winner?.commentText ?? p.winner?.comment}</dd>
-              </div>
-            ) : null}
-            {p.advice ? (
-              <div className="info-row info-row-wide">
-                <dt>{t("Tavsiye", "Advice")}</dt>
-                <dd>{p.advice}</dd>
-              </div>
-            ) : null}
             {p.underOver ? (
               <div className="info-row">
                 <dt>{t("Alt/Üst", "Under/Over")}</dt>
