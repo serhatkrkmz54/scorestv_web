@@ -18,3 +18,8 @@ export const PLAYSTORE_URL =
 
 /** Cihaza göre yönlendiren akıllı indirme sayfası (scorestv.app buraya düşer). */
 export const DOWNLOAD_PATH = "/indir";
+
+/** Uygulama tanitim (landing) domaini — scorestv.com indirme CTA'lari buraya
+ *  yonlendirir; scorestv.app cihaza gore dogru magazaya atar. ENV ile ezilebilir. */
+export const APP_LANDING_URL =
+  process.env.NEXT_PUBLIC_APP_LANDING_URL ?? "https://scorestv.app";

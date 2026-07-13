@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLang } from "@/context/lang-context";
 import { detectPlatform } from "@/lib/platform";
-import { APPSTORE_URL, PLAYSTORE_URL } from "@/lib/store-links";
+import { APP_LANDING_URL } from "@/lib/store-links";
 import { Logo } from "@/components/shell/Logo";
 
 // Mobil web'de (yalnız iOS/Android tarayıcı) alttan çıkan, kapatılabilir küçük
@@ -26,9 +26,10 @@ export function AppInstallBanner() {
       /* storage yok */
     }
     const p = detectPlatform(navigator.userAgent);
-    if (p === "ios") setHref(APPSTORE_URL);
-    else if (p === "android") setHref(PLAYSTORE_URL);
-    else return;
+    // Yalniz mobil tarayicida goster; indirme merkezi scorestv.app (orada
+    // cihaza gore App Store / Play'e yonlendirilir).
+    if (p !== "ios" && p !== "android") return;
+    setHref(APP_LANDING_URL);
     setVisible(true);
   }, []);
 
