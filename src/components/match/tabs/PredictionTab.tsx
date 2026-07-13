@@ -67,7 +67,12 @@ export function PredictionTab({ detail, lang }: Props) {
   if (!p) {
     return (
       <div className="match-tab match-tab-prediction">
-        <AiInsightCard fixtureId={detail.id} lang={lang} />
+        <AiInsightCard
+          fixtureId={detail.id}
+          lang={lang}
+          homeName={detail.homeTeam.name}
+          awayName={detail.awayTeam.name}
+        />
         <section className="match-card">
           <p className="match-empty">{t("Tahmin verisi yok", "No prediction available")}</p>
         </section>
@@ -105,7 +110,12 @@ export function PredictionTab({ detail, lang }: Props) {
 
   return (
     <div className="match-tab match-tab-prediction">
-      <AiInsightCard fixtureId={detail.id} lang={lang} />
+      <AiInsightCard
+        fixtureId={detail.id}
+        lang={lang}
+        homeName={detail.homeTeam.name}
+        awayName={detail.awayTeam.name}
+      />
       <TopPlayersCard detail={detail} lang={lang} />
       {pctTotal > 0 ? (
         <section className="match-card">
