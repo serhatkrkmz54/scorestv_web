@@ -3,9 +3,11 @@ import { Poppins } from "next/font/google";
 import Script from "next/script";
 import type { Lang } from "@/i18n/auth-strings";
 import { HOME_META } from "@/lib/seo";
+import { APP_STORE_ID } from "@/lib/store-links";
 import { resolveLang } from "@/lib/lang-server";
 import "./globals.css";
 import { Providers } from "@/context/providers";
+import { AppInstallBanner } from "@/components/download/AppInstallBanner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,6 +28,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: m.title,
     description: m.description,
     applicationName: "Scores TV",
+    // iOS Safari yerel "Smart App Banner" — App Store'a götürür / uygulama
+    // kuruluysa açar. <meta name="apple-itunes-app" content="app-id=...">
+    itunes: { appId: APP_STORE_ID },
     openGraph: {
       type: "website",
       siteName: "Scores TV",
@@ -82,7 +87,10 @@ gtag('js', new Date());
 gtag('config', '${GA_ID}');`}
         </Script>
 
-        <Providers initialLang={initialLang}>{children}</Providers>
+        <Providers initialLang={initialLang}>
+          {children}
+          <AppInstallBanner />
+        </Providers>
       </body>
     </html>
   );

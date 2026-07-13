@@ -24,8 +24,20 @@ function originAllowed(value: string | null): boolean {
 // CSRF savunma-derinliği (yalnız prod): mutasyon (POST/PUT/PATCH/DELETE) BFF
 // isteklerinde Origin (yoksa Referer) kendi sitemizle eşleşmeli. Cookie-tabanlı
 // auth'a SameSite=Lax'in üstüne ek katman. Dev'de kapalı (localhost'u bozmasın).
+// scorestv.app = akıllı indirme domaini. Bu host'a gelen her istek ana
+// sitedeki /indir sayfasına gider; orası cihaza göre App Store / Play'e atar.
+// (Domaini bu Next app'e eklersen çalışır; Cloudflare redirect kuralı
+// kullanırsan istek buraya hiç gelmez — iki yol da uyumlu.)
+const APP_DOMAIN_HOSTS = new Set(["scorestv.app", "www.scorestv.app"]);
+const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  const host = (req.headers.get("host") ?? "").toLowerCase();
+  if (APP_DOMAIN_HOSTS.has(host)) {
+    return NextResponse.redirect(new URL("/indir", SITE_ORIGIN), 307);
+  }
 
   if (
     process.env.NODE_ENV === "production" &&

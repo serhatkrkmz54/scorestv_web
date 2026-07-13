@@ -2143,6 +2143,84 @@ a.evx-out-link:hover { color: var(--accent); }
   .ai-typing span { animation: none; }
 }
 
+/* ── Uygulama indirme: mağaza rozetleri ── */
+.store-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+.store-badge {
+  display: inline-flex; align-items: center; gap: 9px;
+  min-width: 150px;
+  padding: 8px 14px;
+  border-radius: 11px;
+  background: #000; color: #fff;
+  border: 1px solid rgba(255, 255, 255, .16);
+  text-decoration: none;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.store-badge:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0, 0, 0, .28); }
+.store-badge-icon { width: 22px; height: 22px; flex: none; }
+.store-badge-text { display: flex; flex-direction: column; line-height: 1.15; }
+.store-badge-text small { font-size: 9.5px; font-weight: 500; letter-spacing: .02em; opacity: .85; }
+.store-badge-text strong { font-size: 15px; font-weight: 700; letter-spacing: .01em; }
+
+/* ── İndirme landing (/indir) ── */
+.dl-page { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
+.dl-hero {
+  max-width: 560px; width: 100%; text-align: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px 28px;
+}
+.dl-logo { display: flex; justify-content: center; margin-bottom: 18px; }
+.dl-title { font-size: 30px; font-weight: 800; color: var(--text); margin: 0 0 10px; letter-spacing: -.01em; }
+.dl-subtitle { font-size: 15px; color: var(--text-dim); line-height: 1.5; margin: 0 auto 24px; max-width: 440px; }
+.dl-badges { justify-content: center; margin-bottom: 26px; }
+.dl-features {
+  list-style: none; margin: 0 auto; padding: 0;
+  display: flex; flex-direction: column; gap: 11px;
+  max-width: 380px; text-align: left;
+}
+.dl-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text); }
+.dl-check { width: 18px; height: 18px; flex: none; color: var(--accent); margin-top: 1px; }
+.dl-hint { font-size: 11.5px; color: var(--text-faint); margin: 22px 0 0; }
+
+/* ── Footer app rozetleri ── */
+.site-footer-app-label { margin-top: 14px; }
+.site-footer-apps { margin-top: 8px; }
+.site-footer-apps .store-badge { min-width: 138px; padding: 7px 12px; }
+
+/* ── Mobil install banner (yalnız anasayfa + mobil) ── */
+.app-install-banner {
+  position: fixed;
+  left: 12px; right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 1200;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px 10px 38px;
+  background: var(--surface-2); color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  animation: aibIn .3s ease both;
+}
+@keyframes aibIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.aib-close {
+  position: absolute; left: 6px; top: 50%; transform: translateY(-50%);
+  width: 26px; height: 26px; border: none; background: transparent;
+  color: var(--text-dim); font-size: 20px; line-height: 1; cursor: pointer; border-radius: 50%;
+}
+.aib-close:hover { background: var(--surface-3); color: var(--text); }
+.aib-brand { flex: none; display: inline-flex; align-items: center; }
+.aib-tagline {
+  flex: 1; min-width: 0; font-size: 12px; color: var(--text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.aib-cta {
+  flex: none; font-size: 13px; font-weight: 800;
+  background: var(--accent); color: var(--accent-ink);
+  padding: 8px 16px; border-radius: 999px; text-decoration: none;
+  transition: transform .1s ease;
+}
+.aib-cta:active { transform: scale(.97); }
+@media (min-width: 860px) { .app-install-banner { display: none; } }
+
 /* ── Injuries ── */
 .injury-team-head {
   display: flex; align-items: center; gap: 8px;

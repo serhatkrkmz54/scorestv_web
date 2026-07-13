@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLang } from "@/context/lang-context";
 import { leaguePath } from "@/lib/routes";
 import { buildEntitySlug } from "@/lib/slug-utils";
+import { StoreBadges } from "@/components/download/StoreBadges";
 import { Logo } from "./Logo";
 
 // ---------------------------------------------------------------------------
@@ -80,6 +81,7 @@ const COL_TR = {
     { l: "KVKK", h: "/kvkk" },
   ],
   social: "Bizi takip edin",
+  app: "Uygulamayı indir",
   tagline: "Canlı skor, istatistik, diziliş ve daha fazlası.",
   copy: "Tüm hakları saklıdır.",
 };
@@ -100,6 +102,7 @@ const COL_EN = {
     { l: "GDPR / KVKK", h: "/kvkk" },
   ],
   social: "Follow us",
+  app: "Get the app",
   tagline: "Live scores, stats, lineups and more.",
   copy: "All rights reserved.",
 };
@@ -132,6 +135,8 @@ export function Footer() {
               </a>
             ))}
           </div>
+          <span className="site-footer-social-label site-footer-app-label">{c.app}</span>
+          <StoreBadges className="site-footer-apps" />
         </div>
 
         <div className="site-footer-col">
