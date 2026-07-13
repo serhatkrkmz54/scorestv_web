@@ -2041,6 +2041,71 @@ a.evx-out-link:hover { color: var(--accent); }
 }
 .prediction-pct-legend-item .tnum { color: var(--text-dim); font-weight: 700; }
 
+/* ── AI Analiz kartı ── */
+.match-card.ai-insight {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 6%, transparent),
+      transparent 42%),
+    var(--surface-2);
+}
+.ai-insight-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.ai-insight-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10.6px; font-weight: 800; letter-spacing: .06em;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 999px; padding: 3px 10px;
+}
+.ai-insight-conf {
+  margin-left: auto;
+  font-size: 11px; font-weight: 700; color: var(--text-dim);
+}
+.ai-1x2-labels {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; font-weight: 700; color: var(--text);
+  margin-bottom: 6px;
+}
+.ai-1x2-labels .is-home { color: var(--accent); }
+.ai-1x2-labels .is-draw { color: var(--text-dim); }
+.ai-1x2-labels .is-away { color: var(--rel); }
+.ai-1x2-bar {
+  display: flex; width: 100%; height: 9px;
+  border-radius: 999px; overflow: hidden;
+  background: var(--surface-3);
+  margin-bottom: 12px;
+}
+.ai-1x2-bar span { height: 100%; transition: width .3s ease; }
+.ai-1x2-bar .is-home { background: var(--accent); }
+.ai-1x2-bar .is-draw { background: var(--text-faint); }
+.ai-1x2-bar .is-away { background: var(--rel); }
+.ai-insight-summary {
+  font-size: 13px; line-height: 1.5; color: var(--text);
+  margin: 0 0 12px;
+}
+.ai-insight-chips {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin-bottom: 10px;
+}
+.ai-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.6px; color: var(--text-dim);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 9px;
+}
+.ai-chip b { color: var(--text); font-weight: 700; }
+.ai-insight-note {
+  display: flex; align-items: flex-start; gap: 6px;
+  font-size: 11px; line-height: 1.45; color: var(--text-faint);
+  margin: 0;
+}
+
 /* ── Injuries ── */
 .injury-team-head {
   display: flex; align-items: center; gap: 8px;

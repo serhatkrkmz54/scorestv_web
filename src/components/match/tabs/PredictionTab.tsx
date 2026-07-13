@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { TopPlayersCard } from "@/components/match/TopPlayersCard";
+import { AiInsightCard } from "@/components/match/AiInsightCard";
 import { teamPath } from "@/lib/routes";
 import type {
   MatchDetailResponse,
@@ -66,6 +67,7 @@ export function PredictionTab({ detail, lang }: Props) {
   if (!p) {
     return (
       <div className="match-tab match-tab-prediction">
+        <AiInsightCard fixtureId={detail.id} lang={lang} />
         <section className="match-card">
           <p className="match-empty">{t("Tahmin verisi yok", "No prediction available")}</p>
         </section>
@@ -103,6 +105,7 @@ export function PredictionTab({ detail, lang }: Props) {
 
   return (
     <div className="match-tab match-tab-prediction">
+      <AiInsightCard fixtureId={detail.id} lang={lang} />
       <TopPlayersCard detail={detail} lang={lang} />
       {pctTotal > 0 ? (
         <section className="match-card">
