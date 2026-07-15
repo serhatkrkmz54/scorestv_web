@@ -7,7 +7,7 @@ import { APP_STORE_ID } from "@/lib/store-links";
 import { resolveLang } from "@/lib/lang-server";
 import "./globals.css";
 import { Providers } from "@/context/providers";
-import { AppInstallBanner } from "@/components/download/AppInstallBanner";
+import { AppInstallPopup } from "@/components/download/AppInstallPopup";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -89,7 +89,7 @@ gtag('config', '${GA_ID}');`}
 
         <Providers initialLang={initialLang}>
           {children}
-          <AppInstallBanner />
+          <AppInstallPopup />
         </Providers>
       </body>
     </html>

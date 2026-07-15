@@ -2221,6 +2221,59 @@ a.evx-out-link:hover { color: var(--accent); }
 .aib-cta:active { transform: scale(.97); }
 @media (min-width: 860px) { .app-install-banner { display: none; } }
 
+/* ── App install popup (mobil, cihaz OS'una gore) ── */
+.app-popup-overlay {
+  position: fixed; inset: 0; z-index: 1300;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0 14px calc(18px + env(safe-area-inset-bottom, 0px));
+  background: rgba(0, 0, 0, 0);
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s ease, background .22s ease;
+}
+.app-popup-overlay.is-shown {
+  opacity: 1; pointer-events: auto;
+  background: rgba(0, 0, 0, .55);
+}
+.app-popup-card {
+  position: relative; width: 100%; max-width: 420px; box-sizing: border-box;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+  padding: 26px 22px 18px; text-align: center;
+  transform: translateY(26px) scale(.98);
+  transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+}
+.app-popup-overlay.is-shown .app-popup-card { transform: none; }
+.app-popup-close {
+  position: absolute; right: 10px; top: 8px;
+  width: 30px; height: 30px; border: none; background: transparent;
+  color: var(--text-dim); font-size: 24px; line-height: 1; cursor: pointer;
+  border-radius: 50%;
+}
+.app-popup-close:hover { background: var(--surface-3); color: var(--text); }
+.app-popup-logo { display: flex; justify-content: center; margin-bottom: 12px; }
+.app-popup-title { margin: 0 0 6px; font-size: 19px; font-weight: 800; }
+.app-popup-sub {
+  margin: 0 0 18px; font-size: 13.5px; color: var(--text-dim); line-height: 1.4;
+}
+.app-popup-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; box-sizing: border-box;
+  background: var(--accent); color: var(--accent-ink);
+  font-size: 15px; font-weight: 800;
+  padding: 13px 18px; border-radius: 14px; text-decoration: none;
+  transition: transform .1s ease;
+}
+.app-popup-cta:active { transform: scale(.98); }
+.app-popup-cta svg { flex: none; }
+.app-popup-later {
+  display: block; width: 100%; margin-top: 10px; padding: 8px;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--text-faint); font-size: 12.5px; font-weight: 600;
+}
+.app-popup-later:hover { color: var(--text-dim); }
+@media (min-width: 860px) { .app-popup-overlay { display: none; } }
+
 /* ── Injuries ── */
 .injury-team-head {
   display: flex; align-items: center; gap: 8px;
