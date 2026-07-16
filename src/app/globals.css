@@ -2130,6 +2130,26 @@ a.evx-out-link:hover { color: var(--accent); }
   font-size: 11px; line-height: 1.45; color: var(--text-faint);
   margin: 0;
 }
+
+/* ── AI Sonuç Karnesi (biten maç: tahmin vs gerçek) ── */
+.match-card.ai-scorecard { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.ai-sc-head { display: flex; align-items: center; gap: 8px; }
+.ai-sc-title { flex: 1; font-size: 14px; font-weight: 800; color: var(--text); }
+.ai-sc-badge { font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.ai-sc-badge.ai-sc-hit { color: #10b981; background: color-mix(in srgb, #10b981 16%, transparent); }
+.ai-sc-badge.ai-sc-miss { color: #ef4444; background: color-mix(in srgb, #ef4444 16%, transparent); }
+.ai-sc-badge.ai-sc-mid { color: var(--text-dim); background: color-mix(in srgb, var(--text-dim) 16%, transparent); }
+.ai-sc-score { font-size: 13px; font-weight: 700; color: var(--text-dim); }
+.ai-sc-rows { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.ai-sc-row { display: flex; align-items: baseline; gap: 8px; }
+.ai-sc-mark { flex-shrink: 0; width: 16px; font-weight: 900; font-size: 14px; }
+.ai-sc-row.hit .ai-sc-mark { color: #10b981; }
+.ai-sc-row.miss .ai-sc-mark { color: #ef4444; }
+.ai-sc-label { font-size: 13px; font-weight: 700; color: var(--text); min-width: 96px; }
+.ai-sc-vals { font-size: 12px; color: var(--text-dim); }
+.ai-sc-vals .ai-sc-ai { color: var(--text); font-weight: 600; }
+.ai-sc-row.miss .ai-sc-actual { color: #ef4444; font-weight: 700; }
+.ai-sc-exp { margin: 2px 0 0; font-size: 11.5px; color: var(--text-faint); }
 @keyframes aiBubbleIn {
   from { opacity: 0; transform: translateY(6px) scale(.98); }
   to { opacity: 1; transform: none; }

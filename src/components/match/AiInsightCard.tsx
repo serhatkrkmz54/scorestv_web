@@ -77,7 +77,7 @@ export function AiInsightCard({ fixtureId, lang, homeName, awayName }: Props) {
 
   // veri gelince açılış cevabını yaz
   useEffect(() => {
-    if (!data || !data.available || openedRef.current) return;
+    if (!data || !data.available || data.finished || openedRef.current) return;
     openedRef.current = true;
     setTyping(true);
     const id = window.setTimeout(() => {
@@ -88,6 +88,11 @@ export function AiInsightCard({ fixtureId, lang, homeName, awayName }: Props) {
   }, [data, lang, home, away, push]);
 
   if (!data || !data.available) return null;
+
+  // Biten maç → aktif tahmin/sohbet yerine "Sonuç Karnesi" (tahmin vs gerçek).
+  if (data.finished) {
+    return <AiResultScorecard d={data} lang={lang} home={home} away={away} />;
+  }
 
   const chips = buildChips(data, lang, home, away);
 
@@ -310,4 +315,115 @@ function buildChips(
   }
 
   return chips;
+}
+
+/* ── Biten maç: "Sonuç Karnesi" — AI tahmini vs gerçekleşen (✓/✗) ── */
+function AiResultScorecard({
+  d,
+  lang,
+  home,
+  away,
+}: {
+  d: MatchInsight;
+  lang: "tr" | "en";
+  home: string;
+  away: string;
+}) {
+  const tr = lang === "tr";
+  const t = (a: string, b: string) => (tr ? a : b);
+  const aH = d.actualHome ?? 0;
+  const aA = d.actualAway ?? 0;
+  const h = d.homeWinPct ?? 0;
+  const dr = d.drawPct ?? 0;
+  const aw = d.awayWinPct ?? 0;
+  const aiRes = h >= dr && h >= aw ? "H" : aw >= dr ? "A" : "D";
+  const actRes = aH > aA ? "H" : aH === aA ? "D" : "A";
+  const resHit = aiRes === actRes;
+  const aiOver = (d.over25Pct ?? 50) >= 50;
+  const actOver = aH + aA >= 3;
+  const ouHit = aiOver === actOver;
+  const aiBtts = (d.bttsYesPct ?? 50) >= 50;
+  const actBtts = aH > 0 && aA > 0;
+  const bttsHit = aiBtts === actBtts;
+  const hits = (resHit ? 1 : 0) + (ouHit ? 1 : 0) + (bttsHit ? 1 : 0);
+  const badge = hits >= 2 ? "hit" : hits === 0 ? "miss" : "mid";
+  const res = (c: string) =>
+    c === "H" ? home : c === "A" ? away : t("Beraberlik", "Draw");
+  const ou = (o: boolean) =>
+    tr ? (o ? "2.5 Üst" : "2.5 Alt") : o ? "Over 2.5" : "Under 2.5";
+  const kg = (y: boolean) =>
+    tr ? (y ? "KG Var" : "KG Yok") : y ? "BTTS Yes" : "BTTS No";
+
+  return (
+    <section className="match-card ai-scorecard">
+      <header className="ai-sc-head">
+        <span className="ai-chat-avatar" aria-hidden="true">
+          ✦
+        </span>
+        <strong className="ai-sc-title">
+          {t("AI Analiz · Sonuç Karnesi", "AI Analysis · Results")}
+        </strong>
+        <span className={`ai-sc-badge ai-sc-${badge}`}>
+          {t(`AI ${hits}/3 tuttu`, `AI got ${hits}/3`)}
+        </span>
+      </header>
+      <div className="ai-sc-score">
+        {home} {aH}-{aA} {away}
+      </div>
+      <ul className="ai-sc-rows">
+        <ScRow
+          label={t("Maç Sonucu", "Match Result")}
+          ai={res(aiRes)}
+          actual={res(actRes)}
+          hit={resHit}
+        />
+        <ScRow
+          label={t("Gol (2.5)", "Goals (2.5)")}
+          ai={ou(aiOver)}
+          actual={ou(actOver)}
+          hit={ouHit}
+        />
+        <ScRow
+          label={t("Karşılıklı Gol", "Both Teams to Score")}
+          ai={kg(aiBtts)}
+          actual={kg(actBtts)}
+          hit={bttsHit}
+        />
+      </ul>
+      {d.expectedScore ? (
+        <p className="ai-sc-exp">
+          {t(
+            `AI beklenen skor ~${d.expectedScore} · Gerçek ${aH}-${aA}`,
+            `AI expected ~${d.expectedScore} · Actual ${aH}-${aA}`,
+          )}
+        </p>
+      ) : null}
+      {d.note ? <p className="ai-chat-note">{d.note}</p> : null}
+    </section>
+  );
+}
+
+function ScRow({
+  label,
+  ai,
+  actual,
+  hit,
+}: {
+  label: string;
+  ai: string;
+  actual: string;
+  hit: boolean;
+}) {
+  return (
+    <li className={`ai-sc-row ${hit ? "hit" : "miss"}`}>
+      <span className="ai-sc-mark" aria-hidden="true">
+        {hit ? "✓" : "✗"}
+      </span>
+      <span className="ai-sc-label">{label}</span>
+      <span className="ai-sc-vals">
+        <span className="ai-sc-ai">AI: {ai}</span>
+        {!hit ? <span className="ai-sc-actual"> · {actual}</span> : null}
+      </span>
+    </li>
+  );
 }

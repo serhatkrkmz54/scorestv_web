@@ -19,4 +19,9 @@ export interface MatchInsight {
   confidence?: string | null;
   summary?: string | null;
   note?: string | null;
+  /** Mac bitti mi — biten macta "Sonuc Karnesi" (tahmin vs gercek) gosterilir. */
+  finished?: boolean;
+  /** Biten macta gercek skor (finished iken dolu). */
+  actualHome?: number | null;
+  actualAway?: number | null;
 }
