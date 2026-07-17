@@ -5,6 +5,7 @@ import { LeftRail } from "@/components/home/LeftRail";
 import { RightRail } from "@/components/home/RightRail";
 import { ScrollToTop } from "@/components/home/ScrollToTop";
 import { SetSportFootball } from "@/components/home/SetSportFootball";
+import { AiTrustStrip } from "@/components/ai/AiTrustStrip";
 import { resolveLang } from "@/lib/lang-server";
 import { getLatestNews } from "@/lib/news-server";
 
@@ -26,6 +27,7 @@ export default async function HomePage() {
       {/* SEO: gorsel gizli ana baslik (robotlar gorur). */}
       <h1 className="sr-only">{h1}</h1>
       <HomeShell left={<LeftRail />} right={<RightRail news={news} />}>
+        <AiTrustStrip lang={lang} />
         <HomeMain />
       </HomeShell>
       <ScrollToTop />

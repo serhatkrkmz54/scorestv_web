@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MatchInsight } from "@/lib/insight-types";
+import { AiAccuracyBadge } from "@/components/ai/AiAccuracyBadge";
 
 interface Props {
   fixtureId: number;
@@ -121,6 +122,8 @@ export function AiInsightCard({ fixtureId, lang, homeName, awayName }: Props) {
           </span>
         ) : null}
       </header>
+
+      <AiAccuracyBadge lang={lang} />
 
       <div className="ai-chat-body">
         {messages.map((m) => (
