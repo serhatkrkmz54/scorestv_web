@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { AiPerformance, AiStatBlock } from "@/lib/ai-performance-types";
 import { AI_MIN_SAMPLE } from "@/lib/ai-performance-types";
 import styles from "./AiPerformance.module.css";
@@ -61,7 +61,8 @@ function monthName(ym: string, lang: Lang): string {
   });
 }
 
-/** SVG donut (pasta) — isabet yüzdesi yeşil ark, kalanı gri. */
+/** SVG donut (pasta) — isabet arkı sayfaya girince animasyonla dolar. Metin
+ * tam ortalanır (dominant-baseline central). İz rengi tema uyumlu. */
 function Donut({
   pct,
   color,
@@ -76,11 +77,23 @@ function Donut({
   const r = 46;
   const c = 2 * Math.PI * r;
   const dash = (Math.max(0, Math.min(100, pct)) / 100) * c;
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setOn(true), 60);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <div className={styles.donut}>
       <div className={styles.donutTitle}>{title}</div>
       <svg viewBox="0 0 120 120" width={116} height={116}>
-        <circle cx="60" cy="60" r={r} fill="none" stroke="#e5e7eb" strokeWidth="12" />
+        <circle
+          cx="60"
+          cy="60"
+          r={r}
+          fill="none"
+          strokeWidth="12"
+          style={{ stroke: "var(--surface-3)" }}
+        />
         <circle
           cx="60"
           cy="60"
@@ -89,13 +102,16 @@ function Donut({
           stroke={color}
           strokeWidth="12"
           strokeLinecap="round"
-          strokeDasharray={`${dash} ${c - dash}`}
+          strokeDasharray={`${c} ${c}`}
+          strokeDashoffset={on ? c - dash : c}
           transform="rotate(-90 60 60)"
+          style={{ transition: "stroke-dashoffset 950ms cubic-bezier(.2,.8,.2,1)" }}
         />
         <text
           x="60"
-          y="66"
+          y="60"
           textAnchor="middle"
+          dominantBaseline="central"
           style={{ fontSize: 24, fontWeight: 800, fill: color }}
         >
           %{pct}
@@ -194,8 +210,8 @@ export function AiPerformanceView({
         </div>
       </div>
 
-      {/* Kategori donut'ları (pasta grafik) */}
-      <div className={styles.donuts}>
+      {/* Kategori donut'ları (pasta grafik) — dönem değişince yeniden animasyon */}
+      <div key={active.key} className={styles.donuts}>
         <Donut
           pct={b.resultPct}
           color="#2563eb"
