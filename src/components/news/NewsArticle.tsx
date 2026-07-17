@@ -12,6 +12,7 @@ import { buildEntitySlug } from "@/lib/slug-utils";
 import { teamPath, leaguePath, playerPath } from "@/lib/routes";
 import { NewsShare } from "./NewsShare";
 import { RelatedNews } from "./RelatedNews";
+import { CommentsTab } from "@/components/match/tabs/CommentsTab";
 
 // Bagli varlik cip'i — logo (varsa) + ad. Takım/lig/oyuncu tıklanabilir
 // (kendi sayfalarına link); ülke şu an link değil (sayfa placeholder).
@@ -173,6 +174,14 @@ export function NewsArticle({
         path={newsPath(lang, detail.slug)}
         lang={lang}
       />
+
+      {/* Yorumlar — maç yorum sistemi "news" segmenti (targetId = haber id). */}
+      <section className="news-comments">
+        <h2 className="news-comments-title">
+          {lang === "tr" ? "Yorumlar" : "Comments"}
+        </h2>
+        <CommentsTab targetId={detail.id} segment="news" lang={lang} />
+      </section>
 
       {/* İlgili haberler */}
       <RelatedNews items={related} lang={lang} />

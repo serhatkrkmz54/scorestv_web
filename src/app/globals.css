@@ -5766,6 +5766,14 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
 .news-share-copy { padding: 0 14px; }
 
 /* ── İlgili Haberler (takım/lig/oyuncu + detay altı) ── */
+/* Haber yorumları — maç yorum bileşeni (.match-tab-comments) news detayında. */
+.news-comments { margin: 28px 0 0; }
+.news-comments-title {
+  font-size: 18px; font-weight: 800; margin: 0 0 12px;
+  color: var(--text); letter-spacing: -0.01em;
+}
+.news-comments .match-tab-comments { margin: 0; }
+
 .related-news {
   margin: 26px 0 0; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); overflow: hidden;

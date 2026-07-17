@@ -376,7 +376,7 @@ function TabContent({
     case "injuries":
       return <InjuriesTab detail={detail} lang={lang} />;
     case "comments":
-      return <CommentsTab detail={detail} lang={lang} />;
+      return <CommentsTab targetId={detail.id} segment="fixtures" lang={lang} />;
     default:
       return null;
   }

@@ -5,12 +5,14 @@ import type {
   CommentPageResponse,
   CommentView,
 } from "@/lib/comment-types";
-import type { MatchDetailResponse } from "@/lib/match-detail-types";
 import { useAuth } from "@/context/auth-context";
 import { IconClose, IconHeart, IconReply } from "@/components/icons";
 
 interface Props {
-  detail: MatchDetailResponse;
+  /** Yorum hedefinin sayısal id'si — maç id veya haber id. */
+  targetId: number;
+  /** Backend segmenti: "fixtures" | "basketball" | "volleyball" | "news". */
+  segment: string;
   lang: "tr" | "en";
 }
 
@@ -61,7 +63,7 @@ function patchComment(
   });
 }
 
-export function CommentsTab({ detail, lang }: Props) {
+export function CommentsTab({ targetId, segment, lang }: Props) {
   const { user, openAuth } = useAuth();
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
 
@@ -85,7 +87,7 @@ export function CommentsTab({ detail, lang }: Props) {
     setErr(null);
     try {
       const r = await fetch(
-        `/api/comments/fixtures/${detail.id}?sort=${sort}&page=0&size=50`,
+        `/api/comments/${segment}/${targetId}?sort=${sort}&page=0&size=50`,
         { cache: "no-store" },
       );
       if (!r.ok) throw new Error(String(r.status));
@@ -97,7 +99,7 @@ export function CommentsTab({ detail, lang }: Props) {
     }
     // user?.id deps'te: giriş/çıkış olunca listeyi tazele ki backend
     // likedByMe / isMine alanlarını doğru (kullanıcıya göre) dönsün.
-  }, [detail.id, sort, lang, user?.id]);
+  }, [targetId, segment, sort, lang, user?.id]);
 
   useEffect(() => {
     void load();
@@ -114,7 +116,7 @@ export function CommentsTab({ detail, lang }: Props) {
     setPosting(true);
     setPostErr(null);
     try {
-      const r = await fetch(`/api/comments/fixtures/${detail.id}`, {
+      const r = await fetch(`/api/comments/${segment}/${targetId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
@@ -142,7 +144,7 @@ export function CommentsTab({ detail, lang }: Props) {
     }
     setReplyPosting(true);
     try {
-      const r = await fetch(`/api/comments/fixtures/${detail.id}`, {
+      const r = await fetch(`/api/comments/${segment}/${targetId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content, parentId }),
