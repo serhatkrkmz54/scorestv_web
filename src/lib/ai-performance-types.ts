@@ -26,6 +26,7 @@ export interface AiMonthBlock {
 
 export interface AiPerformance {
   month: AiStatBlock; // son 30 gün
+  quarter: AiStatBlock; // son 90 gün (3 ay)
   year: AiStatBlock; // son 365 gün
   all: AiStatBlock; // tüm zaman
   months: AiMonthBlock[]; // son 12 ay kırılımı

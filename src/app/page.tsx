@@ -26,8 +26,9 @@ export default async function HomePage() {
       <SetSportFootball />
       {/* SEO: gorsel gizli ana baslik (robotlar gorur). */}
       <h1 className="sr-only">{h1}</h1>
+      {/* Şerit layout GRID'inin DIŞINDA (grid'e 4. eleman girmesin → 3 sütun bozulmaz). */}
+      <AiTrustStrip lang={lang} />
       <HomeShell left={<LeftRail />} right={<RightRail news={news} />}>
-        <AiTrustStrip lang={lang} />
         <HomeMain />
       </HomeShell>
       <ScrollToTop />
