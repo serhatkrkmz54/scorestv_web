@@ -28,6 +28,7 @@ import type {
   MatchDetailResponse,
   MatchEvent,
 } from "@/lib/match-detail-types";
+import type { Highlight } from "@/lib/highlights-types";
 import {
   IconList,
   IconBars,
@@ -45,7 +46,14 @@ interface Props {
   initial: MatchDetailResponse;
   slug: string;
   lang: "tr" | "en";
+  /** Biten maçta SSR'da çekilen highlight listesi — "Maç Özeti" sekmesini
+   *  sunucu-render'lı (indekslenebilir) yapmak için. Yoksa client fetch eder. */
+  initialHighlights?: Highlight[];
 }
+
+// Highlight'ı olan biten maçta varsayılan aktif sekme "Maç Özeti" olur —
+// oynatıcı sayfa açılışında görünür/DOM'da olsun (Google video indexleme).
+const HL_FINISHED = new Set(["FT", "AET", "PEN"]);
 
 function tabDefs(
   lang: "tr" | "en",
@@ -148,9 +156,14 @@ function eventKey(e: {
   return `${e.elapsed ?? "?"}|${e.type}|${e.teamId}|${player}`;
 }
 
-export function MatchDetailScreen({ initial, slug, lang }: Props) {
+export function MatchDetailScreen({ initial, slug, lang, initialHighlights }: Props) {
   const [detail, setDetail] = useState<MatchDetailResponse>(initial);
-  const [tab, setTab] = useState<MatchTabKey>("overview");
+  const startTab: MatchTabKey =
+    HL_FINISHED.has(initial.status.shortCode) &&
+    (initialHighlights?.length ?? 0) > 0
+      ? "highlights"
+      : "overview";
+  const [tab, setTab] = useState<MatchTabKey>(startTab);
   const [refreshing, setRefreshing] = useState(false);
   const [broadcasts, setBroadcasts] = useState<Broadcast[]>([]);
   const refreshingRef = useRef(false);
@@ -336,7 +349,13 @@ export function MatchDetailScreen({ initial, slug, lang }: Props) {
       <MatchStickyScore detail={detail} lang={lang} visible={heroOut} />
       <MatchTabs tabs={tabs} active={tab} onChange={setTab} />
       <div className="match-detail-body">
-        <TabContent tab={tab} detail={detail} lang={lang} broadcasts={broadcasts} />
+        <TabContent
+          tab={tab}
+          detail={detail}
+          lang={lang}
+          broadcasts={broadcasts}
+          initialHighlights={initialHighlights}
+        />
       </div>
       {refreshing ? <span className="sr-only">refreshing</span> : null}
     </div>
@@ -348,15 +367,23 @@ function TabContent({
   detail,
   lang,
   broadcasts,
+  initialHighlights,
 }: {
   tab: MatchTabKey;
   detail: MatchDetailResponse;
   lang: "tr" | "en";
   broadcasts: Broadcast[];
+  initialHighlights?: Highlight[];
 }) {
   switch (tab) {
     case "highlights":
-      return <HighlightsTab detail={detail} lang={lang} />;
+      return (
+        <HighlightsTab
+          detail={detail}
+          lang={lang}
+          initialItems={initialHighlights ?? null}
+        />
+      );
     case "overview":
       return <OverviewTab detail={detail} lang={lang} />;
     case "broadcasts":

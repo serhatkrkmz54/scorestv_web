@@ -70,10 +70,14 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   }
-  // VideoObject JSON-LD — yalnız biten maçlarda highlight varsa (SSR, cache'li).
-  const videoLd = FINISHED.has(initial.status.shortCode)
-    ? videoObjectJsonLd(initial, await fetchHighlightsServer(initial.id), "tr")
-    : null;
+  // Biten maçta highlight'ları SSR'da bir kez çek — hem VideoObject JSON-LD
+  // hem de "Maç Özeti" sekmesinin sunucu-render'lı (Google'ın görebildiği,
+  // indekslenebilir) oynatıcısı için. Böylece video "izleme sayfasında" yer alır.
+  const highlights = FINISHED.has(initial.status.shortCode)
+    ? await fetchHighlightsServer(initial.id)
+    : [];
+  const videoLd =
+    highlights.length > 0 ? videoObjectJsonLd(initial, highlights, "tr") : null;
   // Bu maça bağlı ilgili haberler (SSR, hata → boş; boşsa render edilmez).
   const relatedNews = await getNewsByFixture(initial.id, "tr");
   return (
@@ -93,7 +97,7 @@ export default async function Page({ params }: PageProps) {
           <LeftRail />
         </aside>
         <main className="match-detail-main">
-          <MatchDetailScreen initial={initial} slug={slug} lang="tr" />
+          <MatchDetailScreen initial={initial} slug={slug} lang="tr" initialHighlights={highlights} />
           <RelatedNews items={relatedNews} lang="tr" />
         </main>
         <aside className="rail-right">

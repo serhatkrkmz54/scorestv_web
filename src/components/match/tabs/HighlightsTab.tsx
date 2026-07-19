@@ -8,23 +8,33 @@ import { IconPlay } from "@/components/icons";
 interface Props {
   detail: MatchDetailResponse;
   lang: "tr" | "en";
+  /** SSR'da çekilen highlight listesi (varsa). Verilirse oynatıcı sunucu
+   *  HTML'inde/ilk boyamada görünür olur — Google video indexleme için gerekli.
+   *  Yine de istemcide ülkeye özgü embeddable için sessizce tazelenir. */
+  initialItems?: Highlight[] | null;
 }
 
-export function HighlightsTab({ detail, lang }: Props) {
+export function HighlightsTab({ detail, lang, initialItems = null }: Props) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
-  const [items, setItems] = useState<Highlight[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  // SSR verisi geldiyse onunla başla — client fetch beklemeden görünür.
+  const [items, setItems] = useState<Highlight[] | null>(initialItems);
+  const [loading, setLoading] = useState(initialItems == null);
 
   useEffect(() => {
     let aborted = false;
-    setLoading(true);
+    const hadSsr = initialItems != null;
+    if (!hadSsr) setLoading(true);
+    // İstemcide ülkeye özgü embeddable için tazele. Boş dönerse SSR içeriğini
+    // KORU (indeksleme + kullanıcı deneyimi bozulmasın).
     fetch(`/api/highlights/fixtures/${detail.id}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : []))
       .then((j: Highlight[]) => {
-        if (!aborted) setItems(Array.isArray(j) ? j : []);
+        if (aborted) return;
+        const arr = Array.isArray(j) ? j : [];
+        if (arr.length > 0 || !hadSsr) setItems(arr);
       })
       .catch(() => {
-        if (!aborted) setItems([]);
+        if (!aborted && !hadSsr) setItems([]);
       })
       .finally(() => {
         if (!aborted) setLoading(false);
@@ -32,6 +42,7 @@ export function HighlightsTab({ detail, lang }: Props) {
     return () => {
       aborted = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detail.id]);
 
   if (loading) {
@@ -58,7 +69,7 @@ export function HighlightsTab({ detail, lang }: Props) {
   return (
     <div className="match-tab match-tab-highlights">
       <ul className="hl-list">
-        {items.map((h) => {
+        {items.map((h, idx) => {
           // Backend, kullanıcının ülkesinde oynayabilecek highlight'ları
           // embeddable=true işaretler; yalnız onları iframe ile göm, gerisi
           // küçük-resim + "tarayıcıda aç" yedeği.
@@ -70,7 +81,9 @@ export function HighlightsTab({ detail, lang }: Props) {
                   <iframe
                     src={h.embedUrl ?? undefined}
                     title={h.title}
-                    loading="lazy"
+                    // Birincil özet (JSON-LD ile eşleşen) eager yüklensin ki
+                    // Googlebot lazy tetiklemese bile oynatıcıyı görsün.
+                    loading={idx === 0 ? "eager" : "lazy"}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     referrerPolicy="strict-origin-when-cross-origin"
