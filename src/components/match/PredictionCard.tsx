@@ -86,7 +86,7 @@ export function PredictionCard({
   return (
     <section className="match-card pred-card">
       <header className="match-card-head pred-head">
-        <h3>{t("Maç Sonucu Tahmini", "Match Prediction")}</h3>
+        <h2>{t("Maç Sonucu Tahmini", "Match Prediction")}</h2>
         {data.total > 0 && (
           <span className="pred-total">
             {data.total} {t("oy", "votes")}

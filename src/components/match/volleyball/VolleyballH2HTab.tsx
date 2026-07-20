@@ -76,7 +76,7 @@ export function VolleyballH2HTab({ detail, lang }: Props) {
     <div className="match-tab match-tab-h2h">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>{t("Genel Karne", "Head-to-Head")}</h3>
+          <h2>{t("Genel Karne", "Head-to-Head")}</h2>
         </header>
         <div className="h2h-summary">
           <div className="h2h-summary-cells">
@@ -102,7 +102,7 @@ export function VolleyballH2HTab({ detail, lang }: Props) {
 
       <section className="match-card">
         <header className="match-card-head">
-          <h3>{t("Geçmiş Maçlar", "Past Meetings")}</h3>
+          <h2>{t("Geçmiş Maçlar", "Past Meetings")}</h2>
         </header>
         <ul className="h2h-list">
           {list.map((f) => {

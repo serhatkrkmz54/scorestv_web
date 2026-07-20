@@ -307,7 +307,7 @@ function ChampionshipRaceCard({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>{t("Şampiyonluk Yarışı", "Title Race")}</h3>
+        <h2>{t("Şampiyonluk Yarışı", "Title Race")}</h2>
       </header>
       <ul className="lig-race-list">
         {top.map((r, idx) => {
@@ -353,7 +353,7 @@ function SeasonMetricsCard({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>{t("Sezon Özeti", "Season Summary")}</h3>
+        <h2>{t("Sezon Özeti", "Season Summary")}</h2>
       </header>
       <div className="lig-metric-grid">
         <div className="lig-metric">
@@ -442,7 +442,7 @@ function LeagueInfoCard({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>{t("Lig Bilgileri", "League Info")}</h3>
+        <h2>{t("Lig Bilgileri", "League Info")}</h2>
       </header>
       <dl className="info-grid">
         <div className="info-row">

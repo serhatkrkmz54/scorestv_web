@@ -95,7 +95,7 @@ export function TopPlayersCard({ detail, lang }: Props) {
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>{t("Öne Çıkan Oyuncular", "Key Players")}</h3>
+        <h2>{t("Öne Çıkan Oyuncular", "Key Players")}</h2>
       </header>
       <Section
         label={t("En Golcü", "Top Scorer")}

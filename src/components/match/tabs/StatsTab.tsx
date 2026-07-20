@@ -40,7 +40,7 @@ export function StatsTab({ detail, lang }: Props) {
     <div className="match-tab match-tab-stats">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>{t("Takım İstatistikleri", "Team Statistics")}</h3>
+          <h2>{t("Takım İstatistikleri", "Team Statistics")}</h2>
         </header>
         <ul className="stat-list">
           {stats.map((s, i) => {

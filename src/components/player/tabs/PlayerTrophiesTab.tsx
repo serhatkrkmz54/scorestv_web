@@ -75,9 +75,9 @@ export function PlayerTrophiesTab({ detail, lang }: Props) {
     <div className="match-tab player-tab-trophies">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>
+          <h2>
             <IconTrophy s={14} /> {t("Tüm Kupalar", "All Trophies")}
-          </h3>
+          </h2>
         </header>
         <ul className="player-trophy-list">
           {grouped.map((g, i) => (

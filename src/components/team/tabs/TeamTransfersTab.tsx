@@ -110,10 +110,10 @@ export function TeamTransfersTab({ detail, lang }: Props) {
     <div className="match-tab team-tab-transfers">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>
+          <h2>
             <IconSwap s={14} /> {t("Transferler", "Transfers")}
             <span className="team-squad-count tnum">{transfers.length}</span>
-          </h3>
+          </h2>
         </header>
         <div className="team-transfer-list">
           {transfers.map((r, i) => (

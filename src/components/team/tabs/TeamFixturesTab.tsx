@@ -52,9 +52,9 @@ function FixtureGroup({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>
+        <h2>
           <IconBall s={14} /> {title}
-        </h3>
+        </h2>
       </header>
       <div className="team-fix-grouped">
         {groups.map((g, i) => (

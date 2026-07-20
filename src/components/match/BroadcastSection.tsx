@@ -37,7 +37,7 @@ export function BroadcastSection({ fixtureId, lang }: Props) {
   return (
     <section className="match-card bc-card">
       <header className="match-card-head">
-        <h3>{t("Nerede izlenir", "Where to watch")}</h3>
+        <h2>{t("Nerede izlenir", "Where to watch")}</h2>
       </header>
       <ul className="bc-list">
         {items.map((b, i) => (

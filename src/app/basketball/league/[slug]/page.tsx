@@ -65,7 +65,6 @@ export default async function Page({ params, searchParams }: PageProps) {
       {initial.seo?.jsonLd ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.jsonLd) }} />
       ) : null}
-      <h1 className="sr-only">{initial.name}</h1>
       <div className="layout">
         <aside className="rail-left">
           <BasketballLeftRail />

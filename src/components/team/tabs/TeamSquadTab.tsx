@@ -87,10 +87,10 @@ function SquadGroup({
   return (
     <section className="match-card team-squad-group">
       <header className="match-card-head">
-        <h3>
+        <h2>
           <IconLineup s={14} /> {label?.toUpperCase()}
           <span className="team-squad-count tnum">{group.players.length}</span>
-        </h3>
+        </h2>
       </header>
       <div className="team-squad-list">
         {group.players.map((p, i) => (

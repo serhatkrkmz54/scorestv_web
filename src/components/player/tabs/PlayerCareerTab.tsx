@@ -77,10 +77,10 @@ export function PlayerCareerTab({ detail, lang }: Props) {
     <div className="match-tab player-tab-career">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>
+          <h2>
             <IconLineup s={14} /> {t("Kariyer Takımları", "Career Teams")}
             <span className="team-squad-count tnum">{career.length}</span>
-          </h3>
+          </h2>
         </header>
         <div className="player-career-list">
           {sorted.map((c, i) => (

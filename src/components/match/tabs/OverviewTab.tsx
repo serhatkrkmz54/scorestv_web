@@ -208,7 +208,7 @@ export function OverviewTab({ detail, lang }: Props) {
       />
       <section className="match-card">
         <header className="match-card-head">
-          <h3>{t("Maç Olayları", "Match Events")}</h3>
+          <h2>{t("Maç Olayları", "Match Events")}</h2>
         </header>
 
         <ul className="evx-timeline">

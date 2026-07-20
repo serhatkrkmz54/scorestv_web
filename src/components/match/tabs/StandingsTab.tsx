@@ -353,7 +353,7 @@ export function StandingsTab({ detail, lang }: Props) {
         <div className="match-tab match-tab-standings">
           <section className="match-card">
             <header className="match-card-head">
-              <h3>{t("Eşleşmeler", "Bracket")}</h3>
+              <h2>{t("Eşleşmeler", "Bracket")}</h2>
             </header>
             <BracketViewBlock bracket={bracket} />
           </section>
@@ -408,7 +408,7 @@ export function StandingsTab({ detail, lang }: Props) {
       {bracket && bracket.rounds && bracket.rounds.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Eşleşmeler", "Bracket")}</h3>
+            <h2>{t("Eşleşmeler", "Bracket")}</h2>
           </header>
           <BracketViewBlock bracket={bracket} />
         </section>

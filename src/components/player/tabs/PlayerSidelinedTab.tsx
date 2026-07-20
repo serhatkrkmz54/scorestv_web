@@ -53,10 +53,10 @@ export function PlayerSidelinedTab({ detail, lang }: Props) {
     <div className="match-tab player-tab-sidelined">
       <section className="match-card">
         <header className="match-card-head">
-          <h3>
+          <h2>
             <IconMed s={14} /> {t("Sakatlık / Cezalık Geçmişi", "Injury / Ban History")}
             <span className="team-squad-count tnum">{list.length}</span>
-          </h3>
+          </h2>
         </header>
         <div className="player-side-list">
           {list.map((r, i) => (

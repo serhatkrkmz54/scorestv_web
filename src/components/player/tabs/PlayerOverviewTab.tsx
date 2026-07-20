@@ -87,9 +87,9 @@ function SeasonTotalsCard({
   return (
     <section className="match-card">
       <header className="match-card-head">
-        <h3>
+        <h2>
           <IconChart s={14} /> {t("Sezon Özeti", "Season Summary")}
-        </h3>
+        </h2>
       </header>
       <div className="player-overview-grid">
         {items.map((it, i) => (
@@ -187,9 +187,9 @@ export function PlayerOverviewTab({ detail, lang }: Props) {
       {lastTransfers.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconSwap s={14} /> {t("Son Transferler", "Recent Transfers")}
-            </h3>
+            </h2>
           </header>
           <div className="player-overview-list">
             {lastTransfers.map((r, i) => (
@@ -202,9 +202,9 @@ export function PlayerOverviewTab({ detail, lang }: Props) {
       {lastSidelined.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconMed s={14} /> {t("Son Sakatlıklar", "Recent Injuries")}
-            </h3>
+            </h2>
           </header>
           <div className="player-overview-list">
             {lastSidelined.map((r, i) => (

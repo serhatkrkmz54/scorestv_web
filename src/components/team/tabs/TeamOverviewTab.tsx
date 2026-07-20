@@ -199,9 +199,9 @@ export function TeamOverviewTab({ detail, lang }: Props) {
       {nextMatch ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconBall s={14} /> {t("Sıradaki Maç", "Next Match")}
-            </h3>
+            </h2>
           </header>
           <div className="team-fix-list">
             <MatchRow fixture={nextMatch} />
@@ -213,9 +213,9 @@ export function TeamOverviewTab({ detail, lang }: Props) {
       {hasPositions ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconTrophy s={14} /> {t("Lig Sıralaması", "League Standing")}
-            </h3>
+            </h2>
           </header>
           <div className="team-pos-grid">
             {detail.standingsPositions.map((p, i) => (
@@ -229,9 +229,9 @@ export function TeamOverviewTab({ detail, lang }: Props) {
       {recent.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconBall s={14} /> {t("Son Maçlar", "Recent Matches")}
-            </h3>
+            </h2>
           </header>
           <div className="team-fix-list">
             {recent.map((f) => (
@@ -245,9 +245,9 @@ export function TeamOverviewTab({ detail, lang }: Props) {
       {hasCoach ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconLineup s={14} /> {t("Teknik Direktör", "Head Coach")}
-            </h3>
+            </h2>
           </header>
           <CoachCard coach={detail.currentCoach!} lang={lang} />
           {detail.currentCoach!.trophies && detail.currentCoach!.trophies.length > 0 ? (
@@ -275,9 +275,9 @@ export function TeamOverviewTab({ detail, lang }: Props) {
       {sidelined.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>
+            <h2>
               <IconMed s={14} /> {t("Sakat / Cezalı", "Sidelined")}
-            </h3>
+            </h2>
           </header>
           <div className="team-side-list">
             {sidelined.map((r, i) => (

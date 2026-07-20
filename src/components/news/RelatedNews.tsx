@@ -25,7 +25,7 @@ export function RelatedNews({
   return (
     <section className="related-news">
       <div className="related-news-head">
-        <h3>{heading}</h3>
+        <h2>{heading}</h2>
       </div>
       <div className="related-news-list">
         {items.map((n) => {

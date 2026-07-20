@@ -112,7 +112,7 @@ export function PredictionTab({ detail, lang }: Props) {
       {pctTotal > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Sonuç İhtimali", "Outcome Probability")}</h3>
+            <h2>{t("Sonuç İhtimali", "Outcome Probability")}</h2>
           </header>
           <div className="prediction-pct">
             <div className="prediction-pct-bar">
@@ -141,7 +141,7 @@ export function PredictionTab({ detail, lang }: Props) {
       {p.underOver || (p.goals && (p.goals.home || p.goals.away)) ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Gol Tahmini", "Goal Prediction")}</h3>
+            <h2>{t("Gol Tahmini", "Goal Prediction")}</h2>
           </header>
           <dl className="info-grid">
             {p.underOver ? (
@@ -163,7 +163,7 @@ export function PredictionTab({ detail, lang }: Props) {
       {compEntries.length > 0 ? (
         <section className="match-card">
           <header className="match-card-head">
-            <h3>{t("Takım Karşılaştırması", "Team Comparison")}</h3>
+            <h2>{t("Takım Karşılaştırması", "Team Comparison")}</h2>
           </header>
           <ul className="stat-list">
             {compEntries.map(([key, v]) => {

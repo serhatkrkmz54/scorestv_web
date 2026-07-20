@@ -53,10 +53,8 @@ export default async function Page({ params, searchParams }: PageProps) {
       </div>
     );
   }
-  const name = initial.hero.displayName ?? initial.hero.name;
   return (
     <>
-      <h1 className="sr-only">{name}</h1>
       <div className="layout">
         <aside className="rail-left">
           <BasketballLeftRail />
