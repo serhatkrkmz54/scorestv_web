@@ -15,6 +15,25 @@ export interface PlayerBirthInfo {
   countryText?: string | null;
 }
 
+/**
+ * Yasi dogum tarihinden (ISO "YYYY-MM-DD") anlik hesaplar. Backend "age" alani
+ * bayat olabildigi ve response cache'lendigi icin dogum gunu civari ±1 kayabiliyor;
+ * gorunumde daima dogum tarihini otorite kabul et. birthDate yoksa fallback doner.
+ */
+export function ageFromBirth(
+  birthDate?: string | null,
+  fallback?: number | null,
+): number | null {
+  if (!birthDate) return fallback ?? null;
+  const b = new Date(birthDate);
+  if (Number.isNaN(b.getTime())) return fallback ?? null;
+  const now = new Date();
+  let age = now.getFullYear() - b.getFullYear();
+  const m = now.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < b.getDate())) age -= 1;
+  return age >= 0 && age < 130 ? age : (fallback ?? null);
+}
+
 export interface PlayerCareerTeamView {
   team: PlayerTeamRef;
   seasons: number[];

@@ -7,7 +7,7 @@ import {
   IconHeart2,
   IconMed,
 } from "@/components/icons";
-import type { PlayerDetailResponse } from "@/lib/player-detail-types";
+import { ageFromBirth, type PlayerDetailResponse } from "@/lib/player-detail-types";
 
 interface Props {
   detail: PlayerDetailResponse;
@@ -25,11 +25,12 @@ export function PlayerSideInfo({ detail, lang }: Props) {
       value: [detail.firstName, detail.lastName].filter(Boolean).join(" ") || detail.name,
     });
   }
-  if (detail.age != null) {
+  const displayAge = ageFromBirth(detail.birth?.date, detail.age);
+  if (displayAge != null) {
     rows.push({
       icon: <IconBall s={16} />,
       label: t("Yaş", "Age"),
-      value: String(detail.age),
+      value: String(displayAge),
     });
   }
   if (detail.birth?.date) {

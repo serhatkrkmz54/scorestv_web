@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { teamPath } from "@/lib/routes";
 import { TeamLogo } from "@/components/shell/TeamLogo";
-import type { PlayerDetailResponse } from "@/lib/player-detail-types";
+import { ageFromBirth, type PlayerDetailResponse } from "@/lib/player-detail-types";
 
 // API ham değerleri: "187" / "187 cm" / "83" / "83 kg" gelebilir.
 // İçinde unit yoksa ekle; varsa olduğu gibi göster.
@@ -72,9 +72,9 @@ export function PlayerHero({ detail, selectedSeason, onSeasonChange, lang }: Pro
                   {detail.nationalityText ?? detail.nationality}
                 </span>
               ) : null}
-              {detail.age != null ? (
+              {ageFromBirth(detail.birth?.date, detail.age) != null ? (
                 <span className="player-hero-age">
-                  {detail.age} {t("yaş", "y/o")}
+                  {ageFromBirth(detail.birth?.date, detail.age)} {t("yaş", "y/o")}
                 </span>
               ) : null}
               {detail.height ? (
