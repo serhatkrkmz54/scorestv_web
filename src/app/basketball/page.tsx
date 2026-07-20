@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { BasketballHome } from "@/components/home/BasketballHome";
 import { ScrollToTop } from "@/components/home/ScrollToTop";
+import { resolveLang } from "@/lib/lang-server";
+import { fetchSportHomeServer } from "@/lib/home-server";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -26,11 +28,18 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default function BasketballPage() {
+export default async function BasketballPage() {
+  // SSR: today's basketball games rendered into HTML (no "Loading…" for Google).
+  const lang = await resolveLang();
+  const home = await fetchSportHomeServer("basketball", lang);
   return (
     <>
       <h1 className="sr-only">Live Basketball Scores and Standings</h1>
-      <BasketballHome />
+      <BasketballHome
+        initialDates={home.dates}
+        initialDay={home.day}
+        initialDate={home.date}
+      />
       <ScrollToTop />
     </>
   );

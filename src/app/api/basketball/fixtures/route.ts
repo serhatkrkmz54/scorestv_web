@@ -1,17 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { backendJson } from "@/lib/backend";
-import { buildMatchSlug } from "@/lib/slug-utils";
-import { categorizeSport } from "@/lib/sport-scores";
-import type {
-  BasketballGameSummary,
-  RawBasketballGame,
-  SportDayResponse,
-  SportLeagueGroup,
-} from "@/lib/sport-scores-types";
+import { mapBasketballDay } from "@/lib/sport-day";
+import type { RawBasketballGame } from "@/lib/sport-scores-types";
 
 // Basketbol anasayfa fikstur listesi (public). Backend
 // /api/v1/basketball/games proxy'lenir, lige gore gruplanmis ortak modele
-// donusturulur (futbol /api/fixtures yanit sekline benzer).
+// donusturulur (transform: @/lib/sport-day → SSR helper ile ortak).
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const date = sp.get("date");
@@ -37,52 +31,5 @@ export async function GET(req: NextRequest) {
   }
 
   const games = Array.isArray(r.body) ? r.body : [];
-  const summaries: BasketballGameSummary[] = games.map((g) => ({
-    sport: "basketball",
-    id: g.id,
-    slug: buildMatchSlug(g.home?.name ?? "home", g.away?.name ?? "away", g.id),
-    startAt: g.startAt,
-    season: g.season ?? null,
-    status: {
-      shortCode: g.status?.shortCode ?? null,
-      longName: g.status?.longName ?? null,
-      timer: g.status?.timer ?? null,
-    },
-    league: {
-      id: g.league?.id ?? 0,
-      name: g.league?.name ?? "",
-      logo: g.league?.logo ?? null,
-      country: g.league?.country ?? null,
-      countryFlag: g.league?.countryFlag ?? null,
-    },
-    home: { id: g.home?.id ?? 0, name: g.home?.name ?? "", logo: g.home?.logo ?? null },
-    away: { id: g.away?.id ?? 0, name: g.away?.name ?? "", logo: g.away?.logo ?? null },
-    score: {
-      homeTotal: g.score?.homeTotal ?? null,
-      awayTotal: g.score?.awayTotal ?? null,
-      home: g.score?.home ?? { q1: null, q2: null, q3: null, q4: null, ot: null },
-      away: g.score?.away ?? { q1: null, q2: null, q3: null, q4: null, ot: null },
-    },
-  }));
-
-  const groups = new Map<number, SportLeagueGroup>();
-  let liveCount = 0;
-  for (const s of summaries) {
-    if (categorizeSport("basketball", s.status) === "live") liveCount++;
-    let grp = groups.get(s.league.id);
-    if (!grp) {
-      grp = { league: s.league, games: [] };
-      groups.set(s.league.id, grp);
-    }
-    grp.games.push(s);
-  }
-
-  const body: SportDayResponse = {
-    sport: "basketball",
-    date: date ?? null,
-    gameCount: summaries.length,
-    liveCount,
-    leagues: Array.from(groups.values()),
-  };
-  return NextResponse.json(body);
+  return NextResponse.json(mapBasketballDay(games, date));
 }

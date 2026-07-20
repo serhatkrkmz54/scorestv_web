@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLang } from "@/context/lang-context";
 import { useFavorites } from "@/context/favorites-context";
 import { HOME_STR } from "@/i18n/home-strings";
@@ -23,18 +23,34 @@ import { SportLeagueBlock } from "./SportLeagueBlock";
 // Basketbol/voleybol anasayfa fikstur feed'i. Futbol HomeFixtures esi —
 // ayri tutuldu cunku skor sekli + status kodlari + veri kaynagi farkli.
 // Tarih seridi futbol /api/fixtures/dates feed'ini takvim UI'i icin kullanir.
-export function SportFixtures({ sport }: { sport: Sport }) {
+export function SportFixtures({
+  sport,
+  initialDates = null,
+  initialDay = null,
+  initialDate = null,
+}: {
+  sport: Sport;
+  // SSR tohumu — Google'ın ilk HTML'inde bk/vb maçları görünsün diye.
+  initialDates?: FixtureDatesResponse | null;
+  initialDay?: SportDayResponse | null;
+  initialDate?: string | null;
+}) {
   const { lang } = useLang();
   const { has } = useFavorites();
   const t = HOME_STR[lang];
   const cfg = SPORTS[sport];
 
-  const [dates, setDates] = useState<FixtureDatesResponse | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [day, setDay] = useState<SportDayResponse | null>(null);
+  const [dates, setDates] = useState<FixtureDatesResponse | null>(initialDates);
+  const [selectedDate, setSelectedDate] = useState<string | null>(
+    initialDate ?? initialDates?.today ?? null,
+  );
+  const [day, setDay] = useState<SportDayResponse | null>(initialDay);
   const [status, setStatus] = useState<StatusFilter>("all");
-  const [loading, setLoading] = useState(true);
+  // SSR tohumu geldiyse ilk render'da yükleme yok — maçlar zaten HTML'de.
+  const [loading, setLoading] = useState(initialDay == null);
   const [error, setError] = useState(false);
+  // İlk fikstür yüklemesi tohumla eşleşiyorsa SESSİZ (spinner flash yok).
+  const seededRef = useRef<boolean>(initialDay != null);
 
   // Takvim tarihleri (futbol feed'i; yalnizca UI gun secimi icin).
   useEffect(() => {
@@ -81,7 +97,10 @@ export function SportFixtures({ sport }: { sport: Sport }) {
         if (active && !silent) setLoading(false);
       }
     };
-    void load();
+    // İlk yükleme SSR tohumuyla aynı tarihse sessiz (spinner flash yok);
+    // sonraki tarih değişiklikleri normal (yükleme göstergeli).
+    void load(seededRef.current);
+    seededRef.current = false;
     const id = setInterval(() => void load(true), 30000);
     return () => {
       active = false;

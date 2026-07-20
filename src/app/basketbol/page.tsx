@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { BasketballHome } from "@/components/home/BasketballHome";
 import { ScrollToTop } from "@/components/home/ScrollToTop";
+import { resolveLang } from "@/lib/lang-server";
+import { fetchSportHomeServer } from "@/lib/home-server";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -26,11 +28,18 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default function BasketbolPage() {
+export default async function BasketbolPage() {
+  // SSR: ilk gün basketbol maçları HTML'e gömülür (Google "Yükleniyor" görmesin).
+  const lang = await resolveLang();
+  const home = await fetchSportHomeServer("basketball", lang);
   return (
     <>
       <h1 className="sr-only">Canlı Basketbol Skorları ve Puan Durumları</h1>
-      <BasketballHome />
+      <BasketballHome
+        initialDates={home.dates}
+        initialDay={home.day}
+        initialDate={home.date}
+      />
       <ScrollToTop />
     </>
   );

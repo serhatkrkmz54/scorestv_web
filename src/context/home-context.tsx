@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -38,14 +39,31 @@ interface HomeCtxValue {
 
 const HomeCtx = createContext<HomeCtxValue | null>(null);
 
-export function HomeProvider({ children }: { children: ReactNode }) {
+export function HomeProvider({
+  children,
+  initialDates = null,
+  initialDay = null,
+  initialDate = null,
+}: {
+  children: ReactNode;
+  // SSR tohumu — Google'ın ilk HTML'inde maçlar/skorlar görünsün diye.
+  initialDates?: FixtureDatesResponse | null;
+  initialDay?: FixtureDayResponse | null;
+  initialDate?: string | null;
+}) {
   const { lang } = useLang();
-  const [dates, setDates] = useState<FixtureDatesResponse | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [day, setDay] = useState<FixtureDayResponse | null>(null);
+  const [dates, setDates] = useState<FixtureDatesResponse | null>(initialDates);
+  const [selectedDate, setSelectedDate] = useState<string | null>(
+    initialDate ?? initialDates?.today ?? null,
+  );
+  const [day, setDay] = useState<FixtureDayResponse | null>(initialDay);
   const [status, setStatus] = useState<StatusFilter>("all");
-  const [loading, setLoading] = useState(true);
+  // SSR tohumu geldiyse ilk render'da yükleme yok — maçlar zaten HTML'de.
+  const [loading, setLoading] = useState(initialDay == null);
   const [error, setError] = useState(false);
+  // İlk fikstür yüklemesi tohumla eşleşiyorsa SESSİZ yapılır (spinner flash yok);
+  // hidrasyondan sonra skorları arka planda tazeler.
+  const seededRef = useRef<boolean>(initialDay != null);
 
   useEffect(() => {
     let active = true;
@@ -97,8 +115,13 @@ export function HomeProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
+    if (!selectedDate) return;
+    // İlk çalıştırma SSR tohumuyla aynı tarih ise sessiz tazele (spinner yok);
+    // sonraki tarih değişiklikleri normal (yükleme göstergeli).
+    const silent = seededRef.current;
+    seededRef.current = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- tarih/dil değişince veri çekme (kasıtlı)
-    if (selectedDate) void loadFixtures(selectedDate);
+    void loadFixtures(selectedDate, silent);
   }, [selectedDate, loadFixtures]);
 
   useEffect(() => {

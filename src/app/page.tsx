@@ -8,6 +8,7 @@ import { SetSportFootball } from "@/components/home/SetSportFootball";
 import { AiTrustStrip } from "@/components/ai/AiTrustStrip";
 import { resolveLang } from "@/lib/lang-server";
 import { getLatestNews } from "@/lib/news-server";
+import { fetchHomeServer } from "@/lib/home-server";
 
 // NOT: Anasayfa title/description'i KOK layout'taki generateMetadata (HOME_META)
 // uretir. Burada KENDI metadata'mizi tanimlamiyoruz.
@@ -15,13 +16,21 @@ import { getLatestNews } from "@/lib/news-server";
 export default async function HomePage() {
   const lang = await resolveLang();
   const isTr = lang === "tr";
-  // Sag ray icin son haberler (SSR; hata olursa bos → NewsList render etmez).
-  const news = await getLatestNews(lang, 5);
+  // Sag ray haberleri + anasayfa fikstürleri PARALEL SSR — Google'ın ilk
+  // aldigi HTML'de canli maclar/skorlar yer alsin (yalniz "Yukleniyor..." degil).
+  const [news, home] = await Promise.all([
+    getLatestNews(lang, 5),
+    fetchHomeServer(lang),
+  ]);
   const h1 = isTr
     ? "Canlı Skorlar, Puan Durumları ve Maç İstatistikleri"
     : "Live Scores, Standings and Match Statistics";
   return (
-    <HomeProvider>
+    <HomeProvider
+      initialDates={home.dates}
+      initialDay={home.day}
+      initialDate={home.date}
+    >
       {/* "/" her zaman FUTBOL — spor-context'i sabitle (regression koruma). */}
       <SetSportFootball />
       {/* SEO: gorsel gizli ana baslik (robotlar gorur). */}
