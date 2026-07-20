@@ -2759,23 +2759,30 @@ a.evx-out-link:hover { color: var(--accent); }
 .profile-av-btn:disabled { opacity: .55; cursor: default; }
 
 /* ── Avatar kırpma modalı (kare, zoom/pan) ── */
+/* Cihaza göre: overlay kaydırılabilir + modal margin:auto ile ortalanır; içerik
+   ekrandan uzunsa üst kısım KESİLMEZ (scroll edilebilir). Kırpma alanı hem
+   genişliğe hem de EKRAN YÜKSEKLİĞİNE (dvh) göre küçülür → kısa/yatay ekranlarda
+   başlık yukarıda kaybolmaz. */
 .avatar-crop-overlay {
   position: fixed; inset: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; overflow-y: auto; -webkit-overflow-scrolling: touch;
   background: color-mix(in srgb, #000 62%, transparent);
-  padding: 16px; animation: auth-pop .15s ease-out;
+  padding: 14px; animation: auth-pop .15s ease-out;
 }
 .avatar-crop-modal {
+  margin: auto; /* iki eksende ortala; taşarsa overlay scroll eder */
   width: min(360px, 92vw);
   background: var(--surface); border: 1px solid var(--border-2);
-  border-radius: 18px; padding: 18px; box-shadow: var(--shadow);
-  display: flex; flex-direction: column; gap: 10px;
+  border-radius: 18px; padding: 16px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 8px;
 }
 .avatar-crop-title { margin: 0; font-size: 16px; font-weight: 700; color: var(--text); }
 .avatar-crop-hint { margin: 0; font-size: 12px; color: var(--text-dim); }
 .avatar-crop-view {
-  position: relative; width: min(300px, 82vw); height: min(300px, 82vw);
-  margin: 4px auto 0; border-radius: 20px; overflow: hidden;
+  position: relative;
+  width: min(300px, 82vw, 52vh);
+  height: min(300px, 82vw, 52vh);
+  margin: 2px auto 0; border-radius: 20px; overflow: hidden;
   background: #000; cursor: grab; touch-action: none; user-select: none;
 }
 .avatar-crop-view:active { cursor: grabbing; }
