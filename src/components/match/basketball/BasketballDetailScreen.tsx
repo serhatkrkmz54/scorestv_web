@@ -70,10 +70,18 @@ export function BasketballDetailScreen({ initial, slug, lang }: Props) {
     <div className="match-detail-screen">
       <BasketballHero detail={detail} lang={lang} />
       <MatchTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/* SEO: paneller sunucu HTML'ine basılır, aktif olmayan `hidden` ile
+          gizlenir → Puan Durumu/İstatistik/H2H taranabilir. */}
       <div className="match-detail-body">
-        {tab === "standings" ? <BasketballStandingsTab detail={detail} lang={lang} /> : null}
-        {tab === "stats" ? <BasketballStatsTab detail={detail} lang={lang} /> : null}
-        {tab === "h2h" ? <BasketballH2HTab detail={detail} lang={lang} /> : null}
+        <section role="tabpanel" id="bk-match-panel-standings" hidden={tab !== "standings"}>
+          <BasketballStandingsTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="bk-match-panel-stats" hidden={tab !== "stats"}>
+          <BasketballStatsTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="bk-match-panel-h2h" hidden={tab !== "h2h"}>
+          <BasketballH2HTab detail={detail} lang={lang} />
+        </section>
       </div>
     </div>
   );

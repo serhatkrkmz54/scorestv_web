@@ -66,9 +66,15 @@ export function VolleyballDetailScreen({ initial, slug, lang }: Props) {
     <div className="match-detail-screen">
       <VolleyballHero detail={detail} lang={lang} />
       <MatchTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/* SEO: paneller sunucu HTML'ine basılır, aktif olmayan `hidden` ile
+          gizlenir → Puan Durumu/H2H taranabilir. */}
       <div className="match-detail-body">
-        {tab === "standings" ? <VolleyballStandingsTab detail={detail} lang={lang} /> : null}
-        {tab === "h2h" ? <VolleyballH2HTab detail={detail} lang={lang} /> : null}
+        <section role="tabpanel" id="vb-match-panel-standings" hidden={tab !== "standings"}>
+          <VolleyballStandingsTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="vb-match-panel-h2h" hidden={tab !== "h2h"}>
+          <VolleyballH2HTab detail={detail} lang={lang} />
+        </section>
       </div>
     </div>
   );

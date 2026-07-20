@@ -2757,6 +2757,41 @@ a.evx-out-link:hover { color: var(--accent); }
   background: transparent; color: var(--text-dim);
 }
 .profile-av-btn:disabled { opacity: .55; cursor: default; }
+
+/* ── Avatar kırpma modalı (kare, zoom/pan) ── */
+.avatar-crop-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, #000 62%, transparent);
+  padding: 16px; animation: auth-pop .15s ease-out;
+}
+.avatar-crop-modal {
+  width: min(360px, 92vw);
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: 18px; padding: 18px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.avatar-crop-title { margin: 0; font-size: 16px; font-weight: 700; color: var(--text); }
+.avatar-crop-hint { margin: 0; font-size: 12px; color: var(--text-dim); }
+.avatar-crop-view {
+  position: relative; width: min(300px, 82vw); height: min(300px, 82vw);
+  margin: 4px auto 0; border-radius: 20px; overflow: hidden;
+  background: #000; cursor: grab; touch-action: none; user-select: none;
+}
+.avatar-crop-view:active { cursor: grabbing; }
+.avatar-crop-view img { pointer-events: none; }
+.avatar-crop-ring {
+  position: absolute; inset: 0; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 65%, transparent) inset;
+}
+.avatar-crop-zoom {
+  display: flex; align-items: center; gap: 12px; margin-top: 6px;
+  color: var(--text-dim); font-size: 15px; font-weight: 700;
+}
+.avatar-crop-zoom input[type="range"] { flex: 1; accent-color: var(--accent); }
+.avatar-crop-actions {
+  display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px;
+}
 .profile-id-name {
   position: relative; margin: 0;
   font-family: var(--font-poppins), Poppins, system-ui, sans-serif;

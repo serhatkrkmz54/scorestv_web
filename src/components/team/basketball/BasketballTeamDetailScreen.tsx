@@ -74,11 +74,21 @@ export function BasketballTeamDetailScreen({ initial, slug, lang }: Props) {
         lang={lang}
       />
       <BasketballTeamTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/* SEO: tüm paneller sunucu HTML'ine basılır, aktif olmayanlar `hidden`
+          ile gizlenir → Kadro/Fikstür/İstatistik Google tarafından taranabilir. */}
       <div className="team-detail-body">
-        {tab === "overview" ? <BasketballTeamOverviewTab detail={detail} lang={lang} /> : null}
-        {tab === "squad" ? <BasketballTeamSquadTab detail={detail} lang={lang} /> : null}
-        {tab === "fixtures" ? <BasketballTeamFixturesTab detail={detail} lang={lang} /> : null}
-        {tab === "stats" ? <BasketballTeamStatsTab detail={detail} lang={lang} /> : null}
+        <section role="tabpanel" id="bk-team-panel-overview" hidden={tab !== "overview"}>
+          <BasketballTeamOverviewTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="bk-team-panel-squad" hidden={tab !== "squad"}>
+          <BasketballTeamSquadTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="bk-team-panel-fixtures" hidden={tab !== "fixtures"}>
+          <BasketballTeamFixturesTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="bk-team-panel-stats" hidden={tab !== "stats"}>
+          <BasketballTeamStatsTab detail={detail} lang={lang} />
+        </section>
       </div>
     </div>
   );

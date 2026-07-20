@@ -82,13 +82,15 @@ export function BasketballLeagueDetailScreen({ initial, slug, lang }: Props) {
         lang={lang}
       />
       <BasketballLeagueTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/* SEO: paneller sunucu HTML'ine basılır, aktif olmayan `hidden` ile
+          gizlenir → Puan Durumu ve Fikstür Google tarafından taranabilir. */}
       <div className="league-detail-body">
-        {tab === "standings" ? (
+        <section role="tabpanel" id="bk-league-panel-standings" hidden={tab !== "standings"}>
           <BasketballLeagueStandingsTab detail={detail} lang={lang} />
-        ) : null}
-        {tab === "fixtures" ? (
+        </section>
+        <section role="tabpanel" id="bk-league-panel-fixtures" hidden={tab !== "fixtures"}>
           <BasketballLeagueFixturesTab detail={detail} lang={lang} />
-        ) : null}
+        </section>
       </div>
     </div>
   );

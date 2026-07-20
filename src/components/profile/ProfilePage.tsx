@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { AvatarCropModal } from "./AvatarCropModal";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
 import { COUNTRIES, countryLabel } from "@/lib/countries";
@@ -27,6 +28,8 @@ export function ProfilePage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [avatarMsg, setAvatarMsg] = useState<Msg>(null);
+  // Kırpma modalına verilecek seçilen dosya (null → modal kapalı).
+  const [cropFile, setCropFile] = useState<File | null>(null);
 
   // ── Profil düzenleme ──
   const [displayName, setDisplayName] = useState("");
@@ -68,7 +71,7 @@ export function ProfilePage() {
 
   const initial = (user?.displayName || user?.email || "U").trim().charAt(0).toUpperCase();
 
-  async function onPickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+  function onPickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = ""; // aynı dosya tekrar seçilebilsin
     if (!file) return;
@@ -76,14 +79,22 @@ export function ProfilePage() {
       setAvatarMsg({ type: "err", text: t("Yalnızca görsel yükleyebilirsin.", "You can only upload an image.") });
       return;
     }
-    if (file.size > 8 * 1024 * 1024) {
-      setAvatarMsg({ type: "err", text: t("Görsel en fazla 8 MB olabilir.", "Image can be at most 8 MB.") });
+    if (file.size > 20 * 1024 * 1024) {
+      // Kırpma öncesi ham dosya sınırı geniş; kırpılan çıktı zaten küçük olur.
+      setAvatarMsg({ type: "err", text: t("Görsel en fazla 20 MB olabilir.", "Image can be at most 20 MB.") });
       return;
     }
     setAvatarMsg(null);
+    setCropFile(file); // kırpma modalını aç
+  }
+
+  // Kırpma onaylanınca: kare blob'u File'a sarıp yükle.
+  async function onCropConfirm(blob: Blob) {
+    const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
     setAvatarBusy(true);
     const r = await uploadAvatar(file);
     setAvatarBusy(false);
+    setCropFile(null);
     setAvatarMsg(
       r.ok
         ? { type: "ok", text: t("Profil resmi güncellendi.", "Profile photo updated.") }
@@ -447,6 +458,18 @@ export function ProfilePage() {
           )}
         </div>
       </div>
+
+      {cropFile ? (
+        <AvatarCropModal
+          file={cropFile}
+          lang={lang}
+          busy={avatarBusy}
+          onCancel={() => {
+            if (!avatarBusy) setCropFile(null);
+          }}
+          onConfirm={onCropConfirm}
+        />
+      ) : null}
     </div>
   );
 }

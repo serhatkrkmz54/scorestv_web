@@ -122,13 +122,37 @@ export function TeamDetailScreen({ initial, slug, lang }: Props) {
         <TeamSideInfo detail={detail} lang={lang} />
       </div>
       <TeamTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/*
+        SEO: tüm sekme panelleri sunucu HTML'ine basılır (koşullar tabDefs ile
+        aynı — yalnızca veri varlığı). Aktif olmayanlar `hidden` ile gizlenir;
+        içerik kaynak HTML'de kaldığından Kadro/Fikstür/Puan Durumu/İstatistik
+        Google tarafından taranabilir (yalnız JS tıklamasıyla değil).
+      */}
       <div className="team-detail-body">
-        {tab === "overview" ? <TeamOverviewTab detail={detail} lang={lang} /> : null}
-        {tab === "squad" ? <TeamSquadTab detail={detail} lang={lang} /> : null}
-        {tab === "fixtures" ? <TeamFixturesTab detail={detail} lang={lang} /> : null}
-        {tab === "standings" ? <TeamStandingsTab detail={detail} lang={lang} /> : null}
-        {tab === "transfers" ? <TeamTransfersTab detail={detail} lang={lang} /> : null}
-        {tab === "stats" ? <TeamStatsTab detail={detail} lang={lang} /> : null}
+        <section role="tabpanel" id="team-panel-overview" hidden={tab !== "overview"}>
+          <TeamOverviewTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="team-panel-squad" hidden={tab !== "squad"}>
+          <TeamSquadTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="team-panel-fixtures" hidden={tab !== "fixtures"}>
+          <TeamFixturesTab detail={detail} lang={lang} />
+        </section>
+        {detail.standingsPositions && detail.standingsPositions.length > 0 ? (
+          <section role="tabpanel" id="team-panel-standings" hidden={tab !== "standings"}>
+            <TeamStandingsTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
+        {!detail.national && detail.transfers && detail.transfers.length > 0 ? (
+          <section role="tabpanel" id="team-panel-transfers" hidden={tab !== "transfers"}>
+            <TeamTransfersTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
+        {detail.statistics && detail.statistics.length > 0 ? (
+          <section role="tabpanel" id="team-panel-stats" hidden={tab !== "stats"}>
+            <TeamStatsTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
       </div>
     </div>
   );

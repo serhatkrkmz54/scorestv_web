@@ -104,13 +104,42 @@ export function PlayerDetailScreen({ initial, slug, lang }: Props) {
         lang={lang}
       />
       <PlayerTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/*
+        SEO: TÜM sekme panelleri sunucu HTML'ine basılır (koşul yalnızca veri
+        varlığı — tabDefs ile aynı). Aktif olmayan paneller `hidden` ile
+        gizlenir; içerik DOM'da/kaynak HTML'de kaldığından Google tarar.
+        Böylece İstatistik/Kariyer/Transferler/Kupalar içerikleri sadece JS
+        tıklamasıyla değil, ilk yüklemede de taranabilir.
+      */}
       <div className="player-detail-body">
-        {tab === "overview" ? <PlayerOverviewTab detail={detail} lang={lang} /> : null}
-        {tab === "stats" ? <PlayerStatsTab detail={detail} lang={lang} /> : null}
-        {tab === "career" ? <PlayerCareerTab detail={detail} lang={lang} /> : null}
-        {tab === "transfers" ? <PlayerTransfersTab detail={detail} lang={lang} /> : null}
-        {tab === "sidelined" ? <PlayerSidelinedTab detail={detail} lang={lang} /> : null}
-        {tab === "trophies" ? <PlayerTrophiesTab detail={detail} lang={lang} /> : null}
+        <section role="tabpanel" id="player-panel-overview" hidden={tab !== "overview"}>
+          <PlayerOverviewTab detail={detail} lang={lang} />
+        </section>
+        {detail.seasonStats && detail.seasonStats.length > 0 ? (
+          <section role="tabpanel" id="player-panel-stats" hidden={tab !== "stats"}>
+            <PlayerStatsTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
+        {detail.careerTeams && detail.careerTeams.length > 0 ? (
+          <section role="tabpanel" id="player-panel-career" hidden={tab !== "career"}>
+            <PlayerCareerTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
+        {detail.transfers && detail.transfers.length > 0 ? (
+          <section role="tabpanel" id="player-panel-transfers" hidden={tab !== "transfers"}>
+            <PlayerTransfersTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
+        {detail.sidelined && detail.sidelined.length > 0 ? (
+          <section role="tabpanel" id="player-panel-sidelined" hidden={tab !== "sidelined"}>
+            <PlayerSidelinedTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
+        {detail.trophies && detail.trophies.length > 0 ? (
+          <section role="tabpanel" id="player-panel-trophies" hidden={tab !== "trophies"}>
+            <PlayerTrophiesTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
       </div>
     </div>
   );

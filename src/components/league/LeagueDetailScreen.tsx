@@ -90,11 +90,28 @@ export function LeagueDetailScreen({ initial, slug, lang }: Props) {
         lang={lang}
       />
       <LeagueTabs tabs={tabs} active={tab} onChange={setTab} />
+      {/*
+        SEO: SSR verisinden gelen paneller (Genel/Puan Durumu/Lider Tablosu)
+        sunucu HTML'ine basılır, aktif olmayanlar `hidden` ile gizlenir →
+        Google tarar. Fikstür sekmesi client-side veri çektiği için (lazy)
+        yalnızca aktifken mount edilir; sayfa açılışında gereksiz istek olmaz.
+        (Taranabilir fikstür istenirse ayrıca SSR-seed edilmeli.)
+      */}
       <div className="league-detail-body">
-        {tab === "overview" ? <LeagueOverviewTab detail={detail} lang={lang} /> : null}
-        {tab === "standings" ? <LeagueStandingsTab detail={detail} lang={lang} /> : null}
-        {tab === "fixtures" ? <LeagueFixturesTab detail={detail} lang={lang} /> : null}
-        {tab === "topplayers" ? <LeagueTopPlayersTab detail={detail} lang={lang} /> : null}
+        <section role="tabpanel" id="league-panel-overview" hidden={tab !== "overview"}>
+          <LeagueOverviewTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="league-panel-standings" hidden={tab !== "standings"}>
+          <LeagueStandingsTab detail={detail} lang={lang} />
+        </section>
+        <section role="tabpanel" id="league-panel-topplayers" hidden={tab !== "topplayers"}>
+          <LeagueTopPlayersTab detail={detail} lang={lang} />
+        </section>
+        {tab === "fixtures" ? (
+          <section role="tabpanel" id="league-panel-fixtures">
+            <LeagueFixturesTab detail={detail} lang={lang} />
+          </section>
+        ) : null}
       </div>
     </div>
   );
