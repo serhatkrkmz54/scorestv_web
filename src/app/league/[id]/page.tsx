@@ -19,9 +19,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const season = sp.season ? Number(sp.season) : undefined;
   const { data } = await fetchLeagueDetailServer(slug, "en", season);
-  if (!data) return { title: "League not found | ScoresTV" };
+  if (!data) return { title: "League not found | Scores TV" };
   const seo = data.seo;
-  const title = seo?.title ?? `${data.name} ${data.selectedSeason ?? ""} | ScoresTV`;
+  const title = seo?.title ?? `${data.name} ${data.selectedSeason ?? ""} | Scores TV`;
   const description =
     seo?.description ??
     `${data.name} standings, fixtures, top scorers and details.`;

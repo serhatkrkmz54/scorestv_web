@@ -6,8 +6,8 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata(
     "Kariyer",
     "Careers",
-    "Spora ve teknolojiye tutkulu bir ekibin parçası olun — ScoresTV kariyer fırsatları.",
-    "Join a team passionate about sports and technology — careers at ScoresTV.",
+    "Spora ve teknolojiye tutkulu bir ekibin parçası olun — Scores TV kariyer fırsatları.",
+    "Join a team passionate about sports and technology — careers at Scores TV.",
     "/kariyer",
   );
 }

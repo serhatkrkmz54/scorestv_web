@@ -6,8 +6,8 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata(
     "Çerez Politikası",
     "Cookie Policy",
-    "ScoresTV çerez politikası: hangi çerezleri kullanıyoruz ve nasıl yönetebilirsiniz.",
-    "ScoresTV cookie policy: which cookies we use and how you can manage them.",
+    "Scores TV çerez politikası: hangi çerezleri kullanıyoruz ve nasıl yönetebilirsiniz.",
+    "Scores TV cookie policy: which cookies we use and how you can manage them.",
     "/cerez-politikasi",
   );
 }

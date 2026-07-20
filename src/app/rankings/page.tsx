@@ -4,7 +4,7 @@ import { RankingsScreen } from "@/components/rankings/RankingsScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 
 export const metadata: Metadata = {
-  title: "Rankings — FIFA & UEFA | ScoresTV",
+  title: "Rankings — FIFA & UEFA | Scores TV",
   description:
     "FIFA Men's National Team Ranking, UEFA Club Coefficient and UEFA Country Coefficient — current rankings.",
 };

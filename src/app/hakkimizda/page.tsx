@@ -8,7 +8,7 @@ export default function AboutPage() {
       tr={{
         title: "Hakkımızda",
         intro:
-          "ScoresTV; futbol başta olmak üzere spor severleri canlı skorlar, puan durumları, kadrolar ve maç istatistikleriyle buluşturan bir dijital platformdur. Amacımız, takip etmek istediğiniz her şeyi hızlı ve sade bir deneyimle tek yerde sunmak.",
+          "Scores TV; futbol başta olmak üzere spor severleri canlı skorlar, puan durumları, kadrolar ve maç istatistikleriyle buluşturan bir dijital platformdur. Amacımız, takip etmek istediğiniz her şeyi hızlı ve sade bir deneyimle tek yerde sunmak.",
         sections: [
           {
             h: "Misyonumuz",
@@ -45,7 +45,7 @@ export default function AboutPage() {
       en={{
         title: "About Us",
         intro:
-          "ScoresTV is a digital platform that brings sports fans live scores, standings, squads and match statistics — with a focus on football. Our goal is to deliver everything you want to follow in one place, with a fast and clean experience.",
+          "Scores TV is a digital platform that brings sports fans live scores, standings, squads and match statistics — with a focus on football. Our goal is to deliver everything you want to follow in one place, with a fast and clean experience.",
         sections: [
           {
             h: "Our Mission",

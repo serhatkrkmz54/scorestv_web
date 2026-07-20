@@ -17,9 +17,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { slug } = await params;
   const sp = await searchParams;
   const { data } = await fetchBasketballTeamDetailServer(slug, "en", sp.season ?? null);
-  if (!data) return { title: "Team not found | ScoresTV" };
+  if (!data) return { title: "Team not found | Scores TV" };
   const name = data.hero.displayName ?? data.hero.name;
-  const title = `${name} Basketball | ScoresTV`;
+  const title = `${name} Basketball | Scores TV`;
   const description = `${name} roster, fixtures, statistics and standings — basketball.`;
   const canonical = `${SITE}/basketball/team/${data.hero.slug ?? slug}`;
   return {

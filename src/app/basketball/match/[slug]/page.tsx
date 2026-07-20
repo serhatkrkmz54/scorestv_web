@@ -14,11 +14,11 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await fetchBasketballDetailServer(slug, "en");
-  if (!data) return { title: "Match not found | ScoresTV" };
+  if (!data) return { title: "Match not found | Scores TV" };
   const seo = data.seo;
   const home = data.homeTeam.displayName ?? data.homeTeam.name;
   const away = data.awayTeam.displayName ?? data.awayTeam.name;
-  const title = seo?.title ?? `${home} vs ${away} | ScoresTV`;
+  const title = seo?.title ?? `${home} vs ${away} | Scores TV`;
   const description =
     seo?.description ?? `${home} vs ${away} basketball game; live score, quarter scores, standings.`;
   const image = seo?.ogImage ?? `${SITE}/og-image.png`;

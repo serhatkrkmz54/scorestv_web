@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════════════════════
-   ScoresTV WEB — tasarım sistemi (design handoff §4'ten birebir)
+   Scores TV WEB — tasarım sistemi (design handoff §4'ten birebir)
    Font: Rajdhani · tabular skorlar · koyu/açık tema · accent değişken
    ════════════════════════════════════════════════════════════════ */
 
@@ -793,7 +793,7 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
 .fm-min { font-size: 9.7px; font-weight: 700; color: var(--live); display: inline-flex; align-items: center; gap: 4px; }
 .fm-league { margin-top: 7px; font-size: 10.1px; font-weight: 600; color: var(--text-faint); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ── Logo: ikon (temaya göre) + ScoresTV (TV accent, Rajdhani) ── */
+/* ── Logo: ikon (temaya göre) + Scores TV (TV accent, Rajdhani) ── */
 .logo-mark { display: inline-flex; align-items: center; gap: 3px; }
 .logo-img { width: auto; display: block; border-radius: 7px; }
 .logo-img.light { display: none; }
@@ -1170,7 +1170,7 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
   font-size: 16px; font-weight: 800; letter-spacing: -.01em;
 }
 
-/* ── Overview: ScoresTV Puanı (canli 0-10) ── */
+/* ── Overview: Scores TV Puanı (canli 0-10) ── */
 .stvr-card { padding: 14px 16px; }
 .stvr-card .match-card-head {
   display: flex; align-items: center; justify-content: space-between;
@@ -1483,7 +1483,7 @@ a.evx-out-link:hover { color: var(--accent); }
   text-align: center; color: var(--text-dim);
   font-size: 12px; font-weight: 500; margin: 10px 0 0;
 }
-/* ScoresTV Puanı — saha köşe rozeti (formasyonun karşı köşesi). Mobil dikey
+/* Scores TV Puanı — saha köşe rozeti (formasyonun karşı köşesi). Mobil dikey
    sahada: ev sağ-üst, deplasman sol-alt. Girişte pop animasyonu. */
 .pitch-stvr {
   position: absolute; z-index: 3;

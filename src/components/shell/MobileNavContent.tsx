@@ -60,7 +60,7 @@ export function MobileNavContent() {
 
       <div className="mn-footer">
         <IconBall s={14} />
-        <span>ScoresTV © {new Date().getFullYear()}</span>
+        <span>Scores TV © {new Date().getFullYear()}</span>
       </div>
     </>
   );

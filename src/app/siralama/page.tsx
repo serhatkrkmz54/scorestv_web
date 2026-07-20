@@ -4,7 +4,7 @@ import { RankingsScreen } from "@/components/rankings/RankingsScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 
 export const metadata: Metadata = {
-  title: "Sıralamalar — FIFA & UEFA | ScoresTV",
+  title: "Sıralamalar — FIFA & UEFA | Scores TV",
   description:
     "FIFA Erkek Milli Takım Sıralaması, UEFA Kulüp Katsayısı ve UEFA Ülke Katsayısı — güncel sıralamalar.",
 };

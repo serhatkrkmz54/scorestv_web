@@ -14,11 +14,11 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await fetchVolleyballDetailServer(slug, "tr");
-  if (!data) return { title: "Maç bulunamadı | ScoresTV" };
+  if (!data) return { title: "Maç bulunamadı | Scores TV" };
   const home = data.homeTeam.displayName ?? data.homeTeam.name;
   const away = data.awayTeam.displayName ?? data.awayTeam.name;
   const seo = data.seo;
-  const title = seo?.title ?? `${home} - ${away} | ScoresTV`;
+  const title = seo?.title ?? `${home} - ${away} | Scores TV`;
   const description =
     seo?.description ??
     `${home} - ${away} voleybol maçı; canlı skor, set skorları, puan durumu.`;

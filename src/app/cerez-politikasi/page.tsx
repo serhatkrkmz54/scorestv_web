@@ -9,7 +9,7 @@ export default function CookiePage() {
         title: "Çerez Politikası",
         updated: "Son güncelleme: 2026",
         intro:
-          "Bu politika, ScoresTV'de çerezlerin ve benzeri teknolojilerin nasıl kullanıldığını açıklar.",
+          "Bu politika, Scores TV'de çerezlerin ve benzeri teknolojilerin nasıl kullanıldığını açıklar.",
         sections: [
           {
             h: "Çerez nedir?",
@@ -52,7 +52,7 @@ export default function CookiePage() {
         title: "Cookie Policy",
         updated: "Last updated: 2026",
         intro:
-          "This policy explains how cookies and similar technologies are used on ScoresTV.",
+          "This policy explains how cookies and similar technologies are used on Scores TV.",
         sections: [
           {
             h: "What is a cookie?",

@@ -12,7 +12,7 @@ export async function staticPageMetadata(
   canonical: string,
 ): Promise<Metadata> {
   const isTr = (await cookies()).get("stv_lang")?.value === "tr";
-  const title = `${isTr ? trTitle : enTitle} | ScoresTV`;
+  const title = `${isTr ? trTitle : enTitle} | Scores TV`;
   const description = isTr ? trDesc : enDesc;
   return {
     title,

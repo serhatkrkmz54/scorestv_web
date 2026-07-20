@@ -14,7 +14,7 @@ export interface MockTweet {
 
 export const MOCK_TWEETS: MockTweet[] = [
   {
-    name: "ScoresTV",
+    name: "Scores TV",
     handle: "scorestv",
     time: "12d",
     text: "Güney Kore, Çekya karşısında 2-1 öne geçti! Maçın kalan dakikaları nefes kesecek.",

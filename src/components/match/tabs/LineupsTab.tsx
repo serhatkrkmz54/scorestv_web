@@ -84,7 +84,7 @@ function ratingText(r: string | null | undefined): string | null {
   return isFinite(v) ? v.toFixed(1) : null;
 }
 
-/** ScoresTV Puanı renk skalası (mobil ile aynı): >=8 mavi, >=7 yeşil,
+/** Scores TV Puanı renk skalası (mobil ile aynı): >=8 mavi, >=7 yeşil,
  *  >=6.5 amber, altı kırmızı. */
 function scorestvColor(v: number): string {
   if (v >= 8) return "#2e7df7";
@@ -586,7 +586,7 @@ export function LineupsTab({ detail, lang }: Props) {
               />
             ) : null}
           </div>
-          {/* ScoresTV Puanı — saha köşesinde (ev sağ-üst, deplasman sol-alt;
+          {/* Scores TV Puanı — saha köşesinde (ev sağ-üst, deplasman sol-alt;
               masaüstünde ev sol / deplasman sağ). Özet sekmesinden buraya taşındı. */}
           {detail.homeScorestvRating != null ? (
             <div className="pitch-stvr pitch-stvr-home">

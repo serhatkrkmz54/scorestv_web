@@ -349,7 +349,7 @@ export interface MatchOdds {
   markets: MatchOddMarket[];
 }
 
-// ====== Player of the Match / ScoresTV Rating ======
+// ====== Player of the Match / Scores TV Rating ======
 
 export interface PlayerOfMatch {
   playerId: number;
@@ -400,6 +400,35 @@ export interface MatchTopPlayers {
 }
 
 // ====== Ana yanit ======
+
+/**
+ * SEO: Bir maç sayfasının indexlenmeye deger "anlamli icerigi" var mi?
+ * "Iceriksiz" (thin) sayfalar — henuz oynanmamis, verisi hic gelmemis veya bos
+ * maclar — Google'da spam/dusuk kalite sayilir; bunlara noindex verilir.
+ *
+ * Indexlenebilir kabul edilir: skor varsa (biten/canli sonuc), YA DA olay/kadro/
+ * istatistik/yayin(nerede izlenir)/tahmin'den en az biri doluysa, YA DA mac canli.
+ * Hicbiri yoksa → noindex.
+ */
+export function isMatchIndexable(d: MatchDetailResponse): boolean {
+  const LIVE = new Set(["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "INT", "SUSP"]);
+  const hasScore = d.score?.home != null && d.score?.away != null;
+  const hasEvents = (d.events?.length ?? 0) > 0;
+  const hasLineups = (d.lineups?.length ?? 0) > 0;
+  const hasStats = (d.statistics?.length ?? 0) > 0;
+  const hasBroadcasts = (d.broadcasts?.length ?? 0) > 0;
+  const hasPrediction = d.prediction != null;
+  const isLive = LIVE.has(d.status?.shortCode ?? "");
+  return (
+    hasScore ||
+    hasEvents ||
+    hasLineups ||
+    hasStats ||
+    hasBroadcasts ||
+    hasPrediction ||
+    isLive
+  );
+}
 
 export interface MatchDetailResponse {
   id: number;

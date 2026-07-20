@@ -9,7 +9,7 @@ export default function TermsPage() {
         title: "Kullanım Şartları",
         updated: "Son güncelleme: 2026",
         intro:
-          "ScoresTV'yi kullanarak aşağıdaki şartları kabul etmiş olursunuz. Lütfen hizmeti kullanmadan önce bu şartları dikkatlice okuyun.",
+          "Scores TV'yi kullanarak aşağıdaki şartları kabul etmiş olursunuz. Lütfen hizmeti kullanmadan önce bu şartları dikkatlice okuyun.",
         sections: [
           {
             h: "Şartların kabulü",
@@ -65,7 +65,7 @@ export default function TermsPage() {
         title: "Terms of Use",
         updated: "Last updated: 2026",
         intro:
-          "By using ScoresTV, you agree to the terms below. Please read these terms carefully before using the service.",
+          "By using Scores TV, you agree to the terms below. Please read these terms carefully before using the service.",
         sections: [
           {
             h: "Acceptance of terms",

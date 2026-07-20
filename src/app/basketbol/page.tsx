@@ -5,7 +5,7 @@ import { ScrollToTop } from "@/components/home/ScrollToTop";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
 export function generateMetadata(): Metadata {
-  const title = "Canlı Basketbol Skorları, Puan Durumları ve Maçlar | ScoresTV";
+  const title = "Canlı Basketbol Skorları, Puan Durumları ve Maçlar | Scores TV";
   const description =
     "NBA, EuroLeague, Basketbol Süper Ligi ve daha fazlası: canlı basketbol skorları, çeyrek skorları, puan durumları ve maç istatistikleri.";
   const canonical = `${SITE}/basketbol`;

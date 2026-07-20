@@ -6,8 +6,8 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata(
     "Reklam",
     "Advertise",
-    "Markanızı spora tutkulu, etkileşimi yüksek bir kitleyle buluşturun — ScoresTV reklam çözümleri.",
-    "Reach a highly engaged, sports-passionate audience with ScoresTV advertising solutions.",
+    "Markanızı spora tutkulu, etkileşimi yüksek bir kitleyle buluşturun — Scores TV reklam çözümleri.",
+    "Reach a highly engaged, sports-passionate audience with Scores TV advertising solutions.",
     "/reklam",
   );
 }

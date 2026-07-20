@@ -6,8 +6,8 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata(
     "İletişim",
     "Contact",
-    "Soru, görüş, öneri ve iş birliği talepleriniz için ScoresTV iletişim formu.",
-    "Reach ScoresTV for questions, feedback, suggestions and partnership requests.",
+    "Soru, görüş, öneri ve iş birliği talepleriniz için Scores TV iletişim formu.",
+    "Reach Scores TV for questions, feedback, suggestions and partnership requests.",
     "/iletisim",
   );
 }

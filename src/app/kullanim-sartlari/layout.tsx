@@ -6,8 +6,8 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata(
     "Kullanım Şartları",
     "Terms of Use",
-    "ScoresTV kullanım şartları: hizmetin kullanımı, sorumluluklar ve veri doğruluğu.",
-    "ScoresTV terms of use: service usage, responsibilities and data accuracy.",
+    "Scores TV kullanım şartları: hizmetin kullanımı, sorumluluklar ve veri doğruluğu.",
+    "Scores TV terms of use: service usage, responsibilities and data accuracy.",
     "/kullanim-sartlari",
   );
 }

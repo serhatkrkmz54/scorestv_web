@@ -8,7 +8,7 @@ export default function CareersPage() {
       tr={{
         title: "Kariyer",
         intro:
-          "Spora ve teknolojiye tutkuyla bağlı bir ekibin parçası olun. ScoresTV'de birlikte öğrenen, üreten ve büyüyen bir ekip kuruyoruz.",
+          "Spora ve teknolojiye tutkuyla bağlı bir ekibin parçası olun. Scores TV'de birlikte öğrenen, üreten ve büyüyen bir ekip kuruyoruz.",
         sections: [
           {
             h: "Neden bizimle?",
@@ -38,7 +38,7 @@ export default function CareersPage() {
       en={{
         title: "Careers",
         intro:
-          "Join a team passionate about sports and technology. At ScoresTV we are building a team that learns, builds and grows together.",
+          "Join a team passionate about sports and technology. At Scores TV we are building a team that learns, builds and grows together.",
         sections: [
           {
             h: "Why join us?",

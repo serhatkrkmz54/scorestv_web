@@ -20,9 +20,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const season = sp.season ? Number(sp.season) : undefined;
   const { data } = await fetchTeamDetailServer(slug, "en", season);
-  if (!data) return { title: "Team not found | ScoresTV" };
+  if (!data) return { title: "Team not found | Scores TV" };
   const seo = data.seo;
-  const title = seo?.title ?? `${data.name} | ScoresTV`;
+  const title = seo?.title ?? `${data.name} | Scores TV`;
   const description =
     seo?.description ??
     `${data.name} squad, fixtures, standings, transfers and statistics.`;

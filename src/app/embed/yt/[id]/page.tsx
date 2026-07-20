@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 /// çalışan davranışın birebir aynısı.
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  title: "ScoresTV — Özet",
+  title: "Scores TV — Özet",
 };
 
 export default async function YoutubeEmbedPage({
@@ -36,7 +36,7 @@ export default async function YoutubeEmbedPage({
       {src ? (
         <iframe
           src={src}
-          title="ScoresTV özet"
+          title="Scores TV özet"
           style={{ border: 0, width: "100%", height: "100%" }}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           allowFullScreen

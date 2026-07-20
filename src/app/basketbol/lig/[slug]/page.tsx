@@ -18,9 +18,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { slug } = await params;
   const sp = await searchParams;
   const { data } = await fetchBasketballLeagueDetailServer(slug, "tr", sp.season ?? null);
-  if (!data) return { title: "Lig bulunamadı | ScoresTV" };
+  if (!data) return { title: "Lig bulunamadı | Scores TV" };
   const seo = data.seo;
-  const title = seo?.title ?? `${data.name} ${data.selectedSeason ?? ""} | ScoresTV`;
+  const title = seo?.title ?? `${data.name} ${data.selectedSeason ?? ""} | Scores TV`;
   const description =
     seo?.description ?? `${data.name} puan durumu, fikstür ve maç detayları.`;
   const canonical = seo?.canonical ?? `${SITE}/basketbol/lig/${data.slug}`;

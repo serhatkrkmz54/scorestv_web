@@ -3,7 +3,7 @@ export type Lang = "tr" | "en";
 
 export const AUTH_STR = {
   tr: {
-    welcome: "ScoresTV'ye hoş geldin",
+    welcome: "Scores TV'ye hoş geldin",
     subtitle: "Favori takımlarını takip et, gol bildirimlerini kaçırma.",
     tabIn: "Giriş Yap",
     tabUp: "Kayıt Ol",
@@ -54,7 +54,7 @@ export const AUTH_STR = {
     missingToken: "Sıfırlama bağlantısı geçersiz veya eksik.",
   },
   en: {
-    welcome: "Welcome to ScoresTV",
+    welcome: "Welcome to Scores TV",
     subtitle: "Follow your favorite teams, never miss a goal alert.",
     tabIn: "Sign in",
     tabUp: "Sign up",

@@ -8,10 +8,10 @@ export default function AdvertisePage() {
       tr={{
         title: "Reklam",
         intro:
-          "Markanızı etkileşimi yüksek, spora tutkulu bir kitleyle buluşturun. ScoresTV üzerinde reklam vererek doğru kullanıcıya doğru anda ulaşabilirsiniz.",
+          "Markanızı etkileşimi yüksek, spora tutkulu bir kitleyle buluşturun. Scores TV üzerinde reklam vererek doğru kullanıcıya doğru anda ulaşabilirsiniz.",
         sections: [
           {
-            h: "Neden ScoresTV?",
+            h: "Neden Scores TV?",
             body: [
               "Platformumuz, maç günlerinde yoğunlaşan, içerikle aktif şekilde etkileşen bir kitleye sahiptir. Bu, mesajınızın görünürlüğünü ve etkisini artırır.",
             ],
@@ -43,10 +43,10 @@ export default function AdvertisePage() {
       en={{
         title: "Advertise",
         intro:
-          "Connect your brand with a highly engaged, sports-passionate audience. By advertising on ScoresTV, you can reach the right user at the right moment.",
+          "Connect your brand with a highly engaged, sports-passionate audience. By advertising on Scores TV, you can reach the right user at the right moment.",
         sections: [
           {
-            h: "Why ScoresTV?",
+            h: "Why Scores TV?",
             body: [
               "Our platform has an audience that peaks on match days and actively engages with content. This increases the visibility and impact of your message.",
             ],

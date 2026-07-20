@@ -25,9 +25,9 @@ export async function buildNewsMetadata(
   const { data } = await getNewsBySlug(slug);
   const isTr = lang === "tr";
   if (!data) {
-    return { title: isTr ? "Haber bulunamadı | ScoresTV" : "News not found | ScoresTV" };
+    return { title: isTr ? "Haber bulunamadı | Scores TV" : "News not found | Scores TV" };
   }
-  const title = `${data.title} | ScoresTV`;
+  const title = `${data.title} | Scores TV`;
   const description = data.summary ?? data.title;
   const canonical = `${SITE}${newsPath(lang, data.slug)}`;
   const image = data.coverImageUrl ?? `${SITE}/og-image.png`;

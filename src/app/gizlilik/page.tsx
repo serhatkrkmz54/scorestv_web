@@ -9,7 +9,7 @@ export default function PrivacyPage() {
         title: "Gizlilik Politikası",
         updated: "Son güncelleme: 2026",
         intro:
-          "Gizliliğiniz bizim için önemlidir. Bu politika, ScoresTV'yi kullandığınızda hangi bilgilerin toplandığını, nasıl kullanıldığını ve haklarınızı açıklar.",
+          "Gizliliğiniz bizim için önemlidir. Bu politika, Scores TV'yi kullandığınızda hangi bilgilerin toplandığını, nasıl kullanıldığını ve haklarınızı açıklar.",
         sections: [
           {
             h: "Topladığımız bilgiler",
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
         title: "Privacy Policy",
         updated: "Last updated: 2026",
         intro:
-          "Your privacy matters to us. This policy explains what information is collected when you use ScoresTV, how it is used, and your rights.",
+          "Your privacy matters to us. This policy explains what information is collected when you use Scores TV, how it is used, and your rights.",
         sections: [
           {
             h: "Information we collect",

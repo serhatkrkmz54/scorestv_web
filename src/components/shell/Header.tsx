@@ -79,7 +79,7 @@ export function Header() {
       <div className="header-in">
         <MobileNavToggle label={lang === "tr" ? "Menüyü aç" : "Open menu"} />
 
-        <Link href="/" className="logo" aria-label="ScoresTV">
+        <Link href="/" className="logo" aria-label="Scores TV">
           <Logo h={25} />
         </Link>
 

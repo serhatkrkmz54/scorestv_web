@@ -20,9 +20,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const season = sp.season ? Number(sp.season) : undefined;
   const { data } = await fetchTeamDetailServer(slug, "tr", season);
-  if (!data) return { title: "Takım bulunamadı | ScoresTV" };
+  if (!data) return { title: "Takım bulunamadı | Scores TV" };
   const seo = data.seo;
-  const title = seo?.title ?? `${data.name} | ScoresTV`;
+  const title = seo?.title ?? `${data.name} | Scores TV`;
   const description =
     seo?.description ??
     `${data.name} kadrosu, fikstür, puan durumu, transferler ve istatistikler.`;

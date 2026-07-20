@@ -13,7 +13,7 @@ const XSL = `<?xml version="1.0" encoding="UTF-8"?>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="robots" content="noindex"/>
-        <title>ScoresTV — Sitemap</title>
+        <title>Scores TV — Sitemap</title>
         <style>
           body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0e1620;color:#e8edf3;margin:0;}
           .wrap{max-width:1040px;margin:0 auto;padding:34px 20px 70px;}

@@ -14,7 +14,7 @@ export default function KvkkPage() {
           {
             h: "Veri sorumlusu",
             body: [
-              "Kişisel verileriniz, veri sorumlusu sıfatıyla ScoresTV tarafından, aşağıda açıklanan amaçlar ve hukuki sebepler çerçevesinde işlenmektedir.",
+              "Kişisel verileriniz, veri sorumlusu sıfatıyla Scores TV tarafından, aşağıda açıklanan amaçlar ve hukuki sebepler çerçevesinde işlenmektedir.",
             ],
           },
           {
@@ -70,7 +70,7 @@ export default function KvkkPage() {
           {
             h: "Data controller",
             body: [
-              "Your personal data is processed by ScoresTV as the data controller, within the scope of the purposes and legal bases described below.",
+              "Your personal data is processed by Scores TV as the data controller, within the scope of the purposes and legal bases described below.",
             ],
           },
           {

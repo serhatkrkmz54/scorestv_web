@@ -6,8 +6,8 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata(
     "Hakkımızda",
     "About Us",
-    "ScoresTV hakkında: misyonumuz, sunduğumuz canlı skor, istatistik ve takım/oyuncu bilgileri.",
-    "About ScoresTV: our mission and the live scores, stats and team/player info we offer.",
+    "Scores TV hakkında: misyonumuz, sunduğumuz canlı skor, istatistik ve takım/oyuncu bilgileri.",
+    "About Scores TV: our mission and the live scores, stats and team/player info we offer.",
     "/hakkimizda",
   );
 }

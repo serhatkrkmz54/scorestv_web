@@ -5,7 +5,7 @@ import { ScrollToTop } from "@/components/home/ScrollToTop";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
 export function generateMetadata(): Metadata {
-  const title = "Live Basketball Scores, Standings and Games | ScoresTV";
+  const title = "Live Basketball Scores, Standings and Games | Scores TV";
   const description =
     "NBA, EuroLeague, Turkish Super League and more: live basketball scores, quarter scores, standings and match statistics.";
   const canonical = `${SITE}/basketball`;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchMatchDetailServer } from "@/lib/match-detail";
+import { isMatchIndexable } from "@/lib/match-detail-types";
 import { MatchDetailScreen } from "@/components/match/MatchDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { MatchSideInfo } from "@/components/match/MatchSideInfo";
@@ -23,9 +24,9 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await fetchMatchDetailServer(slug, "en");
-  if (!data) return { title: "Match not found | ScoresTV" };
+  if (!data) return { title: "Match not found | Scores TV" };
   const seo = data.seo;
-  const title = seo?.title ?? `${data.homeTeam.name} vs ${data.awayTeam.name} | ScoresTV`;
+  const title = seo?.title ?? `${data.homeTeam.name} vs ${data.awayTeam.name} | Scores TV`;
   const description = seo?.description ?? `${data.homeTeam.name} vs ${data.awayTeam.name} live score, lineups, statistics.`;
   // og:image her zaman dolu olsun — backend görseli yoksa site varsayılanı.
   const image = seo?.openGraph?.image ?? `${SITE}/og-image.png`;
@@ -34,9 +35,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   for (const h of seo?.hreflang ?? []) {
     if (h.lang && h.href) alternates[h.lang] = h.href;
   }
+  // Thin (content-less) match pages must not be indexed — noindex when there is
+  // no score/events/lineups/stats/broadcasts/prediction (follow stays on).
+  const indexable = isMatchIndexable(data);
   return {
     title,
     description,
+    robots: indexable ? undefined : { index: false, follow: true },
     alternates: { canonical, languages: alternates },
     openGraph: {
       title: seo?.openGraph?.title ?? title,

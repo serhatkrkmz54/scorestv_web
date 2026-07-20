@@ -17,9 +17,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { slug } = await params;
   const sp = await searchParams;
   const { data } = await fetchBasketballTeamDetailServer(slug, "tr", sp.season ?? null);
-  if (!data) return { title: "Takım bulunamadı | ScoresTV" };
+  if (!data) return { title: "Takım bulunamadı | Scores TV" };
   const name = data.hero.displayName ?? data.hero.name;
-  const title = `${name} Basketbol | ScoresTV`;
+  const title = `${name} Basketbol | Scores TV`;
   const description = `${name} kadrosu, fikstür, istatistikler ve puan durumu — basketbol.`;
   const canonical = `${SITE}/basketbol/takim/${data.hero.slug ?? slug}`;
   return {
