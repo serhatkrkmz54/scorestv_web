@@ -121,7 +121,7 @@ export function Header() {
             <UserMenu user={user} />
           ) : (
             <button className="login-btn" onClick={() => openAuth("signin")}>
-              {lang === "tr" ? "Giris" : "Sign in"}
+              {lang === "tr" ? "Giriş" : "Sign in"}
             </button>
           )}
         </div>
