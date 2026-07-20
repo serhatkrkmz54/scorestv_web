@@ -39,7 +39,7 @@ export function RelatedNews({
               <span className="related-news-thumb">
                 {n.coverImageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={n.coverImageUrl} alt="" loading="lazy" />
+                  <img src={n.coverImageUrl} alt={n.title} loading="lazy" />
                 ) : (
                   <span
                     className="related-news-thumb-fb"

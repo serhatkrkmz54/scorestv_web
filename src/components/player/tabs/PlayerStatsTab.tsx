@@ -83,7 +83,7 @@ function StatsLeagueAccordion({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={stat.leagueLogo}
-              alt=""
+              alt={stat.leagueName ?? ""}
               className="team-stats-league-logo"
               loading="lazy"
             />

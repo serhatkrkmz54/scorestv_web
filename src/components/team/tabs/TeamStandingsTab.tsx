@@ -49,7 +49,7 @@ function PositionDetailCard({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={pos.leagueLogo}
-              alt=""
+              alt={pos.leagueName ?? ""}
               className="team-stand-league-logo"
               loading="lazy"
             />

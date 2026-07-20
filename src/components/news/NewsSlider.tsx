@@ -63,7 +63,7 @@ export default function NewsSlider({
             <div className="news-slide-cover">
               {s.coverImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.coverImageUrl} alt="" />
+                <img src={s.coverImageUrl} alt={s.title} />
               ) : (
                 <span className="news-slide-cover-fb" />
               )}

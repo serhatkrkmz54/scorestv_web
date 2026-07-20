@@ -179,7 +179,7 @@ export function MatchHero({ detail, lang }: Props) {
       <div className="match-hero-bg" aria-hidden>
         {league.logo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={league.logo} alt="" className="match-hero-bg-logo" />
+          <img src={league.logo} alt={league.name} className="match-hero-bg-logo" />
         ) : null}
         <div className="match-hero-bg-gradient" />
       </div>

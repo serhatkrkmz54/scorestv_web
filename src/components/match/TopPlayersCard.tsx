@@ -32,7 +32,7 @@ function PlayerCell({
       <span className="tp-avatar">
         {p.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.photo} alt="" />
+          <img src={p.photo} alt={p.name} />
         ) : (
           <span className="tp-avatar-fb">{p.name.charAt(0)}</span>
         )}

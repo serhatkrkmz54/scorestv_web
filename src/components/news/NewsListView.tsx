@@ -156,7 +156,7 @@ export async function NewsListView({
               <div className="news-featured-cover">
                 {featured.coverImageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={featured.coverImageUrl} alt="" />
+                  <img src={featured.coverImageUrl} alt={featured.title} />
                 ) : (
                   <span className="news-featured-cover-fb" />
                 )}

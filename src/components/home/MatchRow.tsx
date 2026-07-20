@@ -143,7 +143,7 @@ export function MatchRow({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={fixture.leagueRef.logo}
-              alt=""
+              alt={fixture.leagueRef.name}
               className="mrow-league-logo"
               loading="lazy"
             />

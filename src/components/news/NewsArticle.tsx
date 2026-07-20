@@ -27,7 +27,7 @@ function EntityChip({
     <>
       {entity.logo ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={entity.logo} alt="" className="news-entity-logo" loading="lazy" />
+        <img src={entity.logo} alt={entity.name} className="news-entity-logo" loading="lazy" />
       ) : null}
       <span>{entity.name}</span>
     </>

@@ -341,7 +341,7 @@ export function SearchBox() {
                     thumb={
                       h.logoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={h.logoUrl} alt="" width={28} height={28} className="sd-thumb-img" loading="lazy" />
+                        <img src={h.logoUrl} alt={preferred(h.name, h.nameTr, lang)} width={28} height={28} className="sd-thumb-img" loading="lazy" />
                       ) : (
                         <span className="sd-thumb-fallback">L</span>
                       )
@@ -366,7 +366,7 @@ export function SearchBox() {
                     thumb={
                       h.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={h.photoUrl} alt="" width={28} height={28} className="sd-thumb-img is-round" loading="lazy" />
+                        <img src={h.photoUrl} alt={h.name} width={28} height={28} className="sd-thumb-img is-round" loading="lazy" />
                       ) : (
                         <span className="sd-thumb-fallback is-round">{(h.name?.[0] ?? "?").toUpperCase()}</span>
                       )
@@ -420,7 +420,7 @@ export function SearchBox() {
                     thumb={
                       h.flagUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={h.flagUrl} alt="" width={28} height={28} className="sd-thumb-img" loading="lazy" />
+                        <img src={h.flagUrl} alt={preferred(h.name, h.nameTr, lang)} width={28} height={28} className="sd-thumb-img" loading="lazy" />
                       ) : (
                         <span className="sd-thumb-fallback">{(h.code ?? h.name?.[0] ?? "?").slice(0, 2).toUpperCase()}</span>
                       )
@@ -447,7 +447,7 @@ export function SearchBox() {
                     thumb={
                       h.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={h.photoUrl} alt="" width={28} height={28} className="sd-thumb-img is-round" loading="lazy" />
+                        <img src={h.photoUrl} alt={h.name} width={28} height={28} className="sd-thumb-img is-round" loading="lazy" />
                       ) : (
                         <span className="sd-thumb-fallback is-round">{(h.name?.[0] ?? "?").toUpperCase()}</span>
                       )
@@ -478,7 +478,7 @@ export function SearchBox() {
                     thumb={
                       h.coverImageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={h.coverImageUrl} alt="" width={28} height={28} className="sd-thumb-img" loading="lazy" />
+                        <img src={h.coverImageUrl} alt={h.title} width={28} height={28} className="sd-thumb-img" loading="lazy" />
                       ) : (
                         <span className="sd-thumb-fallback">{(h.title?.[0] ?? "H").toUpperCase()}</span>
                       )

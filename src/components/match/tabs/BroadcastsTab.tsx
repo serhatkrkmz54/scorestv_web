@@ -62,7 +62,7 @@ export function BroadcastsTab({ broadcasts, lang }: Props) {
                 <span className="bc-logo">
                   {b.logoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={b.logoUrl} alt="" loading="lazy" />
+                    <img src={b.logoUrl} alt={b.channel} loading="lazy" />
                   ) : (
                     <span className="bc-logo-fallback">
                       {b.channel.slice(0, 1).toUpperCase()}

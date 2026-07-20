@@ -33,7 +33,7 @@ function EntityCard({
       <div className={`news-ec-logo${kind === "player" ? " round" : ""}`}>
         {entity.logo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={entity.logo} alt="" />
+          <img src={entity.logo} alt={entity.name} />
         ) : (
           <span className="news-ec-logo-fb">{entity.name.charAt(0)}</span>
         )}
@@ -61,7 +61,7 @@ function FixtureCard({ fx, lang }: { fx: NewsFixtureRef; lang: Lang }) {
         <div className="news-ec-fx-team">
           {fx.homeLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={fx.homeLogo} alt="" />
+            <img src={fx.homeLogo} alt={fx.homeName} />
           ) : (
             <span className="news-ec-fx-fb" />
           )}
@@ -82,7 +82,7 @@ function FixtureCard({ fx, lang }: { fx: NewsFixtureRef; lang: Lang }) {
         <div className="news-ec-fx-team">
           {fx.awayLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={fx.awayLogo} alt="" />
+            <img src={fx.awayLogo} alt={fx.awayName} />
           ) : (
             <span className="news-ec-fx-fb" />
           )}

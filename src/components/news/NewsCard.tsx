@@ -27,7 +27,7 @@ export function NewsCard({
       <div className="news-card-cover">
         {item.coverImageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.coverImageUrl} alt="" loading="lazy" />
+          <img src={item.coverImageUrl} alt={item.title} loading="lazy" />
         ) : (
           <span
             className="news-card-cover-fallback"

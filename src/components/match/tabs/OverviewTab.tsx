@@ -73,7 +73,7 @@ function eventIcon(ev: MatchEvent): ReactNode {
       {native ? (
         // Kendi renkli SVG — mask uygulanmaz (orijinal haliyle gosterilir).
         // eslint-disable-next-line @next/next/no-img-element
-        <img className="ev-ic-img" src={src} alt="" />
+        <img className="ev-ic-img" src={src} alt={ev.type ?? ""} />
       ) : (
         <span
           className="ev-ic-glyph"

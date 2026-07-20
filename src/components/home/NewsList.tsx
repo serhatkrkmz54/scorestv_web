@@ -33,7 +33,7 @@ export function NewsList({ items }: { items: NewsListItem[] }) {
           {n.coverImageUrl ? (
             <span className="nl-thumb nl-thumb-img">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={n.coverImageUrl} alt="" loading="lazy" />
+              <img src={n.coverImageUrl} alt={n.title} loading="lazy" />
             </span>
           ) : (
             <span

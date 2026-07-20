@@ -63,7 +63,7 @@ function StandingsPositionCard({
       <div className="team-pos-icon">
         {pos.leagueLogo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={pos.leagueLogo} alt="" loading="lazy" />
+          <img src={pos.leagueLogo} alt={pos.leagueName ?? ""} loading="lazy" />
         ) : (
           <IconTrophy s={20} />
         )}
@@ -167,7 +167,7 @@ function SidelinedRow({ row, lang }: { row: TeamSidelinedRow; lang: "tr" | "en" 
       <div className="team-side-photo">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" loading="lazy" />
+          <img src={photo} alt={row.playerName ?? ""} loading="lazy" />
         ) : (
           <IconMed s={16} />
         )}

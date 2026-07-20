@@ -26,7 +26,7 @@ export function BasketballLeagueHero({
       <div className="match-hero-bg" aria-hidden>
         {detail.logo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={detail.logo} alt="" className="match-hero-bg-logo" />
+          <img src={detail.logo} alt={detail.name} className="match-hero-bg-logo" />
         ) : null}
         <div className="match-hero-bg-gradient" />
       </div>
