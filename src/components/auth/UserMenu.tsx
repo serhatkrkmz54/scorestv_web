@@ -24,18 +24,33 @@ export function UserMenu({ user }: { user: AppUser }) {
   const name = user.displayName || "Üye";
   const initial = name.trim().charAt(0).toUpperCase() || "U";
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+  const avatar = user.avatarUrl;
 
   return (
     <div className="user-menu" ref={ref}>
       <button className="user-pill" onClick={() => setOpen((o) => !o)}>
-        <span className="user-av">{initial}</span>
+        <span className="user-av">
+          {avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatar} alt={name} />
+          ) : (
+            initial
+          )}
+        </span>
         <span className="user-nm">{name}</span>
         <IconChevronDown s={15} />
       </button>
       {open && (
         <div className="user-drop">
           <Link href="/profil" className="ud-head" onClick={() => setOpen(false)}>
-            <span className="user-av big">{initial}</span>
+            <span className="user-av big">
+              {avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatar} alt={name} />
+              ) : (
+                initial
+              )}
+            </span>
             <div>
               <b>{name}</b>
               <span>{user.email}</span>

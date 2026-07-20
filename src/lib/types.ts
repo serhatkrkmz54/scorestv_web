@@ -15,6 +15,11 @@ export interface AppUser {
    * Eski backend bu alanı döndürmezse undefined kalır (şifre bölümü gösterilir).
    */
   hasPassword?: boolean;
+  /**
+   * Kullanıcının profil resmi (avatar) herkese açık URL'i; yoksa null/undefined
+   * (istemci ad baş harflerini gösterir). Backend UserResponse.avatarUrl.
+   */
+  avatarUrl?: string | null;
 }
 
 // /api/v1/auth/* başarılı yanıtı

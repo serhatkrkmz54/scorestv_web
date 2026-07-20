@@ -336,7 +336,12 @@ export function CommentsTab({ targetId, segment, lang }: Props) {
       {user ? (
         <form className="comment-composer match-card" onSubmit={submitTop}>
           <div className="comment-composer-avatar" aria-hidden="true">
-            {initials(user.displayName)}
+            {user.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.avatarUrl} alt={user.displayName} />
+            ) : (
+              initials(user.displayName)
+            )}
           </div>
           <div className="comment-composer-main">
             <textarea

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
@@ -19,9 +19,14 @@ type Msg = { type: "ok" | "err"; text: string } | null;
 const TODAY = new Date().toISOString().slice(0, 10);
 
 export function ProfilePage() {
-  const { user, loading, openAuth, refresh, logout } = useAuth();
+  const { user, loading, openAuth, refresh, logout, uploadAvatar, removeAvatar } = useAuth();
   const { lang } = useLang();
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+
+  // ── Profil resmi (avatar) ──
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
+  const [avatarMsg, setAvatarMsg] = useState<Msg>(null);
 
   // ── Profil düzenleme ──
   const [displayName, setDisplayName] = useState("");
@@ -62,6 +67,41 @@ export function ProfilePage() {
         : t("Üye", "Member");
 
   const initial = (user?.displayName || user?.email || "U").trim().charAt(0).toUpperCase();
+
+  async function onPickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // aynı dosya tekrar seçilebilsin
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setAvatarMsg({ type: "err", text: t("Yalnızca görsel yükleyebilirsin.", "You can only upload an image.") });
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setAvatarMsg({ type: "err", text: t("Görsel en fazla 8 MB olabilir.", "Image can be at most 8 MB.") });
+      return;
+    }
+    setAvatarMsg(null);
+    setAvatarBusy(true);
+    const r = await uploadAvatar(file);
+    setAvatarBusy(false);
+    setAvatarMsg(
+      r.ok
+        ? { type: "ok", text: t("Profil resmi güncellendi.", "Profile photo updated.") }
+        : { type: "err", text: r.error || t("Yüklenemedi. Tekrar dene.", "Upload failed. Try again.") },
+    );
+  }
+
+  async function onRemoveAvatar() {
+    setAvatarMsg(null);
+    setAvatarBusy(true);
+    const r = await removeAvatar();
+    setAvatarBusy(false);
+    setAvatarMsg(
+      r.ok
+        ? { type: "ok", text: t("Profil resmi kaldırıldı.", "Profile photo removed.") }
+        : { type: "err", text: r.error || t("Kaldırılamadı.", "Remove failed.") },
+    );
+  }
 
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
@@ -192,7 +232,46 @@ export function ProfilePage() {
         <aside className="profile-aside">
           <div className="profile-id">
             <span className="profile-id-glow" aria-hidden="true" />
-            <span className="profile-id-av">{initial}</span>
+            <div className="profile-id-av">
+              {user.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.avatarUrl} alt={user.displayName || t("Profil resmi", "Profile photo")} />
+              ) : (
+                <span>{initial}</span>
+              )}
+            </div>
+            <div className="profile-av-actions">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => void onPickAvatar(e)}
+              />
+              <button
+                type="button"
+                className="profile-av-btn"
+                disabled={avatarBusy}
+                onClick={() => fileRef.current?.click()}
+              >
+                {avatarBusy
+                  ? t("Yükleniyor…", "Uploading…")
+                  : user.avatarUrl
+                    ? t("Değiştir", "Change")
+                    : t("Fotoğraf Ekle", "Add Photo")}
+              </button>
+              {user.avatarUrl ? (
+                <button
+                  type="button"
+                  className="profile-av-btn is-ghost"
+                  disabled={avatarBusy}
+                  onClick={() => void onRemoveAvatar()}
+                >
+                  {t("Kaldır", "Remove")}
+                </button>
+              ) : null}
+            </div>
+            {avatarMsg ? <p className={`pf-msg ${avatarMsg.type}`}>{avatarMsg.text}</p> : null}
             <h2 className="profile-id-name">{user.displayName || t("Üye", "Member")}</h2>
             <span className="profile-id-mail">
               <IconMail s={14} /> {user.email}

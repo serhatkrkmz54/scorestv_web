@@ -404,7 +404,8 @@ body.drawer-open { overflow: hidden; }
 .user-menu { position: relative; }
 .user-pill { display: inline-flex; align-items: center; gap: 9px; height: 40px; padding: 0 11px 0 5px; border-radius: 11px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 12.9px; transition: .14s; }
 .user-pill:hover { background: var(--surface-3); }
-.user-av { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13.8px; flex-shrink: 0; }
+.user-av { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13.8px; flex-shrink: 0; overflow: hidden; }
+.user-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .user-av.big { width: 42px; height: 42px; border-radius: 12px; font-size: 17.5px; }
 .user-nm { max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-drop { position: absolute; right: 0; top: calc(100% + 8px); width: 250px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 14px; box-shadow: var(--shadow); padding: 7px; z-index: 80; animation: auth-pop .16s ease-out; }
@@ -2366,8 +2367,9 @@ a.evx-out-link:hover { color: var(--accent); }
   width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: color-mix(in srgb, var(--accent) 18%, var(--surface-3));
-  color: var(--accent); font-size: 12px; font-weight: 800;
+  color: var(--accent); font-size: 12px; font-weight: 800; overflow: hidden;
 }
+.comment-composer-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .comment-composer-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 .comment-composer textarea,
 .comment-reply-form textarea {
@@ -2729,9 +2731,32 @@ a.evx-out-link:hover { color: var(--accent); }
   border-radius: 22px; background: var(--accent); color: var(--accent-ink);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
-  font-size: 33.1px; font-weight: 700;
+  font-size: 33.1px; font-weight: 700; overflow: hidden;
   box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent);
 }
+.profile-id-av img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+/* Avatar yükle / değiştir / kaldır aksiyonları */
+.profile-av-actions {
+  position: relative; display: flex; gap: 8px; justify-content: center;
+  flex-wrap: wrap; margin: 0 0 10px;
+}
+.profile-av-btn {
+  appearance: none; cursor: pointer; border-radius: 999px;
+  padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--text); transition: background .15s ease, opacity .15s ease;
+}
+.profile-av-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.profile-av-btn.is-ghost {
+  border-color: var(--border);
+  background: transparent; color: var(--text-dim);
+}
+.profile-av-btn:disabled { opacity: .55; cursor: default; }
 .profile-id-name {
   position: relative; margin: 0;
   font-family: var(--font-poppins), Poppins, system-ui, sans-serif;

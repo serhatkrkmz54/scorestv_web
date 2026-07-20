@@ -97,3 +97,53 @@ export async function authorizedBackendJson<T = unknown>(
   }
   return r;
 }
+
+const BACKEND_BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
+
+/**
+ * Auth GEREKTİREN, JSON OLMAYAN (multipart / gövdesiz) backend istekleri için —
+ * avatar yükleme (FormData) ve kaldırma (DELETE). Content-Type'ı elle SET ETMEZ;
+ * FormData verilirse fetch multipart boundary'sini kendisi ayarlar. 401'de bir
+ * kez refresh + retry yapar. Oturum yoksa {unauthorized:true} döner.
+ */
+export async function authorizedBackendForm<T = unknown>(
+  path: string,
+  method: string,
+  form?: FormData,
+): Promise<BackendResult<T> & { unauthorized?: boolean }> {
+  let token = (await getAccessToken()) ?? null;
+  if (!token) {
+    token = await refreshAccessToken();
+    if (!token) return { ok: false, status: 401, body: null, unauthorized: true };
+  }
+  const send = async (t: string): Promise<BackendResult<T>> => {
+    let res: Response;
+    try {
+      res = await fetch(BACKEND_BASE + path, {
+        method,
+        headers: { Authorization: `Bearer ${t}` },
+        body: form,
+        cache: "no-store",
+      });
+    } catch {
+      return { ok: false, status: 503, body: null };
+    }
+    const text = await res.text();
+    let body: T | null = null;
+    if (text) {
+      try {
+        body = JSON.parse(text) as T;
+      } catch {
+        body = text as unknown as T;
+      }
+    }
+    return { ok: res.ok, status: res.status, body };
+  };
+  let r = await send(token);
+  if (r.status === 401) {
+    const fresh = await refreshAccessToken();
+    if (!fresh) return { ok: false, status: 401, body: null, unauthorized: true };
+    r = await send(fresh);
+  }
+  return r;
+}

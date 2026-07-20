@@ -61,6 +61,10 @@ interface AuthCtxValue {
   logout: () => Promise<void>;
   forgotPassword: (email: string) => Promise<AuthActionResult>;
   refresh: () => Promise<void>;
+  /** Profil resmi (avatar) yükle — başarıda user güncellenir (header dahil). */
+  uploadAvatar: (file: File) => Promise<AuthActionResult>;
+  /** Profil resmini kaldır — başarıda user güncellenir. */
+  removeAvatar: () => Promise<AuthActionResult>;
 }
 
 const AuthCtx = createContext<AuthCtxValue | null>(null);
@@ -323,6 +327,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const uploadAvatar = useCallback(
+    async (file: File): Promise<AuthActionResult> => {
+      const fd = new FormData();
+      fd.append("file", file);
+      let res: Response;
+      try {
+        res = await fetch("/api/auth/avatar", { method: "POST", body: fd });
+      } catch {
+        return { ok: false, error: "Görsel yüklenemedi." };
+      }
+      let body: unknown = null;
+      try {
+        body = await res.json();
+      } catch {
+        body = null;
+      }
+      if (res.ok && body) {
+        setUser(body as AppUser);
+        return { ok: true };
+      }
+      return { ok: false, error: extractError(body, "Görsel yüklenemedi.") };
+    },
+    [],
+  );
+
+  const removeAvatar = useCallback(async (): Promise<AuthActionResult> => {
+    let res: Response;
+    try {
+      res = await fetch("/api/auth/avatar", { method: "DELETE" });
+    } catch {
+      return { ok: false, error: "Görsel kaldırılamadı." };
+    }
+    let body: unknown = null;
+    try {
+      body = await res.json();
+    } catch {
+      body = null;
+    }
+    if (res.ok && body) {
+      setUser(body as AppUser);
+      return { ok: true };
+    }
+    return { ok: false, error: extractError(body, "Görsel kaldırılamadı.") };
+  }, []);
+
   const forgotPassword = useCallback(
     async (email: string): Promise<AuthActionResult> => {
       const { res, body } = await postJson("/api/auth/forgot-password", { email });
@@ -361,6 +410,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         forgotPassword,
         refresh,
+        uploadAvatar,
+        removeAvatar,
       }}
     >
       {children}
