@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
 import type { Lang } from "@/i18n/auth-strings";
@@ -51,6 +51,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// Viewport — Next.js tek bir <meta name="viewport"> üretir (charset'i de kendi
+// otomatik ekler). Bunları <head>'de ELLE eklemeyiz; yoksa çift meta oluşur.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 // Tema/dil "flash" onleyici.
 const noFlash = (fallback: Lang) =>
   `(function(){try{var t=localStorage.getItem('stv_theme');var c=t==='light'?'theme-light':'theme-dark';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add(c);var l=localStorage.getItem('stv_lang');e.lang=(l==='tr'||l==='en')?l:'${fallback}';}catch(_){document.documentElement.lang='${fallback}';}})();`;
@@ -63,13 +71,6 @@ export default async function RootLayout({
   const initialLang = await resolveLang();
   return (
     <html lang={initialLang} className={`theme-dark ${poppins.variable}`} suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-      </head>
       <body>
         <Script id="stv-no-flash" strategy="beforeInteractive">
           {noFlash(initialLang)}
