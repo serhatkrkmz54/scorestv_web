@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { playerPath } from "@/lib/routes";
 import { PlayerHero } from "./PlayerHero";
+import { playerDescription } from "@/lib/player-description";
 import { PlayerTabs, type PlayerTabKey, type PlayerTabDef } from "./PlayerTabs";
 import { PlayerOverviewTab } from "./tabs/PlayerOverviewTab";
 import { PlayerStatsTab } from "./tabs/PlayerStatsTab";
@@ -94,6 +95,9 @@ export function PlayerDetailScreen({ initial, slug, lang }: Props) {
 
   const tabs = tabDefs(lang, detail);
   const selectedSeason = detail.selectedSeason ?? null;
+  // SEO: gerçek verilerden üretilmiş özgün açıklama (thin content'i azaltır).
+  // Sezona duyarlı; sunucu HTML'ine basılır (Google görsün).
+  const about = playerDescription(detail, lang);
 
   return (
     <div className="player-detail-screen">
@@ -103,6 +107,7 @@ export function PlayerDetailScreen({ initial, slug, lang }: Props) {
         onSeasonChange={handleSeasonChange}
         lang={lang}
       />
+      {about ? <p className="player-about">{about}</p> : null}
       <PlayerTabs tabs={tabs} active={tab} onChange={setTab} />
       {/*
         SEO: TÜM sekme panelleri sunucu HTML'ine basılır (koşul yalnızca veri
