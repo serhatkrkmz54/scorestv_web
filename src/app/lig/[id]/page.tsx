@@ -4,6 +4,7 @@ import { fetchLeagueDetailServer } from "@/lib/league-detail";
 import { LeagueDetailScreen } from "@/components/league/LeagueDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { LeagueSideInfo } from "@/components/league/LeagueSideInfo";
+import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { getRelatedByLeague } from "@/lib/news-server";
@@ -83,6 +84,7 @@ export default async function Page({ params, searchParams }: PageProps) {
           <LeftRail />
         </aside>
         <div className="league-detail-main">
+          <Breadcrumb items={initial.seo?.breadcrumbs} />
           <LeagueDetailScreen initial={initial} slug={slug} lang="tr" />
           <RelatedNews items={relatedNews} lang="tr" />
         </div>

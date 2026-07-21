@@ -4,6 +4,7 @@ import { fetchPlayerDetailServer } from "@/lib/player-detail";
 import { PlayerDetailScreen } from "@/components/player/PlayerDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { PlayerSideInfo } from "@/components/player/PlayerSideInfo";
+import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { playerJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
@@ -87,6 +88,7 @@ export default async function Page({ params, searchParams }: PageProps) {
           <LeftRail />
         </aside>
         <div className="player-detail-main">
+          <Breadcrumb items={initial.seo?.breadcrumbs} />
           <PlayerDetailScreen initial={initial} slug={slug} lang="tr" />
           <RelatedNews items={relatedNews} lang="tr" />
         </div>

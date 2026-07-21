@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchBasketballTeamDetailServer } from "@/lib/basketball-team";
+import { fetchBasketballTeamDetailServer, fetchBasketballTeamSeoServer } from "@/lib/basketball-team";
 import { BasketballTeamDetailScreen } from "@/components/team/basketball/BasketballTeamDetailScreen";
 import { BasketballTeamSideInfo } from "@/components/team/basketball/BasketballTeamSideInfo";
 import { BasketballLeftRail } from "@/components/home/BasketballLeftRail";
+import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
+import { escapeJsonLd } from "@/lib/jsonld";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
@@ -53,13 +55,21 @@ export default async function Page({ params, searchParams }: PageProps) {
       </div>
     );
   }
+  const seo = await fetchBasketballTeamSeoServer(slug, "tr", sp.season ?? null);
   return (
     <>
+      {seo?.jsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(seo.jsonLd) }} />
+      ) : null}
+      {seo?.breadcrumbJsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(seo.breadcrumbJsonLd) }} />
+      ) : null}
       <div className="layout">
         <aside className="rail-left">
           <BasketballLeftRail />
         </aside>
         <div className="team-detail-main">
+          <Breadcrumb items={crumbsFromJsonLd(seo?.breadcrumbJsonLd)} />
           <BasketballTeamDetailScreen initial={initial} slug={slug} lang="tr" />
         </div>
         <aside className="rail-right">

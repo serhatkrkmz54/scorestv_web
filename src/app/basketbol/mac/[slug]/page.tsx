@@ -4,6 +4,7 @@ import { fetchBasketballDetailServer } from "@/lib/basketball-detail";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { BasketballDetailScreen } from "@/components/match/basketball/BasketballDetailScreen";
 import { BasketballLeftRail } from "@/components/home/BasketballLeftRail";
+import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -51,12 +52,16 @@ export default async function Page({ params }: PageProps) {
       {initial.seo?.jsonLd ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.jsonLd) }} />
       ) : null}
+      {initial.seo?.breadcrumbsJsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeJsonLd(initial.seo.breadcrumbsJsonLd) }} />
+      ) : null}
       <h1 className="sr-only">{home} - {away}</h1>
       <div className="layout">
         <aside className="rail-left">
           <BasketballLeftRail />
         </aside>
         <div className="match-detail-main">
+          <Breadcrumb items={crumbsFromJsonLd(initial.seo?.breadcrumbsJsonLd)} />
           <BasketballDetailScreen initial={initial} slug={slug} lang="tr" />
         </div>
       </div>

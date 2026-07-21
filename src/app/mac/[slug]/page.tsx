@@ -5,6 +5,7 @@ import { isMatchIndexable } from "@/lib/match-detail-types";
 import { MatchDetailScreen } from "@/components/match/MatchDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { MatchSideInfo } from "@/components/match/MatchSideInfo";
+import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
@@ -102,6 +103,7 @@ export default async function Page({ params }: PageProps) {
           <LeftRail />
         </aside>
         <div className="match-detail-main">
+          <Breadcrumb items={initial.seo?.breadcrumbs} />
           <MatchDetailScreen initial={initial} slug={slug} lang="tr" initialHighlights={highlights} />
           <RelatedNews items={relatedNews} lang="tr" />
         </div>

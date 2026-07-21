@@ -4,6 +4,7 @@ import { fetchVolleyballDetailServer } from "@/lib/volleyball-detail";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { VolleyballDetailScreen } from "@/components/match/volleyball/VolleyballDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
+import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -75,6 +76,7 @@ export default async function Page({ params }: PageProps) {
           <LeftRail />
         </aside>
         <div className="match-detail-main">
+          <Breadcrumb items={crumbsFromJsonLd(initial.seo?.breadcrumbsJsonLd)} />
           <VolleyballDetailScreen initial={initial} slug={slug} lang="en" />
         </div>
       </div>

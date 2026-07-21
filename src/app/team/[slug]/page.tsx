@@ -4,6 +4,7 @@ import { fetchTeamDetailServer } from "@/lib/team-detail";
 import { TeamDetailScreen } from "@/components/team/TeamDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { TeamSideInfo } from "@/components/team/TeamSideInfo";
+import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { RetryablePage } from "@/components/shell/RetryablePage";
 import { teamJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
@@ -84,6 +85,7 @@ export default async function Page({ params, searchParams }: PageProps) {
           <LeftRail />
         </aside>
         <div className="team-detail-main">
+          <Breadcrumb items={initial.seo?.breadcrumbs} />
           <TeamDetailScreen initial={initial} slug={slug} lang="en" />
           <RelatedNews items={relatedNews} lang="en" />
         </div>
