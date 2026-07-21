@@ -34,7 +34,6 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   return {
     title,
     description,
-    keywords: seo?.keywords ?? undefined,
     alternates: { canonical: seo?.canonicalUrl ?? undefined, languages: alternates },
     openGraph: {
       title: seo?.openGraph?.title ?? title,
