@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSportOptional } from "@/context/sport-context";
@@ -17,7 +17,6 @@ import {
   IconCalendar,
   IconNews,
   IconTennis,
-  IconVolley,
 } from "@/components/icons";
 
 export function Subnav() {
@@ -29,6 +28,8 @@ export function Subnav() {
   // Aktif spor artik PATHNAME'e gore belirlenir (sport-context degil):
   //   futbol -> "/" ve "/mac/*" (ve diger futbol rotalari)
   //   basketbol -> "/basketbol*" veya "/basketball*"
+  // Voleybol yolu da tespit edilir ki (voleybol mac sayfalarinda) yanlislikla
+  // futbol sekmesi "secili" gorunmesin — menude voleybol sekmesi yoktur.
   const activeSport: Sport = useMemo(() => {
     const p = pathname ?? "/";
     if (p.startsWith("/basketbol") || p.startsWith("/basketball")) return "basketball";
@@ -79,29 +80,16 @@ export function Subnav() {
     };
   }, [lang]);
 
-  // GECICI: "cok yakinda" toast'i (yalnizca voleybol gibi henuz acilmamis
-  // sporlar icin; backend canliya alininca comingSoon:false yap).
-  const [toast, setToast] = useState<string | null>(null);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(
-    () => () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current);
-    },
-    [],
-  );
-  function showToast(msg: string) {
-    setToast(msg);
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 2600);
-  }
-
+  // NOT: Voleybol web'de PASIF — yalnizca mobil uygulamada. Kategori (landing)
+  // sayfasi olmadigi icin web menusunde GOSTERILMEZ (var olmayan sayfaya link
+  // vermek SEO'ya zarar verir). Hazir olunca /voleybol landing sayfasi + gercek
+  // link olarak eklenecek. Tenis henuz kapali (on:false) — devre disi buton.
   const sports: {
     id: Sport | "tennis";
     label: string;
     Icon: typeof IconBall;
     live: number;
     on: boolean;
-    comingSoon?: boolean;
   }[] = [
     { id: "football", label: t.football, Icon: IconBall, live: footballLive, on: true },
     {
@@ -111,19 +99,11 @@ export function Subnav() {
       live: basketballLive,
       on: true,
     },
-    {
-      id: "volleyball",
-      label: t.volleyball,
-      Icon: IconVolley,
-      live: 0,
-      on: true,
-      comingSoon: true,
-    },
     { id: "tennis", label: t.tennis, Icon: IconTennis, live: 0, on: false },
   ];
 
   // Gerçek kategori sayfası olan spor: futbol "/", basketbol "/basketbol" |
-  // "/basketball". (Voleybol henüz "çok yakında" — kategori sayfası yok.)
+  // "/basketball".
   function sportHref(id: Sport): string {
     return id === "basketball" ? basketballHomePath(lang) : "/";
   }
@@ -133,7 +113,7 @@ export function Subnav() {
       <div className="subnav-in">
         {sports.map((sp) => {
           const isSport = sp.id !== "tennis";
-          const selected = isSport && !sp.comingSoon && sp.id === activeSport;
+          const selected = isSport && sp.id === activeSport;
           const className =
             "sport-tab" + (sp.on ? " on" : "") + (selected ? " selected" : "");
           const inner = (
@@ -145,7 +125,7 @@ export function Subnav() {
           );
           // SEO: kategori sayfası olan sporlar GERÇEK <a href> link (Google
           // takip edebilsin). Spor-context onClick ile senkron tutulur.
-          if (sp.on && isSport && !sp.comingSoon) {
+          if (sp.on && isSport) {
             return (
               <Link
                 key={sp.id}
@@ -158,22 +138,13 @@ export function Subnav() {
               </Link>
             );
           }
-          // "Çok yakında" (voleybol) / kapalı (tenis) → kategori sayfası yok,
-          // buton kalır (link verilecek gerçek URL olmadığından).
+          // Kapalı spor (tenis) → devre dışı buton (link verilecek URL yok).
           return (
             <button
               key={sp.id}
               type="button"
               className={className}
               disabled={!sp.on}
-              onClick={() => {
-                if (!sp.on || !isSport) return;
-                if (sp.comingSoon) {
-                  showToast(
-                    `${sp.label} ${lang === "tr" ? "çok yakında" : "coming soon"}`,
-                  );
-                }
-              }}
             >
               {inner}
             </button>
@@ -193,11 +164,6 @@ export function Subnav() {
           <span>{t.news}</span>
         </Link>
       </div>
-      {toast ? (
-        <div className="subnav-toast" role="status" aria-live="polite">
-          {toast}
-        </div>
-      ) : null}
     </nav>
   );
 }
