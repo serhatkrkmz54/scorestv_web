@@ -9,6 +9,7 @@ import { AiTrustStrip } from "@/components/ai/AiTrustStrip";
 import { resolveLang } from "@/lib/lang-server";
 import { getLatestNews } from "@/lib/news-server";
 import { fetchHomeServer } from "@/lib/home-server";
+import { getAiPerformance } from "@/lib/ai-performance-server";
 
 // NOT: Anasayfa title/description'i KOK layout'taki generateMetadata (HOME_META)
 // uretir. Burada KENDI metadata'mizi tanimlamiyoruz.
@@ -18,9 +19,10 @@ export default async function HomePage() {
   const isTr = lang === "tr";
   // Sag ray haberleri + anasayfa fikstürleri PARALEL SSR — Google'ın ilk
   // aldigi HTML'de canli maclar/skorlar yer alsin (yalniz "Yukleniyor..." degil).
-  const [news, home] = await Promise.all([
+  const [news, home, ai] = await Promise.all([
     getLatestNews(lang, 5),
     fetchHomeServer(lang),
+    getAiPerformance(),
   ]);
   const h1 = isTr
     ? "Canlı Skorlar, Puan Durumları ve Maç İstatistikleri"
@@ -36,7 +38,7 @@ export default async function HomePage() {
       {/* SEO: gorsel gizli ana baslik (robotlar gorur). */}
       <h1 className="sr-only">{h1}</h1>
       {/* Şerit layout GRID'inin DIŞINDA (grid'e 4. eleman girmesin → 3 sütun bozulmaz). */}
-      <AiTrustStrip lang={lang} />
+      <AiTrustStrip lang={lang} initial={ai} />
       <HomeShell left={<LeftRail />} right={<RightRail news={news} />}>
         <HomeMain />
       </HomeShell>

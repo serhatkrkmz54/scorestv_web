@@ -8,10 +8,21 @@ import { AI_MIN_SAMPLE } from "@/lib/ai-performance-types";
  * Anasayfa ince güven şeridi: "AI analizlerimiz son 12 ayda %X isabetli".
  * AI Performans sayfasına götürür. Yeterli veri yoksa görünmez.
  */
-export function AiTrustStrip({ lang }: { lang: "tr" | "en" }) {
-  const [p, setP] = useState<AiPerformance | null>(null);
+export function AiTrustStrip({
+  lang,
+  initial = null,
+}: {
+  lang: "tr" | "en";
+  initial?: AiPerformance | null;
+}) {
+  // PERF/LCP: `initial` SSR'dan gelir → şerit İLK HTML'de yer alır ve LCP öğesi
+  // (bu şeridin metni) FCP anında boyanır. Eskiden veri client-side fetch ile
+  // gelene kadar (Slow 4G'de ~2.5s) şerit `null` render ediliyordu; Lighthouse
+  // bunu "render gecikmesi 2.5s" olarak LCP'ye yazıyordu. Artık SSR'lı.
+  const [p, setP] = useState<AiPerformance | null>(initial);
 
   useEffect(() => {
+    if (initial) return; // SSR verisi geldi → tekrar çekme (LCP'yi geciktirme)
     let alive = true;
     fetch("/api/ai/performance")
       .then((r) => (r.ok ? r.json() : null))
@@ -22,7 +33,7 @@ export function AiTrustStrip({ lang }: { lang: "tr" | "en" }) {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [initial]);
 
   if (!p || p.year.total < AI_MIN_SAMPLE) return null;
 
