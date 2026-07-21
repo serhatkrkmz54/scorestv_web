@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useSportOptional } from "@/context/sport-context";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
@@ -22,7 +22,6 @@ import {
 
 export function Subnav() {
   const sportCtx = useSportOptional();
-  const router = useRouter();
   const pathname = usePathname();
   const { lang } = useLang();
   const t = HOME_STR[lang];
@@ -123,15 +122,10 @@ export function Subnav() {
     { id: "tennis", label: t.tennis, Icon: IconTennis, live: 0, on: false },
   ];
 
-  // Sekmeye tiklayinca: o sporun KENDI URL'ine git (futbol "/", basketbol
-  // "/basketbol" | "/basketball"). Spor-context de senkron tutulur.
-  function pickSport(id: Sport) {
-    if (sportCtx) sportCtx.setSport(id);
-    if (id === "basketball") {
-      router.push(basketballHomePath(lang));
-    } else {
-      router.push("/");
-    }
+  // Gerçek kategori sayfası olan spor: futbol "/", basketbol "/basketbol" |
+  // "/basketball". (Voleybol henüz "çok yakında" — kategori sayfası yok.)
+  function sportHref(id: Sport): string {
+    return id === "basketball" ? basketballHomePath(lang) : "/";
   }
 
   return (
@@ -140,11 +134,37 @@ export function Subnav() {
         {sports.map((sp) => {
           const isSport = sp.id !== "tennis";
           const selected = isSport && !sp.comingSoon && sp.id === activeSport;
+          const className =
+            "sport-tab" + (sp.on ? " on" : "") + (selected ? " selected" : "");
+          const inner = (
+            <>
+              <sp.Icon s={17} />
+              <span>{sp.label}</span>
+              {sp.live > 0 && <span className="cnt live">{sp.live}</span>}
+            </>
+          );
+          // SEO: kategori sayfası olan sporlar GERÇEK <a href> link (Google
+          // takip edebilsin). Spor-context onClick ile senkron tutulur.
+          if (sp.on && isSport && !sp.comingSoon) {
+            return (
+              <Link
+                key={sp.id}
+                href={sportHref(sp.id as Sport)}
+                className={className}
+                aria-current={selected ? "page" : undefined}
+                onClick={() => sportCtx?.setSport(sp.id as Sport)}
+              >
+                {inner}
+              </Link>
+            );
+          }
+          // "Çok yakında" (voleybol) / kapalı (tenis) → kategori sayfası yok,
+          // buton kalır (link verilecek gerçek URL olmadığından).
           return (
             <button
               key={sp.id}
               type="button"
-              className={"sport-tab" + (sp.on ? " on" : "") + (selected ? " selected" : "")}
+              className={className}
               disabled={!sp.on}
               onClick={() => {
                 if (!sp.on || !isSport) return;
@@ -152,14 +172,10 @@ export function Subnav() {
                   showToast(
                     `${sp.label} ${lang === "tr" ? "çok yakında" : "coming soon"}`,
                   );
-                  return;
                 }
-                pickSport(sp.id as Sport);
               }}
             >
-              <sp.Icon s={17} />
-              <span>{sp.label}</span>
-              {sp.live > 0 && <span className="cnt live">{sp.live}</span>}
+              {inner}
             </button>
           );
         })}
