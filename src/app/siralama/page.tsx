@@ -20,9 +20,9 @@ export default async function Page() {
       <aside className="rail-left">
         <LeftRail />
       </aside>
-      <main className="rankings-main">
+      <div className="rankings-main">
         <RankingsScreen initialFifa={fifa} initialClubs={clubs} initialCountries={countries} lang="tr" />
-      </main>
+      </div>
       <aside className="rail-right" />
     </div>
   );

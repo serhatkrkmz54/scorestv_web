@@ -169,7 +169,7 @@ export default async function Page({ searchParams }: PageProps) {
         <aside className="rail-left">
           <LeftRail />
         </aside>
-        <main className="tvguide-main">
+        <div className="tvguide-main">
           <header className="tvg-head">
             <h1 className="tvg-h1">{h1}</h1>
             <p className="tvg-intro">{intro}</p>
@@ -267,7 +267,7 @@ export default async function Page({ searchParams }: PageProps) {
               ))}
             </div>
           )}
-        </main>
+        </div>
         <aside className="rail-right">
           <NewsList items={news} />
         </aside>

@@ -28,13 +28,13 @@ export default async function NewsListPageTr({ searchParams }: PageProps) {
       <aside className="rail-left">
         <NewsCategoryRail lang="tr" active={active} />
       </aside>
-      <main className="news-list-main">
+      <div className="news-list-main">
         <NewsListView
           lang="tr"
           categoryParam={sp.category}
           pageParam={sp.page}
         />
-      </main>
+      </div>
     </div>
   );
 }

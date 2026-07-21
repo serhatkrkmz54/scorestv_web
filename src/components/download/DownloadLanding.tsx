@@ -22,7 +22,7 @@ export function DownloadLanding({ lang }: { lang: Lang }) {
       ];
 
   return (
-    <main className="dl-page">
+    <div className="dl-page">
       <section className="dl-hero">
         <div className="dl-logo">
           <Logo h={44} />
@@ -62,6 +62,6 @@ export function DownloadLanding({ lang }: { lang: Lang }) {
             : "You'll be sent to the right store automatically for your device."}
         </p>
       </section>
-    </main>
+    </div>
   );
 }

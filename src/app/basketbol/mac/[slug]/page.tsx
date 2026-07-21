@@ -56,9 +56,9 @@ export default async function Page({ params }: PageProps) {
         <aside className="rail-left">
           <BasketballLeftRail />
         </aside>
-        <main className="match-detail-main">
+        <div className="match-detail-main">
           <BasketballDetailScreen initial={initial} slug={slug} lang="tr" />
-        </main>
+        </div>
       </div>
     </>
   );

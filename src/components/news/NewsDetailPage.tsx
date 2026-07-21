@@ -127,9 +127,9 @@ export async function NewsDetailPage({
         <aside className="rail-left">
           <NewsCategoryRail lang={lang} />
         </aside>
-        <main className="news-detail-main">
+        <div className="news-detail-main">
           <NewsArticle detail={data} related={related} lang={lang} />
-        </main>
+        </div>
         <aside className="rail-right">
           <NewsEntityCards detail={data} lang={lang} />
         </aside>

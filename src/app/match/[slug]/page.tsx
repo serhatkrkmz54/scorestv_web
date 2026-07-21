@@ -69,9 +69,9 @@ export default async function Page({ params }: PageProps) {
     return (
       <div className="layout">
         <aside className="rail-left"><LeftRail /></aside>
-        <main className="match-detail-main">
+        <div className="match-detail-main">
           <RetryablePage pingUrl={pingUrl} lang="en" />
-        </main>
+        </div>
       </div>
     );
   }
@@ -101,10 +101,10 @@ export default async function Page({ params }: PageProps) {
         <aside className="rail-left">
           <LeftRail />
         </aside>
-        <main className="match-detail-main">
+        <div className="match-detail-main">
           <MatchDetailScreen initial={initial} slug={slug} lang="en" initialHighlights={highlights} />
           <RelatedNews items={relatedNews} lang="en" />
-        </main>
+        </div>
         <aside className="rail-right">
           <MatchSideInfo detail={initial} lang="en" />
         </aside>

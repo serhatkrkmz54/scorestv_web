@@ -63,9 +63,9 @@ export default async function Page({ params, searchParams }: PageProps) {
     return (
       <div className="layout">
         <aside className="rail-left"><LeftRail /></aside>
-        <main className="league-detail-main">
+        <div className="league-detail-main">
           <RetryablePage pingUrl={pingUrl} lang="en" />
-        </main>
+        </div>
       </div>
     );
   }
@@ -82,10 +82,10 @@ export default async function Page({ params, searchParams }: PageProps) {
         <aside className="rail-left">
           <LeftRail />
         </aside>
-        <main className="league-detail-main">
+        <div className="league-detail-main">
           <LeagueDetailScreen initial={initial} slug={slug} lang="en" />
           <RelatedNews items={relatedNews} lang="en" />
-        </main>
+        </div>
         <aside className="rail-right">
           <LeagueSideInfo detail={initial} lang="en" />
         </aside>
