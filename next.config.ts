@@ -6,6 +6,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: false,
   reactStrictMode: true,
+  // PERF/FCP+LCP: CSS'i ayrı render-engelleyen <link> yerine HTML <head>'ine
+  // <style> olarak göm. Böylece ilk boyama, 33KB'lik CSS'in ağdan inmesini
+  // BEKLEMEZ (PageSpeed "Oluşturma engelleme ~300ms" uyarısı kalkar).
+  // Ödünleşim: HTML biraz büyür ve CSS sayfalar arası cache'lenmez — ama
+  // nginx/Cloudflare yanıtı sıkıştırır, client-side gezinmelerde CSS zaten
+  // yüklüdür; kazanan senaryo İLK yükleme (PageSpeed'in ölçtüğü) FCP/LCP.
+  experimental: {
+    inlineCss: true,
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.scorestv.com" },
