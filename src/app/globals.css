@@ -3543,11 +3543,13 @@ a.evx-out-link:hover { color: var(--accent); }
 .player-detail-screen { display: block; min-width: 0; }
 .player-detail-main { min-width: 0; }
 .player-detail-body { display: block; min-width: 0; }
-/* SEO: oyuncu özgün açıklama paragrafı (hero altında) */
-.player-about {
-  margin: 12px 0 4px;
-  font-size: 13.6px;
-  line-height: 1.6;
+/* SEO: sağ raydaki "Oyuncu Hakkında" kartı metni (rl-section içinde) */
+.rl-about-text {
+  margin: 0;
+  padding: 11px 14px 13px;
+  border-top: 1px solid var(--border);
+  font-size: 12.9px;
+  line-height: 1.62;
   color: var(--text-dim);
 }
 

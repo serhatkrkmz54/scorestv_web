@@ -6,8 +6,10 @@ import {
   IconLineup,
   IconHeart2,
   IconMed,
+  IconUser,
 } from "@/components/icons";
 import { ageFromBirth, type PlayerDetailResponse } from "@/lib/player-detail-types";
+import { playerDescription } from "@/lib/player-description";
 
 interface Props {
   detail: PlayerDetailResponse;
@@ -83,19 +85,34 @@ export function PlayerSideInfo({ detail, lang }: Props) {
     });
   }
 
+  // SEO: gerçek verilerden üretilmiş özgün "Oyuncu Hakkında" özeti (thin
+  // content'i azaltır). Veri yoksa kart gösterilmez.
+  const about = playerDescription(detail, lang);
+
   return (
-    <div className="rl-section">
-      <header className="rl-head">
-        <IconHeart2 s={14} />
-        <span>{t("Oyuncu Bilgisi", "Player Info")}</span>
-      </header>
-      {rows.map((r, i) => (
-        <div key={i} className="rl-item msi-row-3">
-          <span className="msi-icon-slot">{r.icon}</span>
-          <span className="msi-label">{r.label}</span>
-          <span className="msi-value">{r.value}</span>
+    <>
+      {about ? (
+        <div className="rl-section">
+          <header className="rl-head">
+            <IconUser s={14} />
+            <span>{t("Oyuncu Hakkında", "About the Player")}</span>
+          </header>
+          <p className="rl-about-text">{about}</p>
         </div>
-      ))}
-    </div>
+      ) : null}
+      <div className="rl-section">
+        <header className="rl-head">
+          <IconHeart2 s={14} />
+          <span>{t("Oyuncu Bilgisi", "Player Info")}</span>
+        </header>
+        {rows.map((r, i) => (
+          <div key={i} className="rl-item msi-row-3">
+            <span className="msi-icon-slot">{r.icon}</span>
+            <span className="msi-label">{r.label}</span>
+            <span className="msi-value">{r.value}</span>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
