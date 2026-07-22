@@ -172,16 +172,20 @@ export function Subnav() {
             </button>
           );
         })}
-        <span className="subnav-spacer" />
-        <Link href="/canli-mac-programi" className="sport-tab">
+        {/* Maç Programı / Sıralamalar / Haberler — MOBİLDE subnav'dan gizlenir
+            (sol drawer menüde yer alırlar); sadece spor sekmeleri kalır.
+            `.subnav-extra` @media ≤1023.98px'te display:none (hamburger'ın
+            göründüğü genişlik). Masaüstünde normal görünür. */}
+        <span className="subnav-spacer subnav-extra" />
+        <Link href="/canli-mac-programi" className="sport-tab subnav-extra">
           <IconCalendar s={17} />
           <span>{t.tvGuide}</span>
         </Link>
-        <Link href={rankingsPath(lang)} className="sport-tab">
+        <Link href={rankingsPath(lang)} className="sport-tab subnav-extra">
           <IconBars s={17} />
           <span>{t.rankings}</span>
         </Link>
-        <Link href={newsListPath(lang)} className="sport-tab">
+        <Link href={newsListPath(lang)} className="sport-tab subnav-extra">
           <IconNews s={17} />
           <span>{t.news}</span>
         </Link>

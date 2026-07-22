@@ -17,7 +17,7 @@ import { HOME_STR } from "@/i18n/home-strings";
 import { rankingsPath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
 import { LeftRail } from "@/components/home/LeftRail";
-import { IconBall, IconBars, IconHome, IconNews } from "@/components/icons";
+import { IconBall, IconBars, IconCalendar, IconHome, IconNews } from "@/components/icons";
 import { useMobileNav } from "./MobileNav";
 
 export function MobileNavContent() {
@@ -45,6 +45,10 @@ export function MobileNavContent() {
         <Link href="/" className="mn-quick-item">
           <IconHome s={18} />
           <span>{t.football}</span>
+        </Link>
+        <Link href="/canli-mac-programi" className="mn-quick-item">
+          <IconCalendar s={18} />
+          <span>{t.tvGuide}</span>
         </Link>
         <Link href={rankingsPath(lang)} className="mn-quick-item">
           <IconBars s={18} />

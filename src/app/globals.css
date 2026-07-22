@@ -819,6 +819,10 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
 .sport-tab .cnt.live { color: #fff; background: var(--live); }
 .subnav-spacer { flex: 1; }
 @media (max-width: 600px) { .sport-tab span { display: none; } }
+/* Maç Programı/Sıralamalar/Haberler + spacer: hamburger'ın çıktığı genişlikte
+   (≤1024) subnav'dan gizle — bunlar sol drawer menüde. Mobilde subnav yalnız
+   spor sekmelerini (Futbol/Basketbol/Voleybol) gösterir. */
+@media (max-width: 1023.98px) { .subnav-extra { display: none; } }
 
 /* ── Çip satırı + bildirim ayarları (gear) ── */
 .chips-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
