@@ -6,6 +6,7 @@ import { RightRail } from "@/components/home/RightRail";
 import { ScrollToTop } from "@/components/home/ScrollToTop";
 import { SetSportFootball } from "@/components/home/SetSportFootball";
 import { AiTrustStrip } from "@/components/ai/AiTrustStrip";
+import { GamePromoStrip } from "@/components/game/GamePromoStrip";
 import { resolveLang } from "@/lib/lang-server";
 import { getLatestNews } from "@/lib/news-server";
 import { fetchHomeServer } from "@/lib/home-server";
@@ -39,6 +40,8 @@ export default async function HomePage() {
       <h1 className="sr-only">{h1}</h1>
       {/* Şerit layout GRID'inin DIŞINDA (grid'e 4. eleman girmesin → 3 sütun bozulmaz). */}
       <AiTrustStrip lang={lang} initial={ai} />
+      {/* Oyun tanıtım şeridi — mobil oyunu app'e (scorestv.app) yönlendirir. */}
+      <GamePromoStrip lang={lang} />
       <HomeShell left={<LeftRail />} right={<RightRail news={news} />}>
         <HomeMain />
       </HomeShell>

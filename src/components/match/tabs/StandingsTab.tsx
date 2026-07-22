@@ -95,41 +95,36 @@ function shade(hex: string, pct: number): string {
   );
 }
 
-// Aynı TEMEL renge düşen kaçıncı FARKLI bölge → görülebilir ton kayması.
-// 1: koyu, 2: açık, 3: daha koyu, 4: daha açık... (aynı aile, ~2-3 ton fark).
-function toneOffset(seq: number): number {
-  const magnitude = Math.ceil(seq / 2) * 0.2;
-  return seq % 2 === 1 ? -magnitude : magnitude;
-}
-
 function buildDescColorMap(groups: MatchStandingsGroup[]): Map<string, string> {
   const map = new Map<string, string>();
-  const baseUse = new Map<string, number>(); // temel renk → kaç FARKLI bölge kullandı
-  let paletteIdx = 0;
+  const used = new Set<string>(); // atanmış TÜM renkler — çakışmayı önle
+  let idx = 0;
+  // Kullanılmamış ilk ZIT palet rengini döndür; palet biterse tonla türet.
+  const nextDistinct = (): string => {
+    for (let k = 0; k < DYNAMIC_PALETTE.length; k++) {
+      const c = DYNAMIC_PALETTE[(idx + k) % DYNAMIC_PALETTE.length];
+      if (!used.has(c)) {
+        idx = idx + k + 1;
+        return c;
+      }
+    }
+    const c = shade(DYNAMIC_PALETTE[idx % DYNAMIC_PALETTE.length], idx % 2 ? -0.3 : 0.3);
+    idx++;
+    return c;
+  };
   for (const g of groups) {
     const sorted = [...g.rows].sort((a, b) => a.rank - b.rank);
     for (const r of sorted) {
       const d = (r.description ?? "").trim();
       if (!d) continue;
       if (map.has(d)) continue;
-      let base = knownColor(d);
-      if (!base) {
-        // Daha once kullanilmis bir temel palet rengini atla
-        while (
-          paletteIdx < DYNAMIC_PALETTE.length &&
-          baseUse.has(DYNAMIC_PALETTE[paletteIdx])
-        ) {
-          paletteIdx++;
-        }
-        if (paletteIdx >= DYNAMIC_PALETTE.length) paletteIdx = 0;
-        base = DYNAMIC_PALETTE[paletteIdx];
-        paletteIdx++;
-      }
-      const seq = baseUse.get(base) ?? 0;
-      baseUse.set(base, seq + 1);
-      // Aynı temel renk birden çok FARKLI bölge için kullanılıyorsa (ör. iki ayrı
-      // "Promotion" playoff bölgesi) ton kaydır → gözle ayırt edilebilir.
-      map.set(d, seq === 0 ? base : shade(base, toneOffset(seq)));
+      // Semantik renk — ama zaten başka bölgeye atanmışsa ZIT/farklı bir palet
+      // rengi seç (farklı bölgeler zıt renk olsun; iki ayrı "Promotion" bile net
+      // ayrı görünür).
+      let color = knownColor(d);
+      if (!color || used.has(color)) color = nextDistinct();
+      used.add(color);
+      map.set(d, color);
     }
   }
   return map;
