@@ -5323,6 +5323,9 @@ a.team-transfer-player:hover { color: var(--accent); }
 }
 @keyframes subnavToastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 
+/* Menu spor sekmesi ikonu (public/sport_*.png). Kare, object-fit ile net. */
+.sport-tab-ic{ display:block; width:20px; height:20px; object-fit:contain; flex:0 0 auto; }
+
 /* Basketbol/voleybol modunda rail'ler gizli → ana kolon tam genislik. */
 .layout.layout-solo { grid-template-columns: minmax(0, 1fr); }
 

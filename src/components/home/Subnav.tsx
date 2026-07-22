@@ -10,14 +10,7 @@ import type { FixtureDatesResponse } from "@/lib/fixtures-types";
 import type { Sport } from "@/lib/sports";
 import { rankingsPath, basketballHomePath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
-import {
-  IconBall,
-  IconBars,
-  IconBasket,
-  IconCalendar,
-  IconNews,
-  IconVolley,
-} from "@/components/icons";
+import { IconBars, IconCalendar, IconNews } from "@/components/icons";
 
 export function Subnav() {
   const sportCtx = useSportOptional();
@@ -101,19 +94,31 @@ export function Subnav() {
   const sports: {
     id: Sport;
     label: string;
-    Icon: typeof IconBall;
+    img: string; // public/ altindaki spor ikonu (54px, ~6KB'ye optimize)
     live: number;
     on: boolean; // gercek kategori sayfasi var mi (link) — yoksa "Yakinda"
   }[] = [
-    { id: "football", label: t.football, Icon: IconBall, live: footballLive, on: true },
+    {
+      id: "football",
+      label: t.football,
+      img: "/sport_football.png",
+      live: footballLive,
+      on: true,
+    },
     {
       id: "basketball",
       label: t.basketball,
-      Icon: IconBasket,
+      img: "/sport_basketball.png",
       live: basketballLive,
       on: true,
     },
-    { id: "volleyball", label: t.volleyball, Icon: IconVolley, live: 0, on: false },
+    {
+      id: "volleyball",
+      label: t.volleyball,
+      img: "/sport_volleyball.png",
+      live: 0,
+      on: false,
+    },
   ];
 
   // Gerçek kategori sayfası olan spor: futbol "/", basketbol "/basketbol" |
@@ -133,7 +138,14 @@ export function Subnav() {
             "sport-tab" + (sp.on ? " on" : "") + (selected ? " selected" : "");
           const inner = (
             <>
-              <sp.Icon s={17} />
+              {/* eslint-disable-next-line @next/next/no-img-element -- public/ statik spor ikonu */}
+              <img
+                src={sp.img}
+                alt=""
+                width={20}
+                height={20}
+                className="sport-tab-ic"
+              />
               <span>{sp.label}</span>
               {sp.live > 0 && <span className="cnt live">{sp.live}</span>}
             </>
