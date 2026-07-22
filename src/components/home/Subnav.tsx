@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSportOptional } from "@/context/sport-context";
@@ -16,7 +16,7 @@ import {
   IconBasket,
   IconCalendar,
   IconNews,
-  IconTennis,
+  IconVolley,
 } from "@/components/icons";
 
 export function Subnav() {
@@ -29,7 +29,7 @@ export function Subnav() {
   //   futbol -> "/" ve "/mac/*" (ve diger futbol rotalari)
   //   basketbol -> "/basketbol*" veya "/basketball*"
   // Voleybol yolu da tespit edilir ki (voleybol mac sayfalarinda) yanlislikla
-  // futbol sekmesi "secili" gorunmesin — menude voleybol sekmesi yoktur.
+  // futbol sekmesi "secili" gorunmesin.
   const activeSport: Sport = useMemo(() => {
     const p = pathname ?? "/";
     if (p.startsWith("/basketbol") || p.startsWith("/basketball")) return "basketball";
@@ -80,16 +80,30 @@ export function Subnav() {
     };
   }, [lang]);
 
-  // NOT: Voleybol web'de PASIF — yalnizca mobil uygulamada. Kategori (landing)
-  // sayfasi olmadigi icin web menusunde GOSTERILMEZ (var olmayan sayfaya link
-  // vermek SEO'ya zarar verir). Hazir olunca /voleybol landing sayfasi + gercek
-  // link olarak eklenecek. Tenis henuz kapali (on:false) — devre disi buton.
+  // Voleybol web'de PASIF — henuz kategori (landing) sayfasi yok. Menude
+  // GORUNUR ama tiklaninca gercek sayfaya gitmek yerine "Yakinda" toast'i
+  // gosterir (var olmayan sayfaya link vermek SEO'ya zarar verir). Hazir
+  // olunca /voleybol landing + gercek link olarak aktiflenir.
+  const [showSoon, setShowSoon] = useState(false);
+  const soonTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const popSoon = useCallback(() => {
+    setShowSoon(true);
+    if (soonTimer.current) clearTimeout(soonTimer.current);
+    soonTimer.current = setTimeout(() => setShowSoon(false), 2200);
+  }, []);
+  useEffect(
+    () => () => {
+      if (soonTimer.current) clearTimeout(soonTimer.current);
+    },
+    [],
+  );
+
   const sports: {
-    id: Sport | "tennis";
+    id: Sport;
     label: string;
     Icon: typeof IconBall;
     live: number;
-    on: boolean;
+    on: boolean; // gercek kategori sayfasi var mi (link) — yoksa "Yakinda"
   }[] = [
     { id: "football", label: t.football, Icon: IconBall, live: footballLive, on: true },
     {
@@ -99,7 +113,7 @@ export function Subnav() {
       live: basketballLive,
       on: true,
     },
-    { id: "tennis", label: t.tennis, Icon: IconTennis, live: 0, on: false },
+    { id: "volleyball", label: t.volleyball, Icon: IconVolley, live: 0, on: false },
   ];
 
   // Gerçek kategori sayfası olan spor: futbol "/", basketbol "/basketbol" |
@@ -108,12 +122,13 @@ export function Subnav() {
     return id === "basketball" ? basketballHomePath(lang) : "/";
   }
 
+  const soonText = lang === "tr" ? "Yakında" : "Coming soon";
+
   return (
     <nav className="subnav">
       <div className="subnav-in">
         {sports.map((sp) => {
-          const isSport = sp.id !== "tennis";
-          const selected = isSport && sp.id === activeSport;
+          const selected = sp.on && sp.id === activeSport;
           const className =
             "sport-tab" + (sp.on ? " on" : "") + (selected ? " selected" : "");
           const inner = (
@@ -125,27 +140,22 @@ export function Subnav() {
           );
           // SEO: kategori sayfası olan sporlar GERÇEK <a href> link (Google
           // takip edebilsin). Spor-context onClick ile senkron tutulur.
-          if (sp.on && isSport) {
+          if (sp.on) {
             return (
               <Link
                 key={sp.id}
-                href={sportHref(sp.id as Sport)}
+                href={sportHref(sp.id)}
                 className={className}
                 aria-current={selected ? "page" : undefined}
-                onClick={() => sportCtx?.setSport(sp.id as Sport)}
+                onClick={() => sportCtx?.setSport(sp.id)}
               >
                 {inner}
               </Link>
             );
           }
-          // Kapalı spor (tenis) → devre dışı buton (link verilecek URL yok).
+          // Pasif spor (voleybol) → tıklanınca "Yakında" toast'ı göster.
           return (
-            <button
-              key={sp.id}
-              type="button"
-              className={className}
-              disabled={!sp.on}
-            >
+            <button key={sp.id} type="button" className={className} onClick={popSoon}>
               {inner}
             </button>
           );
@@ -164,6 +174,11 @@ export function Subnav() {
           <span>{t.news}</span>
         </Link>
       </div>
+      {showSoon && (
+        <div className="subnav-toast" role="status">
+          {soonText}
+        </div>
+      )}
     </nav>
   );
 }
