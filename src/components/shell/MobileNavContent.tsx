@@ -17,7 +17,7 @@ import { HOME_STR } from "@/i18n/home-strings";
 import { rankingsPath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
 import { LeftRail } from "@/components/home/LeftRail";
-import { IconBall, IconBars, IconCalendar, IconHome, IconNews } from "@/components/icons";
+import { IconBars, IconCalendar, IconHome, IconNews } from "@/components/icons";
 import { useMobileNav } from "./MobileNav";
 
 export function MobileNavContent() {
@@ -63,7 +63,6 @@ export function MobileNavContent() {
       <LeftRail />
 
       <div className="mn-footer">
-        <IconBall s={14} />
         <span>Scores TV © {new Date().getFullYear()}</span>
       </div>
     </>
