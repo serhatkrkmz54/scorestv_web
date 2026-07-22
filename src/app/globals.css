@@ -823,9 +823,32 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
    (≤1024) subnav'dan gizle — bunlar sol drawer menüde. Mobilde subnav yalnız
    spor sekmelerini (Futbol/Basketbol/Voleybol) gösterir. */
 @media (max-width: 1023.98px) { .subnav-extra { display: none; } }
-/* Oyun menü girişi (subnav + drawer) — promo aksanı: accent renkle öne çıkar. */
-.sport-tab.sport-tab-game,
-.mn-quick-item.mn-quick-game { color: var(--accent); font-weight: 700; }
+/* Oyun menü girişi — gradient "promo" pill (subnav) + kart (drawer). Mobil
+   oyunu tanıtır, scorestv.app'e yönlendirir. */
+.sport-tab.sport-tab-game {
+  height: auto;
+  align-self: center;
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6d28d9, #db2777);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 9px rgba(109, 40, 217, 0.35);
+}
+.sport-tab.sport-tab-game:hover { color: #fff; filter: brightness(1.08); }
+.sport-tab.sport-tab-game svg { opacity: 1; }
+
+.mn-quick-item.mn-quick-game {
+  background: linear-gradient(135deg, #6d28d9, #db2777);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(109, 40, 217, 0.3);
+}
+.mn-quick-item.mn-quick-game:hover {
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  color: #fff;
+}
+.mn-quick-item.mn-quick-game svg { color: #fff; opacity: 1; }
 
 /* ── Çip satırı + bildirim ayarları (gear) ── */
 .chips-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
