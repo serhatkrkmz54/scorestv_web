@@ -3214,6 +3214,15 @@ a.evx-out-link:hover { color: var(--accent); }
 @media (max-width: 600px) {
   .league-hero-content { padding: 16px 14px 18px; }
   .league-hero-row { grid-template-columns: 56px 1fr; gap: 12px; }
+  /* Logo JSX'te sabit 72px basılıyor; mobil sütun 56px olunca logo (img veya
+     monogram badge) sütunu TAŞIRIP metnin üstüne biniyordu ("birbirine girmiş"
+     görüntüsü). Logoyu sütun boyutuna (56px) sığdır → taşma/örtüşme biter. */
+  .league-hero-row > :first-child {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 20px !important; /* monogram badge için orantılı */
+    flex: 0 0 auto;
+  }
   .league-hero-season { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 10px; justify-content: flex-start; }
   .league-hero-name { font-size: 18.4px; }
 }
