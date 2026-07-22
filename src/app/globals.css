@@ -823,6 +823,9 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
    (≤1024) subnav'dan gizle — bunlar sol drawer menüde. Mobilde subnav yalnız
    spor sekmelerini (Futbol/Basketbol/Voleybol) gösterir. */
 @media (max-width: 1023.98px) { .subnav-extra { display: none; } }
+/* Oyun menü girişi (subnav + drawer) — promo aksanı: accent renkle öne çıkar. */
+.sport-tab.sport-tab-game,
+.mn-quick-item.mn-quick-game { color: var(--accent); font-weight: 700; }
 
 /* ── Çip satırı + bildirim ayarları (gear) ── */
 .chips-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }

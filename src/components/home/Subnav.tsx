@@ -10,7 +10,8 @@ import type { FixtureDatesResponse } from "@/lib/fixtures-types";
 import type { Sport } from "@/lib/sports";
 import { rankingsPath, basketballHomePath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
-import { IconBars, IconCalendar, IconNews } from "@/components/icons";
+import { APP_LANDING_URL } from "@/lib/store-links";
+import { IconBars, IconCalendar, IconNews, IconTrophy } from "@/components/icons";
 
 export function Subnav() {
   const sportCtx = useSportOptional();
@@ -189,6 +190,16 @@ export function Subnav() {
           <IconNews s={17} />
           <span>{t.news}</span>
         </Link>
+        {/* Oyun — mobil oyunu app'e (scorestv.app) yönlendirir. Promo aksanı. */}
+        <a
+          href={APP_LANDING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sport-tab subnav-extra sport-tab-game"
+        >
+          <IconTrophy s={17} />
+          <span>{lang === "tr" ? "Oyun" : "Game"}</span>
+        </a>
       </div>
       {showSoon && (
         <div className="subnav-toast" role="status">
