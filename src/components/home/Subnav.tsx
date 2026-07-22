@@ -10,7 +10,7 @@ import type { FixtureDatesResponse } from "@/lib/fixtures-types";
 import type { Sport } from "@/lib/sports";
 import { rankingsPath, basketballHomePath, gamesPath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
-import { IconBars, IconCalendar, IconNews, IconTrophy } from "@/components/icons";
+import { IconBars, IconCalendar, IconGamepad, IconNews } from "@/components/icons";
 
 export function Subnav() {
   const sportCtx = useSportOptional();
@@ -191,7 +191,7 @@ export function Subnav() {
         </Link>
         {/* Oyunlar — site içi oyunlar sayfası (/oyunlar | /games). Promo aksanı. */}
         <Link href={gamesPath(lang)} className="sport-tab subnav-extra sport-tab-game">
-          <IconTrophy s={17} />
+          <IconGamepad s={17} />
           <span>{lang === "tr" ? "Oyunlar" : "Games"}</span>
         </Link>
       </div>

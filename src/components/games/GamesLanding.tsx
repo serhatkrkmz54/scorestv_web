@@ -4,6 +4,16 @@ import type { Lang } from "@/i18n/auth-strings";
 import type { GameLeaderboardEntry } from "@/lib/games-server";
 import { StoreBadges } from "@/components/download/StoreBadges";
 import { DOWNLOAD_PATH } from "@/lib/store-links";
+import {
+  IconBall,
+  IconBars,
+  IconDownload,
+  IconFlame,
+  IconPoint,
+  IconQuestion,
+  IconTarget,
+  IconTrophy,
+} from "@/components/icons";
 
 // Oyunlar sayfasına özel display fontu — tasarımdaki (Claude Design handoff)
 // Barlow Condensed başlıklar. Sadece bu sayfada yüklenir.
@@ -14,12 +24,12 @@ const barlowCondensed = Barlow_Condensed({
   display: "swap",
 });
 
-// Oyun kartları — tasarımdan birebir (gradient + foto + emoji). `live: false`
-// olan oyunlar "Yakında" rozetiyle gösterilir; oyun web/app'te açılınca
-// bayrağı çevirmek yeterli.
+// Oyun kartları — tasarımdan birebir (gradient + foto). `live: false` olan
+// oyunlar "Yakında" rozetiyle gösterilir; oyun web/app'te açılınca bayrağı
+// çevirmek yeterli.
 type GameCard = {
   key: string;
-  icon: string;
+  icon: React.ReactNode;
   bg: string;
   photo: string;
   live: boolean;
@@ -32,7 +42,7 @@ type GameCard = {
 const CARDS: GameCard[] = [
   {
     key: "kadronu-kur",
-    icon: "⚽",
+    icon: <IconBall s={64} />,
     bg: "linear-gradient(150deg,#2f6fed,#153a8f)",
     photo: "/games/game-lineup.jpg",
     live: false,
@@ -42,11 +52,11 @@ const CARDS: GameCard[] = [
       en: "Pick your team's starting eleven and win rewards for correct predictions!",
     },
     statLine1: { tr: "İlk 11'i tahmin et,", en: "Predict the starting XI," },
-    statLine2: { tr: "Scores Coin kazan.", en: "earn Scores Coin." },
+    statLine2: { tr: "Scores Puanı kazan.", en: "earn Scores Points." },
   },
   {
     key: "haftanin-oyuncusu",
-    icon: "🔥",
+    icon: <IconFlame s={64} />,
     bg: "linear-gradient(150deg,#e6a117,#9a5c07)",
     photo: "/games/game-potw.jpg",
     live: false,
@@ -55,12 +65,12 @@ const CARDS: GameCard[] = [
       tr: "Haftanın ve sezonun en iyi oyuncusunu seç, oyların yarışmasına katıl!",
       en: "Vote for the best player of the week and the season!",
     },
-    statLine1: { tr: "Oyunu topluluğa katıl,", en: "Join the community vote," },
+    statLine1: { tr: "Oylamaya katıl,", en: "Join the community vote," },
     statLine2: { tr: "yıldızını öne çıkar.", en: "back your star player." },
   },
   {
     key: "bil-kazan",
-    icon: "🎯",
+    icon: <IconTarget s={64} />,
     bg: "linear-gradient(150deg,#1eae6e,#0d5e3a)",
     photo: "/games/game-predict.jpg",
     live: true,
@@ -70,7 +80,7 @@ const CARDS: GameCard[] = [
       en: "Predict which player comes out on top in duels, collect points and win prizes!",
     },
     statLine1: { tr: "Her hafta yeni düellolar,", en: "New duels every week," },
-    statLine2: { tr: "Scores Coin ödülleri.", en: "Scores Coin rewards." },
+    statLine2: { tr: "Scores Puanı ödülleri.", en: "Scores Points rewards." },
   },
 ];
 
@@ -79,36 +89,19 @@ const STR = {
     subtitle: "Oyunlar",
     heroTitle: "Tahmin et, oyna, kazan!",
     heroText:
-      "Scores TV oyunlarıyla futbol bilgini yarıştır: düellolarda tahmin yap, Scores Coin topla, liderlik tablosunda yüksel.",
+      "Scores TV oyunlarıyla futbol bilgini yarıştır: düellolarda tahmin yap, Scores Puanı topla, liderlik tablosunda yüksel.",
     playInApp: "Uygulamada Oyna",
     soon: "Yakında",
     liveBadge: "Uygulamada",
-    lbTitle: "Scores Coin Liderleri",
-    lbSub: "Bil Kazan'da en çok coin toplayan oyuncular",
+    lbTitle: "Scores Puanı Liderleri",
+    lbSub: "Bil Kazan'da en çok puan toplayan oyuncular",
     lbRank: "#",
     lbPlayer: "Oyuncu",
-    lbCoins: "Coin",
+    lbCoins: "Puan",
     lbHits: "İsabet",
     lbEmpty:
       "Liderlik tablosu şu an boş görünüyor — ilk sen katıl, adını buraya yazdır!",
     howTitle: "Nasıl Oynanır?",
-    howSteps: [
-      {
-        icon: "📲",
-        t: "Uygulamayı indir",
-        d: "Scores TV uygulamasını App Store veya Google Play'den ücretsiz indir.",
-      },
-      {
-        icon: "🎯",
-        t: "Tahminini yap",
-        d: "Haftalık yarışmalardaki oyuncu düellolarında tahminini yap.",
-      },
-      {
-        icon: "🪙",
-        t: "Coin topla, kazan",
-        d: "Doğru tahminlerle Scores Coin kazan, liderlik tablosunda yüksel.",
-      },
-    ],
     quickLb: "Sıralamalar",
     quickHow: "Nasıl Oynanır?",
     quickDl: "Uygulamayı İndir",
@@ -120,36 +113,19 @@ const STR = {
     subtitle: "Games",
     heroTitle: "Predict, play, win!",
     heroText:
-      "Put your football knowledge to the test with Scores TV games: make predictions in duels, collect Scores Coin and climb the leaderboard.",
+      "Put your football knowledge to the test with Scores TV games: make predictions in duels, collect Scores Points and climb the leaderboard.",
     playInApp: "Play in the App",
     soon: "Coming soon",
     liveBadge: "In the app",
-    lbTitle: "Scores Coin Leaders",
-    lbSub: "Top coin collectors in Predict & Win",
+    lbTitle: "Scores Points Leaders",
+    lbSub: "Top point collectors in Predict & Win",
     lbRank: "#",
     lbPlayer: "Player",
-    lbCoins: "Coins",
+    lbCoins: "Points",
     lbHits: "Hits",
     lbEmpty:
       "The leaderboard looks empty right now — be the first to join and put your name here!",
     howTitle: "How to Play?",
-    howSteps: [
-      {
-        icon: "📲",
-        t: "Get the app",
-        d: "Download the Scores TV app for free on the App Store or Google Play.",
-      },
-      {
-        icon: "🎯",
-        t: "Make your prediction",
-        d: "Pick your side in the player duels of the weekly competitions.",
-      },
-      {
-        icon: "🪙",
-        t: "Collect coins & win",
-        d: "Earn Scores Coin with correct predictions and climb the leaderboard.",
-      },
-    ],
     quickLb: "Leaderboards",
     quickHow: "How to Play?",
     quickDl: "Get the App",
@@ -158,6 +134,38 @@ const STR = {
       "Download the app to play Predict & Win right away. New games are coming very soon — both in the app and on the web!",
   },
 } as const;
+
+// Nasıl oynanır adımları — ikonlu, TR/EN.
+const HOW_STEPS: {
+  icon: React.ReactNode;
+  t: { tr: string; en: string };
+  d: { tr: string; en: string };
+}[] = [
+  {
+    icon: <IconDownload s={30} />,
+    t: { tr: "Uygulamayı indir", en: "Get the app" },
+    d: {
+      tr: "Scores TV uygulamasını App Store veya Google Play'den ücretsiz indir.",
+      en: "Download the Scores TV app for free on the App Store or Google Play.",
+    },
+  },
+  {
+    icon: <IconTarget s={30} />,
+    t: { tr: "Tahminini yap", en: "Make your prediction" },
+    d: {
+      tr: "Haftalık yarışmalardaki oyuncu düellolarında tahminini yap.",
+      en: "Pick your side in the player duels of the weekly competitions.",
+    },
+  },
+  {
+    icon: <IconPoint s={30} />,
+    t: { tr: "Puan topla, kazan", en: "Collect points & win" },
+    d: {
+      tr: "Doğru tahminlerle Scores Puanı kazan, liderlik tablosunda yüksel.",
+      en: "Earn Scores Points with correct predictions and climb the leaderboard.",
+    },
+  },
+];
 
 export function GamesLanding({
   lang,
@@ -213,22 +221,30 @@ export function GamesLanding({
       {/* Hızlı linkler */}
       <nav className="gm-quick" aria-label={t.subtitle}>
         <a href="#siralamalar" className="gm-quick-item">
-          <span className="gm-quick-ic">📊</span>
+          <span className="gm-quick-ic">
+            <IconBars s={26} />
+          </span>
           <span>{t.quickLb}</span>
         </a>
         <a href="#nasil-oynanir" className="gm-quick-item">
-          <span className="gm-quick-ic">❓</span>
+          <span className="gm-quick-ic">
+            <IconQuestion s={26} />
+          </span>
           <span>{t.quickHow}</span>
         </a>
         <Link href={DOWNLOAD_PATH} className="gm-quick-item">
-          <span className="gm-quick-ic">📲</span>
+          <span className="gm-quick-ic">
+            <IconDownload s={26} />
+          </span>
           <span>{t.quickDl}</span>
         </Link>
       </nav>
 
-      {/* Liderlik tablosu — backend'den canlı (Scores Coin global) */}
+      {/* Liderlik tablosu — backend'den canlı (global) */}
       <section id="siralamalar" className="gm-panel">
-        <h2 className="gm-display gm-panel-title">🏆 {t.lbTitle}</h2>
+        <h2 className="gm-display gm-panel-title">
+          <IconTrophy s={24} /> {t.lbTitle}
+        </h2>
         <p className="gm-panel-sub">{t.lbSub}</p>
         {leaderboard.length > 0 ? (
           <div className="gm-lb-wrap">
@@ -244,8 +260,12 @@ export function GamesLanding({
               <tbody>
                 {leaderboard.map((e) => (
                   <tr key={e.userId}>
-                    <td className={`r gm-lb-rank p${e.rank}`}>
-                      {e.rank <= 3 ? ["🥇", "🥈", "🥉"][e.rank - 1] : e.rank}
+                    <td className="r">
+                      <span
+                        className={`gm-lb-rank${e.rank <= 3 ? ` medal p${e.rank}` : ""}`}
+                      >
+                        {e.rank}
+                      </span>
                     </td>
                     <td className="gm-lb-name">{e.displayName}</td>
                     <td className="r tnum gm-lb-coins">
@@ -268,12 +288,12 @@ export function GamesLanding({
       <section id="nasil-oynanir" className="gm-panel">
         <h2 className="gm-display gm-panel-title">{t.howTitle}</h2>
         <div className="gm-how">
-          {t.howSteps.map((s, i) => (
-            <div key={s.t} className="gm-how-step">
+          {HOW_STEPS.map((s, i) => (
+            <div key={s.t.en} className="gm-how-step">
               <span className="gm-how-num">{i + 1}</span>
               <span className="gm-how-ic">{s.icon}</span>
-              <h3>{s.t}</h3>
-              <p>{s.d}</p>
+              <h3>{s.t[lang]}</h3>
+              <p>{s.d[lang]}</p>
             </div>
           ))}
         </div>

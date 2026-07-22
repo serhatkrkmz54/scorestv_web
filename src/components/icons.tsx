@@ -446,3 +446,52 @@ export function IconOdds({ s = 14, ...p }: IP) {
     </svg>
   );
 }
+
+export function IconGamepad({ s = 17, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M6.5 7h11a4.5 4.5 0 014.4 5.5l-.8 3.6a2.6 2.6 0 01-4.5 1.1L14.8 15H9.2l-1.8 2.2a2.6 2.6 0 01-4.5-1.1l-.8-3.6A4.5 4.5 0 016.5 7z" />
+      <path d="M8 10v3M6.5 11.5h3" />
+      <circle cx="15.6" cy="12.4" r="0.6" fill="currentColor" />
+      <circle cx="18" cy="10.6" r="0.6" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function IconTarget({ s = 17, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" {...p}>
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4.8" />
+      <circle cx="12" cy="12" r="1.3" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function IconQuestion({ s = 17, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.4 9.2a2.7 2.7 0 115.2 1c-.5 1-1.4 1.3-2 2-.3.3-.4.7-.4 1.3" />
+      <circle cx="12" cy="16.8" r="0.7" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconDownload({ s = 17, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M12 3v11M7.5 10L12 14.5 16.5 10" />
+      <path d="M4 16.5V19a2 2 0 002 2h12a2 2 0 002-2v-2.5" />
+    </svg>
+  );
+}
+
+export function IconPoint({ s = 17, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.6l1.3 2.7 3 .4-2.2 2 .6 2.9-2.7-1.5-2.7 1.5.6-2.9-2.2-2 3-.4z" />
+    </svg>
+  );
+}

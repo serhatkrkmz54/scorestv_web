@@ -826,6 +826,8 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
 /* Oyun menü girişi — gradient "promo" pill (subnav) + kart (drawer). Mobil
    oyunu tanıtır, scorestv.app'e yönlendirir. */
 .sport-tab.sport-tab-game {
+  position: relative;
+  overflow: hidden;
   height: auto;
   align-self: center;
   padding: 7px 15px;
@@ -834,9 +836,36 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
   color: #fff;
   font-weight: 700;
   box-shadow: 0 2px 9px rgba(109, 40, 217, 0.35);
+  animation: game-glow 3.4s ease-in-out infinite;
+  transition: transform 0.18s ease;
 }
-.sport-tab.sport-tab-game:hover { color: #fff; filter: brightness(1.08); }
+.sport-tab.sport-tab-game:hover { color: #fff; filter: brightness(1.08); transform: translateY(-1px); }
 .sport-tab.sport-tab-game svg { opacity: 1; }
+/* Periyodik parlama süpürmesi — butonu menüde öne çıkarır */
+.sport-tab.sport-tab-game::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg);
+  animation: game-shine 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes game-shine {
+  0%, 55% { left: -70%; }
+  85%, 100% { left: 140%; }
+}
+@keyframes game-glow {
+  0%, 100% { box-shadow: 0 2px 9px rgba(109, 40, 217, 0.35); }
+  50% { box-shadow: 0 3px 16px rgba(219, 39, 119, 0.55); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sport-tab.sport-tab-game { animation: none; }
+  .sport-tab.sport-tab-game::after { animation: none; display: none; }
+}
 
 .mn-quick-item.mn-quick-game {
   background: linear-gradient(135deg, #6d28d9, #db2777);
@@ -6218,10 +6247,11 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   position: relative;
   z-index: 1;
   align-self: flex-end;
-  font-size: 76px;
   line-height: 1;
+  color: #fff;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
 }
+.gm-card-icon svg { width: 64px; height: 64px; }
 .gm-card-title {
   position: relative;
   z-index: 1;
@@ -6288,7 +6318,7 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .gm-quick-item:hover { border-color: var(--live); transform: translateY(-2px); }
-.gm-quick-ic { font-size: 28px; line-height: 1; }
+.gm-quick-ic { line-height: 1; color: var(--accent); display: inline-flex; }
 
 /* Panel (liderlik + nasıl oynanır) */
 .gm-panel {
@@ -6298,7 +6328,16 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   padding: 28px;
   scroll-margin-top: calc(var(--header-h) + var(--subnav-h) + 12px);
 }
-.gm-panel-title { margin: 0; font-size: 26px; font-weight: 800; color: var(--text); }
+.gm-panel-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gm-panel-title svg { color: var(--accent); flex-shrink: 0; }
 .gm-panel-sub { margin: 6px 0 0; font-size: 14px; color: var(--text-dim); }
 
 /* Liderlik tablosu */
@@ -6320,6 +6359,19 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
 .gm-lb .r { text-align: right; }
 .gm-lb th:first-child, .gm-lb td:first-child { text-align: center; width: 52px; }
 .gm-lb-rank { font-weight: 700; color: var(--text-dim); }
+.gm-lb-rank.medal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12.5px;
+  color: #1a1622;
+}
+.gm-lb-rank.p1 { background: linear-gradient(150deg, #f5cf54, #d4a017); }
+.gm-lb-rank.p2 { background: linear-gradient(150deg, #d9dfe6, #a9b4c0); }
+.gm-lb-rank.p3 { background: linear-gradient(150deg, #d9a05e, #ad6d33); }
 .gm-lb-name { font-weight: 600; }
 .gm-lb-coins { font-weight: 700; color: var(--accent); }
 .gm-lb-empty { margin: 18px 0 0; font-size: 14.5px; color: var(--text-dim); }
@@ -6348,7 +6400,7 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   opacity: 0.5;
   font-family: var(--font-barlowc), sans-serif;
 }
-.gm-how-ic { font-size: 34px; line-height: 1; display: block; }
+.gm-how-ic { line-height: 1; display: inline-flex; color: var(--accent); }
 .gm-how-step h3 { margin: 12px 0 0; font-size: 16.5px; font-weight: 700; color: var(--text); }
 .gm-how-step p { margin: 6px 0 0; font-size: 14px; line-height: 1.55; color: var(--text-dim); }
 
@@ -6374,7 +6426,7 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
 @media (max-width: 767.98px) {
   .gm-page { gap: 18px; }
   .gm-card { padding: 24px 20px; }
-  .gm-card-icon { font-size: 56px; }
+  .gm-card-icon svg { width: 50px; height: 50px; }
   .gm-card-title { font-size: 26px; }
   .gm-quick { gap: 12px; }
   .gm-quick-item { min-width: 120px; padding: 14px 18px; flex: 1; }
