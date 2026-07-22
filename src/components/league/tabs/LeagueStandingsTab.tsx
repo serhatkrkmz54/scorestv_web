@@ -44,20 +44,58 @@ const DYNAMIC_PALETTE = [
   "#e11d48", "#4f46e5", "#0d9488", "#d97706",
 ];
 
+// Hex rengi açar (pct>0) / koyultur (pct<0). pct ∈ [-1, 1].
+function shade(hex: string, pct: number): string {
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) & 255,
+    g = (n >> 8) & 255,
+    b = n & 255;
+  if (pct >= 0) {
+    r = Math.round(r + (255 - r) * pct);
+    g = Math.round(g + (255 - g) * pct);
+    b = Math.round(b + (255 - b) * pct);
+  } else {
+    const p = 1 + pct;
+    r = Math.round(r * p);
+    g = Math.round(g * p);
+    b = Math.round(b * p);
+  }
+  return (
+    "#" +
+    [r, g, b]
+      .map((x) => Math.max(0, Math.min(255, x)).toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
+
+// Aynı TEMEL renge düşen kaçıncı FARKLI bölge → görülebilir ton kayması.
+// 1: koyu, 2: açık, 3: daha koyu, 4: daha açık... (aynı aile, ~2-3 ton fark).
+function toneOffset(seq: number): number {
+  const magnitude = Math.ceil(seq / 2) * 0.2;
+  return seq % 2 === 1 ? -magnitude : magnitude;
+}
+
 function buildDescColorMap(groups: MatchStandingsGroup[]): Map<string, string> {
   const map = new Map<string, string>();
+  const baseUse = new Map<string, number>(); // temel renk → kaç FARKLI bölge kullandı
   let idx = 0;
   for (const g of groups) {
     const sorted = [...g.rows].sort((a, b) => a.rank - b.rank);
     for (const r of sorted) {
       const d = (r.description ?? "").trim();
       if (!d || map.has(d)) continue;
-      const known = knownColor(d);
-      if (known) { map.set(d, known); continue; }
-      while (idx < DYNAMIC_PALETTE.length && Array.from(map.values()).includes(DYNAMIC_PALETTE[idx])) idx++;
-      if (idx >= DYNAMIC_PALETTE.length) idx = 0;
-      map.set(d, DYNAMIC_PALETTE[idx]);
-      idx++;
+      let base = knownColor(d);
+      if (!base) {
+        while (idx < DYNAMIC_PALETTE.length && baseUse.has(DYNAMIC_PALETTE[idx])) idx++;
+        if (idx >= DYNAMIC_PALETTE.length) idx = 0;
+        base = DYNAMIC_PALETTE[idx];
+        idx++;
+      }
+      const seq = baseUse.get(base) ?? 0;
+      baseUse.set(base, seq + 1);
+      // Aynı temel renk birden çok FARKLI bölge için kullanılıyorsa (ör. iki ayrı
+      // "Promotion" playoff bölgesi) ton kaydır → gözle ayırt edilebilir.
+      map.set(d, seq === 0 ? base : shade(base, toneOffset(seq)));
     }
   }
   return map;
