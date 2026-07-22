@@ -62,6 +62,8 @@ const STATIC: { path: string; priority: string; freq: string }[] = [
   { path: "/siralama", priority: "0.7", freq: "daily" },
   { path: "/haberler", priority: "0.6", freq: "daily" },
   { path: "/news", priority: "0.6", freq: "daily" },
+  { path: "/oyunlar", priority: "0.6", freq: "weekly" },
+  { path: "/games", priority: "0.6", freq: "weekly" },
   { path: "/hakkimizda", priority: "0.4", freq: "monthly" },
   { path: "/iletisim", priority: "0.4", freq: "monthly" },
   { path: "/reklam", priority: "0.3", freq: "monthly" },

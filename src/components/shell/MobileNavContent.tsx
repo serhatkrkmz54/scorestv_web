@@ -14,9 +14,8 @@ import Link from "next/link";
 import { useLang } from "@/context/lang-context";
 import { useAuth } from "@/context/auth-context";
 import { HOME_STR } from "@/i18n/home-strings";
-import { rankingsPath } from "@/lib/routes";
+import { rankingsPath, gamesPath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
-import { APP_LANDING_URL } from "@/lib/store-links";
 import { LeftRail } from "@/components/home/LeftRail";
 import {
   IconBars,
@@ -65,15 +64,10 @@ export function MobileNavContent() {
           <IconNews s={18} />
           <span>{t.news}</span>
         </Link>
-        <a
-          href={APP_LANDING_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mn-quick-item mn-quick-game"
-        >
+        <Link href={gamesPath(lang)} className="mn-quick-item mn-quick-game">
           <IconTrophy s={18} />
-          <span>{lang === "tr" ? "Oyun" : "Game"}</span>
-        </a>
+          <span>{lang === "tr" ? "Oyunlar" : "Games"}</span>
+        </Link>
       </div>
 
       <LeftRail />

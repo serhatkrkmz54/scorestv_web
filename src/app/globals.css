@@ -6120,3 +6120,263 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   color: var(--text);
 }
 .tp-value { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+
+/* ════════════════════ OYUNLAR (GAMES) SAYFASI ════════════════════
+   Claude Design handoff: 3 gradient oyun kartı + hızlı linkler.
+   Display font: Barlow Condensed (--font-barlowc, sayfaya özel yüklenir). */
+.gm-page {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 28px var(--page-pad-x) 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.gm-display {
+  font-family: var(--font-barlowc), var(--font-poppins), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Hero */
+.gm-hero { text-align: center; padding: 18px 0 4px; }
+.gm-hero-kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.gm-hero-kicker span { color: var(--live); }
+.gm-hero-title {
+  margin: 10px 0 0;
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.05;
+}
+.gm-hero-text {
+  margin: 12px auto 0;
+  max-width: 62ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+/* Oyun kartları */
+.gm-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+.gm-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 32px 30px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.gm-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
+.gm-card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.22;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+}
+.gm-card-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+.gm-card-badge {
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  left: 18px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+}
+.gm-card-badge.live { background: rgba(255, 255, 255, 0.92); color: #0d5e3a; }
+.gm-card-icon {
+  position: relative;
+  z-index: 1;
+  align-self: flex-end;
+  font-size: 76px;
+  line-height: 1;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+}
+.gm-card-title {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0 0;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+}
+.gm-card-desc {
+  position: relative;
+  z-index: 1;
+  margin: 10px 0 0;
+  max-width: 32ch;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+.gm-card-foot {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding-top: 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.gm-card-stat { font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, 0.75); }
+.gm-card-stat strong { color: #fff; }
+.gm-card-cta {
+  background: #fff;
+  color: #1a1622;
+  font-weight: 700;
+  font-size: 14.5px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+.gm-card-cta:hover { transform: scale(1.05); }
+.gm-card-cta.soon {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+  cursor: default;
+}
+
+/* Hızlı linkler */
+.gm-quick { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.gm-quick-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 28px;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.gm-quick-item:hover { border-color: var(--live); transform: translateY(-2px); }
+.gm-quick-ic { font-size: 28px; line-height: 1; }
+
+/* Panel (liderlik + nasıl oynanır) */
+.gm-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  scroll-margin-top: calc(var(--header-h) + var(--subnav-h) + 12px);
+}
+.gm-panel-title { margin: 0; font-size: 26px; font-weight: 800; color: var(--text); }
+.gm-panel-sub { margin: 6px 0 0; font-size: 14px; color: var(--text-dim); }
+
+/* Liderlik tablosu */
+.gm-lb-wrap { margin-top: 18px; overflow-x: auto; }
+.gm-lb { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.gm-lb th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-faint);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-2);
+}
+.gm-lb td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+.gm-lb tbody tr:last-child td { border-bottom: none; }
+.gm-lb tbody tr:hover td { background: var(--surface-2); }
+.gm-lb .r { text-align: right; }
+.gm-lb th:first-child, .gm-lb td:first-child { text-align: center; width: 52px; }
+.gm-lb-rank { font-weight: 700; color: var(--text-dim); }
+.gm-lb-name { font-weight: 600; }
+.gm-lb-coins { font-weight: 700; color: var(--accent); }
+.gm-lb-empty { margin: 18px 0 0; font-size: 14.5px; color: var(--text-dim); }
+
+/* Nasıl oynanır */
+.gm-how {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.gm-how-step {
+  position: relative;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 22px 20px;
+}
+.gm-how-num {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text-faint);
+  opacity: 0.5;
+  font-family: var(--font-barlowc), sans-serif;
+}
+.gm-how-ic { font-size: 34px; line-height: 1; display: block; }
+.gm-how-step h3 { margin: 12px 0 0; font-size: 16.5px; font-weight: 700; color: var(--text); }
+.gm-how-step p { margin: 6px 0 0; font-size: 14px; line-height: 1.55; color: var(--text-dim); }
+
+/* Uygulama CTA */
+.gm-cta {
+  text-align: center;
+  border-radius: var(--radius);
+  padding: 36px 24px;
+  background: linear-gradient(150deg, #1c2331, #11161f);
+  border: 1px solid var(--border-2);
+}
+.theme-light .gm-cta { background: linear-gradient(150deg, #10203a, #1c2b47); }
+.gm-cta-title { margin: 0; font-size: 26px; font-weight: 800; color: #fff; }
+.gm-cta-text { margin: 10px auto 0; max-width: 56ch; font-size: 14.5px; line-height: 1.6; color: rgba(255, 255, 255, 0.75); }
+.gm-cta-badges { margin-top: 20px; justify-content: center; }
+
+/* Responsive */
+@media (max-width: 1023.98px) {
+  .gm-cards { grid-template-columns: 1fr; }
+  .gm-card { min-height: 340px; }
+  .gm-how { grid-template-columns: 1fr; }
+}
+@media (max-width: 767.98px) {
+  .gm-page { gap: 18px; }
+  .gm-card { padding: 24px 20px; }
+  .gm-card-icon { font-size: 56px; }
+  .gm-card-title { font-size: 26px; }
+  .gm-quick { gap: 12px; }
+  .gm-quick-item { min-width: 120px; padding: 14px 18px; flex: 1; }
+  .gm-panel { padding: 18px 14px; }
+}

@@ -37,6 +37,9 @@ export function countryPath(lang: Lang, idOrSlug: string | number): string {
 export function rankingsPath(lang: Lang): string {
   return lang === "tr" ? "/siralama" : "/rankings";
 }
+export function gamesPath(lang: Lang): string {
+  return lang === "tr" ? "/oyunlar" : "/games";
+}
 
 // ===== Basketbol bolum rotalari =====
 export function basketballHomePath(lang: Lang): string {
@@ -65,6 +68,8 @@ const SEG_MAP: Record<string, { tr: string; en: string }> = {
   country: { tr: "ulke", en: "country" },
   siralama: { tr: "siralama", en: "rankings" },
   rankings: { tr: "siralama", en: "rankings" },
+  oyunlar: { tr: "oyunlar", en: "games" },
+  games: { tr: "oyunlar", en: "games" },
   haber: { tr: "haber", en: "news" },
   news: { tr: "haber", en: "news" },
   basketbol: { tr: "basketbol", en: "basketball" },
