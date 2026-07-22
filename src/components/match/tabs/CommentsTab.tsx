@@ -31,6 +31,7 @@ function timeAgo(iso: string, lang: "tr" | "en"): string {
   if (diffD < 7) return lang === "tr" ? `${diffD}g` : `${diffD}d`;
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
     }).format(new Date(iso));

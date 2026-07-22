@@ -5,6 +5,8 @@
 export function formatKickoffShort(iso: string, lang: "tr" | "en"): string {
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      // Sabit TZ (TSİ): SSR ve client aynı saati bassın → hydration uyuşmazlığı yok.
+      timeZone: "Europe/Istanbul",
       hour: "2-digit",
       minute: "2-digit",
     }).format(new Date(iso));
@@ -16,6 +18,7 @@ export function formatKickoffShort(iso: string, lang: "tr" | "en"): string {
 export function formatDate(iso: string, lang: "tr" | "en"): string {
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
       year: "numeric",

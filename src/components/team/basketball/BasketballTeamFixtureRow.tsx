@@ -16,6 +16,7 @@ function formatStart(iso: string | null, lang: "tr" | "en"): string {
   if (!iso) return "";
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
       hour: "2-digit",

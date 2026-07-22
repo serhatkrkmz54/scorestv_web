@@ -591,6 +591,7 @@ function formatKickoff(iso: string | null, lang: "tr" | "en"): string {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return "";
     return d.toLocaleDateString(lang === "tr" ? "tr-TR" : "en-GB", {
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
       year: "numeric",

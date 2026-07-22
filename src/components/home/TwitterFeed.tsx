@@ -40,6 +40,7 @@ function timeAgo(iso: string, lang: "tr" | "en"): string {
   if (d < 7) return lang === "tr" ? `${d}g` : `${d}d`;
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
     }).format(new Date(iso));

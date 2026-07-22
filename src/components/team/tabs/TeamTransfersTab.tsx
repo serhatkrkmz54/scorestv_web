@@ -19,6 +19,7 @@ function formatTransferDate(d: string | null | undefined, lang: "tr" | "en"): st
   if (!d) return "—";
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "numeric",
       month: "short",
       year: "numeric",

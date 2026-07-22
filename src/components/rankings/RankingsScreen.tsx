@@ -38,6 +38,7 @@ function fmtDate(iso: string | null | undefined, lang: "tr" | "en"): string {
   if (!iso) return "";
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "numeric", month: "short", year: "numeric",
     }).format(new Date(iso));
   } catch { return ""; }

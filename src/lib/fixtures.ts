@@ -43,10 +43,16 @@ export function liveClock(status: FixtureStatus): string {
   return "";
 }
 
-/** Yaklaşan maçın başlama saati (yerel saat, HH:mm). */
+/**
+ * Yaklaşan maçın başlama saati — TSİ (Türkiye saati), HH:mm.
+ * timeZone SABİT ("Europe/Istanbul"): SSR (sunucu TZ) ile client (tarayıcı TZ)
+ * AYNI string'i üretsin diye. Aksi halde saat string'i iki tarafta farklı olur
+ * ve React hydration uyuşmazlığı (#418) fırlatır.
+ */
 export function kickoffTime(iso: string): string {
   const d = new Date(iso);
   return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

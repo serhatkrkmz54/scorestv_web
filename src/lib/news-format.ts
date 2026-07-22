@@ -50,6 +50,8 @@ export function formatNewsDate(iso: string | null, lang: Lang): string {
   if (!iso) return "";
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      // Sabit TZ (TSİ): SSR/client aynı tarih → hydration uyuşmazlığı yok.
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
       year: "numeric",

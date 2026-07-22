@@ -79,6 +79,7 @@ export function sportStatusLabelShort(
 export function startTime(iso: string): string {
   const d = new Date(iso);
   return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

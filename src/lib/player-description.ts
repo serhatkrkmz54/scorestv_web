@@ -31,6 +31,7 @@ function formatBirthDate(iso: string, lang: "tr" | "en"): string | null {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
   return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+    timeZone: "Europe/Istanbul",
     day: "numeric",
     month: "long",
     year: "numeric",

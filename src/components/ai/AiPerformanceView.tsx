@@ -56,6 +56,7 @@ function monthName(ym: string, lang: Lang): string {
   const [y, m] = ym.split("-").map((x) => parseInt(x, 10));
   const d = new Date(Date.UTC(y, (m || 1) - 1, 1));
   return d.toLocaleDateString(lang === "tr" ? "tr-TR" : "en-US", {
+    timeZone: "Europe/Istanbul",
     month: "short",
     year: "2-digit",
   });

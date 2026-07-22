@@ -22,6 +22,7 @@ interface Props {
 function formatDateTime(iso: string, lang: "tr" | "en"): string {
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       weekday: "short",
       day: "2-digit",
       month: "short",

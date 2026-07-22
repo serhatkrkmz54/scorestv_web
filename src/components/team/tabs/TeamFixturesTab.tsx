@@ -29,6 +29,7 @@ function groupByDate(fixtures: FixtureSummary[]): { date: Date; list: FixtureSum
 
 function formatDateHeader(d: Date, lang: "tr" | "en"): string {
   const formatter = new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+    timeZone: "Europe/Istanbul",
     weekday: "long",
     day: "numeric",
     month: "short",

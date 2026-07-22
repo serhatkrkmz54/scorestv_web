@@ -27,6 +27,7 @@ function shortStatus(
   if (code === "NS" || code === "TBD") {
     try {
       return new Intl.DateTimeFormat(tr ? "tr-TR" : "en-US", {
+        timeZone: "Europe/Istanbul",
         hour: "2-digit",
         minute: "2-digit",
       }).format(new Date(kickoff));

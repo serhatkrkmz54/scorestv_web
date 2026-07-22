@@ -27,6 +27,7 @@ function isLive(s: BasketballStatus): boolean {
 function formatKickoff(iso: string, lang: "tr" | "en"): string {
   try {
     return new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-US", {
+      timeZone: "Europe/Istanbul",
       day: "2-digit",
       month: "short",
       hour: "2-digit",
