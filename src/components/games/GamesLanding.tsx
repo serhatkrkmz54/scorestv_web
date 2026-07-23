@@ -200,7 +200,6 @@ export function GamesLanding({
             <span className={`gm-card-badge${c.live ? " live" : ""}`}>
               {c.live ? t.liveBadge : t.soon}
             </span>
-            <div className="gm-card-icon">{c.icon}</div>
             <h2 className="gm-display gm-card-title">{c.title[lang]}</h2>
             <p className="gm-card-desc">{c.desc[lang]}</p>
             <div className="gm-card-foot">
