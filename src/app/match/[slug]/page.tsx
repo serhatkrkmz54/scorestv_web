@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchMatchDetailServer } from "@/lib/match-detail";
 import { isMatchIndexable } from "@/lib/match-detail-types";
 import { MatchDetailScreen } from "@/components/match/MatchDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { MatchSideInfo } from "@/components/match/MatchSideInfo";
 import { Breadcrumb } from "@/components/seo/Breadcrumb";
-import { RetryablePage } from "@/components/shell/RetryablePage";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { fetchHighlightsServer } from "@/lib/highlights-server";
@@ -68,15 +68,10 @@ export default async function Page({ params }: PageProps) {
   const { data: initial, status } = await fetchMatchDetailServer(slug, "en");
   if (!initial) {
     if (status === 404) notFound();
-    const pingUrl = `/api/match-detail/${encodeURIComponent(slug)}?lang=en`;
-    return (
-      <div className="layout">
-        <aside className="rail-left"><LeftRail /></aside>
-        <div className="match-detail-main">
-          <RetryablePage pingUrl={pingUrl} lang="en" />
-        </div>
-      </div>
-    );
+    // Backend down / 5xx / zaman asimi: 200 + "bulunamadi" yerine gercek hata
+    // firlat — app/error.tsx HTTP 500 ile auto-retry shell'i gosterir (SEO:
+    // Google 5xx'i gecici sayar; index korunur, hatali baslik indexlenmez).
+    backendUnavailable();
   }
   // Biten maçta highlight'ları SSR'da bir kez çek — hem VideoObject JSON-LD
   // hem de "Maç Özeti" sekmesinin sunucu-render'lı (Google'ın görebildiği,

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchPlayerDetailServer } from "@/lib/player-detail";
 import { PlayerDetailScreen } from "@/components/player/PlayerDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { PlayerSideInfo } from "@/components/player/PlayerSideInfo";
 import { Breadcrumb } from "@/components/seo/Breadcrumb";
-import { RetryablePage } from "@/components/shell/RetryablePage";
 import { playerJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { getRelatedByTeam } from "@/lib/news-server";
@@ -62,15 +62,10 @@ export default async function Page({ params, searchParams }: PageProps) {
   const { data: initial, status } = await fetchPlayerDetailServer(slug, "en", season);
   if (!initial) {
     if (status === 404) notFound();
-    const pingUrl = `/api/player-detail/${encodeURIComponent(slug)}?lang=en${season ? `&season=${season}` : ""}`;
-    return (
-      <div className="layout">
-        <aside className="rail-left"><LeftRail /></aside>
-        <div className="player-detail-main">
-          <RetryablePage pingUrl={pingUrl} lang="en" />
-        </div>
-      </div>
-    );
+    // Backend down / 5xx / zaman asimi: 200 + "bulunamadi" yerine gercek hata
+    // firlat — app/error.tsx HTTP 500 ile auto-retry shell'i gosterir (SEO:
+    // Google 5xx'i gecici sayar; index korunur, hatali baslik indexlenmez).
+    backendUnavailable();
   }
   const relatedNews = initial.currentTeam?.id
     ? await getRelatedByTeam(initial.currentTeam.id, "en")

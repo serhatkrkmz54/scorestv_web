@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchTeamDetailServer } from "@/lib/team-detail";
 import { TeamDetailScreen } from "@/components/team/TeamDetailScreen";
 import { LeftRail } from "@/components/home/LeftRail";
 import { TeamSideInfo } from "@/components/team/TeamSideInfo";
 import { Breadcrumb } from "@/components/seo/Breadcrumb";
-import { RetryablePage } from "@/components/shell/RetryablePage";
 import { teamJsonLd } from "@/lib/structured-data";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { getRelatedByTeam } from "@/lib/news-server";
@@ -62,16 +62,10 @@ export default async function Page({ params, searchParams }: PageProps) {
   const { data: initial, status } = await fetchTeamDetailServer(slug, "tr", season);
   if (!initial) {
     if (status === 404) notFound();
-    // Backend down / 5xx — sayfayi yikma, RetryablePage shell ile bekle ve auto-recover et.
-    const pingUrl = `/api/team-detail/${encodeURIComponent(slug)}?lang=tr${season ? `&season=${season}` : ""}`;
-    return (
-      <div className="layout">
-        <aside className="rail-left"><LeftRail /></aside>
-        <div className="team-detail-main">
-          <RetryablePage pingUrl={pingUrl} lang="tr" />
-        </div>
-      </div>
-    );
+    // Backend down / 5xx / zaman asimi: 200 + "bulunamadi" yerine gercek hata
+    // firlat — app/error.tsx HTTP 500 ile auto-retry shell'i gosterir (SEO:
+    // Google 5xx'i gecici sayar; index korunur, hatali baslik indexlenmez).
+    backendUnavailable();
   }
   // İlgili haberler (bu takıma bağlı) — SSR, hata olursa boş.
   const relatedNews = await getRelatedByTeam(initial.id, "tr");

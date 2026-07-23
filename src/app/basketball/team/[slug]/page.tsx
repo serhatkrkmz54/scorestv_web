@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchBasketballTeamDetailServer, fetchBasketballTeamSeoServer } from "@/lib/basketball-team";
 import { BasketballTeamDetailScreen } from "@/components/team/basketball/BasketballTeamDetailScreen";
 import { BasketballTeamSideInfo } from "@/components/team/basketball/BasketballTeamSideInfo";
 import { BasketballLeftRail } from "@/components/home/BasketballLeftRail";
 import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
 import { escapeJsonLd } from "@/lib/jsonld";
-import { RetryablePage } from "@/components/shell/RetryablePage";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
 
@@ -47,15 +47,10 @@ export default async function Page({ params, searchParams }: PageProps) {
   const { data: initial, status } = await fetchBasketballTeamDetailServer(slug, "en", sp.season ?? null);
   if (!initial) {
     if (status === 404) notFound();
-    const pingUrl = `/api/basketball/team/${encodeURIComponent(slug)}?lang=en${sp.season ? `&season=${sp.season}` : ""}`;
-    return (
-      <div className="layout">
-        <aside className="rail-left"><BasketballLeftRail /></aside>
-        <div className="team-detail-main">
-          <RetryablePage pingUrl={pingUrl} lang="en" />
-        </div>
-      </div>
-    );
+    // Backend down / 5xx / zaman asimi: 200 + "bulunamadi" yerine gercek hata
+    // firlat — app/error.tsx HTTP 500 ile auto-retry shell'i gosterir (SEO:
+    // Google 5xx'i gecici sayar; index korunur, hatali baslik indexlenmez).
+    backendUnavailable();
   }
   const seo = await fetchBasketballTeamSeoServer(slug, "en", sp.season ?? null);
   return (

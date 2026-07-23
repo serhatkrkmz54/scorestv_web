@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchBasketballDetailServer } from "@/lib/basketball-detail";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { BasketballDetailScreen } from "@/components/match/basketball/BasketballDetailScreen";
@@ -45,7 +46,10 @@ export default async function Page({ params }: PageProps) {
   const { data: initial, status } = await fetchBasketballDetailServer(slug, "en");
   if (!initial) {
     if (status === 404) notFound();
-    notFound();
+    // Backend down / 5xx / zaman asimi: 200 + "bulunamadi" yerine gercek hata
+    // firlat — app/error.tsx HTTP 500 ile auto-retry shell'i gosterir (SEO:
+    // Google 5xx'i gecici sayar; index korunur, hatali baslik indexlenmez).
+    backendUnavailable();
   }
   const home = initial.homeTeam.displayName ?? initial.homeTeam.name;
   const away = initial.awayTeam.displayName ?? initial.awayTeam.name;
