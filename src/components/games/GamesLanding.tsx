@@ -197,9 +197,6 @@ export function GamesLanding({
             {/* eslint-disable-next-line @next/next/no-img-element -- public/ statik dekoratif foto */}
             <img src={c.photo} alt="" className="gm-card-photo" loading="lazy" />
             <div className="gm-card-shade" />
-            <span className={`gm-card-badge${c.live ? " live" : ""}`}>
-              {c.live ? t.liveBadge : t.soon}
-            </span>
             <h2 className="gm-display gm-card-title">{c.title[lang]}</h2>
             <p className="gm-card-desc">{c.desc[lang]}</p>
             <div className="gm-card-foot">
