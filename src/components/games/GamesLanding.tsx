@@ -3,6 +3,7 @@ import { Barlow_Condensed } from "next/font/google";
 import type { Lang } from "@/i18n/auth-strings";
 import type { GameLeaderboardEntry } from "@/lib/games-server";
 import { StoreBadges } from "@/components/download/StoreBadges";
+import { Logo } from "@/components/shell/Logo";
 import { DOWNLOAD_PATH } from "@/lib/store-links";
 import {
   IconBall,
@@ -181,7 +182,9 @@ export function GamesLanding({
       {/* Hero */}
       <section className="gm-hero">
         <div className="gm-hero-kicker">
-          Scores<span>TV</span> · {t.subtitle}
+          <Logo h={22} />
+          <span className="gm-kicker-dot">·</span>
+          <span>{t.subtitle}</span>
         </div>
         <h1 className="gm-display gm-hero-title">{t.heroTitle}</h1>
         <p className="gm-hero-text">{t.heroText}</p>

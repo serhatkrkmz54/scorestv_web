@@ -6170,13 +6170,16 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
 /* Hero */
 .gm-hero { text-align: center; padding: 18px 0 4px; }
 .gm-hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-dim);
 }
-.gm-hero-kicker span { color: var(--live); }
+.gm-hero-kicker .gm-kicker-dot { color: var(--live); }
 .gm-hero-title {
   margin: 10px 0 0;
   font-size: clamp(34px, 5vw, 52px);
