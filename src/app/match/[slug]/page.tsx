@@ -25,7 +25,9 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await fetchMatchDetailServer(slug, "en");
-  if (!data) return { title: "Match not found | Scores TV" };
+  // Veri yoksa (gecici backend hatasi dahil) noindex — Google'in "bulunamadi"
+  // basligini indexlemesini (soft-404) onler.
+  if (!data) return { title: "Match not found | Scores TV", robots: { index: false, follow: false } };
   const seo = data.seo;
   const title = seo?.title ?? `${data.homeTeam.name} vs ${data.awayTeam.name} | Scores TV`;
   const description = seo?.description ?? `${data.homeTeam.name} vs ${data.awayTeam.name} live score, lineups, statistics.`;

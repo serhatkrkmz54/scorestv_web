@@ -19,7 +19,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { slug } = await params;
   const sp = await searchParams;
   const { data } = await fetchBasketballTeamDetailServer(slug, "tr", sp.season ?? null);
-  if (!data) return { title: "Takım bulunamadı | Scores TV" };
+  // Veri yoksa (gecici backend hatasi dahil) noindex — Google'in "bulunamadi"
+  // basligini indexlemesini (soft-404) onler.
+  if (!data) return { title: "Takım bulunamadı | Scores TV", robots: { index: false, follow: false } };
   const name = data.hero.displayName ?? data.hero.name;
   const title = `${name} Basketbol | Scores TV`;
   const description = `${name} kadrosu, fikstür, istatistikler ve puan durumu — basketbol.`;

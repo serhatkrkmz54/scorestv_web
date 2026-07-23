@@ -15,7 +15,9 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await fetchVolleyballDetailServer(slug, "tr");
-  if (!data) return { title: "Maç bulunamadı | Scores TV" };
+  // Veri yoksa (gecici backend hatasi dahil) noindex — Google'in "bulunamadi"
+  // basligini indexlemesini (soft-404) onler.
+  if (!data) return { title: "Maç bulunamadı | Scores TV", robots: { index: false, follow: false } };
   const home = data.homeTeam.displayName ?? data.homeTeam.name;
   const away = data.awayTeam.displayName ?? data.awayTeam.name;
   const seo = data.seo;

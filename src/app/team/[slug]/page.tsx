@@ -21,7 +21,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const season = sp.season ? Number(sp.season) : undefined;
   const { data } = await fetchTeamDetailServer(slug, "en", season);
-  if (!data) return { title: "Team not found | Scores TV" };
+  // Veri yoksa (gecici backend hatasi dahil) noindex — Google'in "bulunamadi"
+  // basligini indexlemesini (soft-404) onler.
+  if (!data) return { title: "Team not found | Scores TV", robots: { index: false, follow: false } };
   const seo = data.seo;
   const title = seo?.title ?? `${data.name} | Scores TV`;
   const description =
