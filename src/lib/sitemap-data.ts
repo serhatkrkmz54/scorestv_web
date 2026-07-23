@@ -24,12 +24,16 @@ export interface UrlEntry {
   alternates?: Alt[];
 }
 
-export async function fetchCounts(): Promise<Counts> {
+// Backend'e ulasilamazsa null doner — route 503 versin diye. 0'li sayimlarla
+// 200 donmek Google'a "bu sitemap'ler kaldirildi" sinyali verirdi; 503 ise
+// "gecici, sonra tekrar gel" demek (eski sitemap bilgisi korunur).
+export async function fetchCounts(): Promise<Counts | null> {
   try {
     const r = await fetch(`${BACKEND}/api/v1/sitemap/counts`, {
       cache: "no-store",
+      signal: AbortSignal.timeout(15_000),
     });
-    if (!r.ok) return { teams: 0, players: 0, leagues: 0, matches: 0 };
+    if (!r.ok) return null;
     const j = (await r.json()) as Partial<Counts>;
     return {
       teams: j.teams ?? 0,
@@ -38,7 +42,7 @@ export async function fetchCounts(): Promise<Counts> {
       matches: j.matches ?? 0,
     };
   } catch {
-    return { teams: 0, players: 0, leagues: 0, matches: 0 };
+    return null;
   }
 }
 
@@ -55,15 +59,22 @@ export function sitemapFiles(c: Counts): string[] {
   return files;
 }
 
-// Statik sayfalar tek URL (TR/EN ayni adreste, cookie ile dil) — alternates yok.
+// Statik sayfalar. Cogu tek URL (TR/EN ayni adreste, cookie ile dil);
+// TR<->EN ayri URL'i olan ciftler STATIC_PAIRS ile hreflang alternates alir.
 const STATIC: { path: string; priority: string; freq: string }[] = [
   { path: "/", priority: "1.0", freq: "hourly" },
   { path: "/canli-mac-programi", priority: "0.8", freq: "hourly" },
+  { path: "/basketbol", priority: "0.8", freq: "hourly" },
+  { path: "/basketball", priority: "0.8", freq: "hourly" },
   { path: "/siralama", priority: "0.7", freq: "daily" },
   { path: "/haberler", priority: "0.6", freq: "daily" },
   { path: "/news", priority: "0.6", freq: "daily" },
   { path: "/oyunlar", priority: "0.6", freq: "weekly" },
   { path: "/games", priority: "0.6", freq: "weekly" },
+  { path: "/ai-performans", priority: "0.5", freq: "daily" },
+  { path: "/ai-performance", priority: "0.5", freq: "daily" },
+  { path: "/indir", priority: "0.5", freq: "monthly" },
+  { path: "/download", priority: "0.5", freq: "monthly" },
   { path: "/hakkimizda", priority: "0.4", freq: "monthly" },
   { path: "/iletisim", priority: "0.4", freq: "monthly" },
   { path: "/reklam", priority: "0.3", freq: "monthly" },
@@ -73,6 +84,20 @@ const STATIC: { path: string; priority: string; freq: string }[] = [
   { path: "/cerez-politikasi", priority: "0.2", freq: "yearly" },
   { path: "/kvkk", priority: "0.2", freq: "yearly" },
 ];
+
+// TR<->EN URL cifti olan statik sayfalar — her iki girise ayni hreflang seti.
+const STATIC_PAIR_LIST: { tr: string; en: string }[] = [
+  { tr: "/basketbol", en: "/basketball" },
+  { tr: "/haberler", en: "/news" },
+  { tr: "/oyunlar", en: "/games" },
+  { tr: "/ai-performans", en: "/ai-performance" },
+  { tr: "/indir", en: "/download" },
+];
+const STATIC_PAIRS = new Map<string, { tr: string; en: string }>();
+for (const p of STATIC_PAIR_LIST) {
+  STATIC_PAIRS.set(p.tr, p);
+  STATIC_PAIRS.set(p.en, p);
+}
 
 function xmlEscape(s: string): string {
   return s
@@ -120,6 +145,7 @@ async function fetchPopularLeagueIds(): Promise<Set<number>> {
   try {
     const r = await fetch(`${BACKEND}/api/v1/leagues/popular?lang=en`, {
       cache: "no-store",
+      signal: AbortSignal.timeout(15_000),
     });
     if (!r.ok) return new Set();
     const list = (await r.json()) as { id?: number }[];
@@ -158,8 +184,9 @@ function leagueChangefreq(popular: boolean, iso?: string | null): string {
 // (TR haber /haber/<slug>, EN haber /news/<slug>). Her iki dilin listesini ayri
 // ceker; hata olursa o dil bos (nazik degradasyon). Yeni haberler taze ->
 // yuksek oncelik + sik tarama.
-async function newsEntries(): Promise<UrlEntry[]> {
+async function newsEntries(): Promise<UrlEntry[] | null> {
   const out: UrlEntry[] = [];
+  let anyOk = false; // iki dil de cekilemezse null -> route 503 versin
   const langs: { lang: "tr" | "en"; prefix: string }[] = [
     { lang: "tr", prefix: "/haber" },
     { lang: "en", prefix: "/news" },
@@ -168,12 +195,13 @@ async function newsEntries(): Promise<UrlEntry[]> {
     try {
       const r = await fetch(
         `${BACKEND}/api/v1/news?lang=${lang}&page=0&size=1000`,
-        { cache: "no-store" },
+        { cache: "no-store", signal: AbortSignal.timeout(15_000) },
       );
       if (!r.ok) continue;
       const j = (await r.json()) as {
         items?: { slug: string; publishedAt: string | null }[];
       };
+      anyOk = true;
       for (const it of j.items ?? []) {
         if (!it.slug) continue;
         const lm = it.publishedAt ?? undefined;
@@ -188,16 +216,28 @@ async function newsEntries(): Promise<UrlEntry[]> {
       /* o dil icin bos — devam */
     }
   }
-  return out;
+  return anyOk ? out : null;
 }
 
-export async function entriesFor(name: string): Promise<UrlEntry[]> {
+// null donus = backend'e ulasilamadi; route 503 vermeli (bos 200 degil).
+export async function entriesFor(name: string): Promise<UrlEntry[] | null> {
   if (name === "static") {
-    return STATIC.map((s) => ({
-      loc: SITE + s.path,
-      changefreq: s.freq,
-      priority: s.priority,
-    }));
+    return STATIC.map((s) => {
+      const pair = STATIC_PAIRS.get(s.path);
+      const alternates: Alt[] | undefined = pair
+        ? [
+            { hreflang: "tr", href: SITE + pair.tr },
+            { hreflang: "en", href: SITE + pair.en },
+            { hreflang: "x-default", href: SITE + pair.en },
+          ]
+        : undefined;
+      return {
+        loc: SITE + s.path,
+        changefreq: s.freq,
+        priority: s.priority,
+        alternates,
+      };
+    });
   }
   if (name === "news") {
     return newsEntries();
@@ -209,9 +249,9 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
   try {
     const r = await fetch(
       `${BACKEND}/api/v1/sitemap/${type}?page=${page}&size=${PAGE_SIZE}`,
-      { cache: "no-store" },
+      { cache: "no-store", signal: AbortSignal.timeout(15_000) },
     );
-    if (!r.ok) return [];
+    if (!r.ok) return null;
     const list = (await r.json()) as {
       enPath: string;
       trPath: string;
@@ -256,7 +296,7 @@ export async function entriesFor(name: string): Promise<UrlEntry[]> {
     }
     return out;
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -282,12 +322,11 @@ ${rows}
 }
 
 export function indexXml(files: string[]): string {
-  const now = new Date().toISOString();
+  // lastmod bilerek YOK: her istekte "simdi" yazmak Google'a lastmod'un
+  // guvenilmez oldugunu ogretir (changefreq/priority'yi zaten yok sayiyor;
+  // ciddiye aldigi tek alan lastmod — yalan soylememek daha degerli).
   const rows = files
-    .map(
-      (f) =>
-        `  <sitemap>\n    <loc>${SITE}/sitemap/${f}.xml</loc>\n    <lastmod>${now}</lastmod>\n  </sitemap>`,
-    )
+    .map((f) => `  <sitemap>\n    <loc>${SITE}/sitemap/${f}.xml</loc>\n  </sitemap>`)
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
