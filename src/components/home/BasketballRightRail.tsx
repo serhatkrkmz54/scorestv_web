@@ -59,7 +59,8 @@ function FeatRow({ g, lang }: { g: BasketballGameSummary; lang: Lang }) {
   const cat = categorizeSport("basketball", g.status);
   const isLive = cat === "live";
   const isUpcoming = cat === "upcoming";
-  const winner = isUpcoming ? null : sportWinnerSide(g);
+  const isCancelled = cat === "cancelled";
+  const winner = isUpcoming || isCancelled ? null : sportWinnerSide(g);
   const homeLost = winner === "away";
   const awayLost = winner === "home";
   const leagueSlug = g.league.id
@@ -74,6 +75,8 @@ function FeatRow({ g, lang }: { g: BasketballGameSummary; lang: Lang }) {
         <Link href={basketballMatchPath(lang, g.slug)} className="fm-score">
           {isUpcoming ? (
             <span className="fm-time tnum">{startTime(g.startAt)}</span>
+          ) : isCancelled ? (
+            <span className="fm-time fm-canc">{sportStatusLabelShort("basketball", g.status, lang)}</span>
           ) : (
             <span className={"sc tnum" + (isLive ? " is-live" : "")}>
               <b className={homeLost ? "lose" : ""}>{g.score.homeTotal ?? 0}</b>

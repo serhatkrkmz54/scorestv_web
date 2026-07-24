@@ -7,7 +7,7 @@ import type {
 } from "./sport-scores-types";
 import type { Sport } from "./sports";
 
-export type SportStatusCategory = "live" | "upcoming" | "finished";
+export type SportStatusCategory = "live" | "upcoming" | "finished" | "cancelled";
 
 // Basketbol: canli {Q1,Q2,Q3,Q4,OT,BT,HT}, bitti {FT,AOT}. NS=bas/yok.
 const BASKET_LIVE = new Set(["Q1", "Q2", "Q3", "Q4", "OT", "BT", "HT", "LIVE"]);
@@ -15,6 +15,8 @@ const BASKET_FINISHED = new Set(["FT", "AOT"]);
 // Voleybol: canli {S1,S2,S3,S4,S5}, bitti {FT,AW}. NS=basmadi.
 const VOLLEY_LIVE = new Set(["S1", "S2", "S3", "S4", "S5", "LIVE"]);
 const VOLLEY_FINISHED = new Set(["FT", "AW"]);
+// Iptal/ertelendi (her iki spor) — skor/VS yerine etiket gosterilir.
+const SPORT_CANCELLED = new Set(["POST", "PST", "CANC", "ABD"]);
 
 export function categorizeSport(
   sport: Sport,
@@ -24,12 +26,23 @@ export function categorizeSport(
   if (sport === "basketball") {
     if (BASKET_LIVE.has(code)) return "live";
     if (BASKET_FINISHED.has(code)) return "finished";
+    if (SPORT_CANCELLED.has(code)) return "cancelled";
     return "upcoming";
   }
   // voleybol (ve fallback)
   if (VOLLEY_LIVE.has(code)) return "live";
   if (VOLLEY_FINISHED.has(code)) return "finished";
+  if (SPORT_CANCELLED.has(code)) return "cancelled";
   return "upcoming";
+}
+
+/** Filtre/sayım kovası — iptal/ertelenen maçlar "Bitti" altında toplanır. */
+export function filterBucketSport(
+  sport: Sport,
+  status: SportGameStatus,
+): "live" | "upcoming" | "finished" {
+  const c = categorizeSport(sport, status);
+  return c === "cancelled" ? "finished" : c;
 }
 
 // Kisa status etiketleri — dar satira sigsin diye.
@@ -44,7 +57,9 @@ const BASKET_SHORT: Record<string, { tr: string; en: string }> = {
   FT: { tr: "Bitti", en: "FT" },
   AOT: { tr: "Uzatma", en: "AOT" },
   POST: { tr: "Ertelendi", en: "Postp" },
+  PST: { tr: "Ertelendi", en: "Postp" },
   CANC: { tr: "İptal", en: "Canc" },
+  ABD: { tr: "Yarıda", en: "Aband" },
   NS: { tr: "—", en: "—" },
 };
 
@@ -57,7 +72,9 @@ const VOLLEY_SHORT: Record<string, { tr: string; en: string }> = {
   FT: { tr: "Bitti", en: "FT" },
   AW: { tr: "Hükmen", en: "AW" },
   POST: { tr: "Ertelendi", en: "Postp" },
+  PST: { tr: "Ertelendi", en: "Postp" },
   CANC: { tr: "İptal", en: "Canc" },
+  ABD: { tr: "Yarıda", en: "Aband" },
   NS: { tr: "—", en: "—" },
 };
 

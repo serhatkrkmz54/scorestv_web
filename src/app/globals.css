@@ -507,6 +507,8 @@ body.drawer-open { overflow: hidden; }
 .mr-status.fin .st-main { color: var(--text-faint); font-size: 11px; }
 .mr-status.up .st-main { color: var(--text-dim); font-size: 13.3px; }
 .mr-status.live .st-main { color: var(--live); font-size: 12.4px; }
+/* İptal/ertelendi → uyari tonu (vurgu rengi), "Bitti"den ayirt edilsin. */
+.mr-status.canc .st-main { color: var(--accent); font-size: 11.5px; }
 /* Status: masaustunde tam metin (st-full), mobilde kisa etiket (st-compact). */
 .mr-status .st-compact { display: none; }
 .mr-team { display: flex; align-items: center; gap: 11px; min-width: 0; }
@@ -791,6 +793,7 @@ a.tweet { text-decoration: none; color: inherit; cursor: pointer; }
 .fm-score .sc.is-live b.lose { color: var(--live); }
 .fm-score .sc.is-live i { color: color-mix(in srgb, var(--live) 55%, var(--text-faint)); }
 .fm-time { font-size: 13.3px; font-weight: 700; color: var(--text-dim); }
+.fm-canc { color: var(--accent); letter-spacing: .01em; }
 .fm-min { font-size: 9.7px; font-weight: 700; color: var(--live); display: inline-flex; align-items: center; gap: 4px; }
 .fm-league { margin-top: 7px; font-size: 10.1px; font-weight: 600; color: var(--text-faint); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -5408,6 +5411,7 @@ a.team-transfer-player:hover { color: var(--accent); }
   min-width: 48px; gap: 4px; font-size: 12px; font-weight: 700; line-height: 1.1; color: var(--text-faint); }
 .bk-status.up { color: var(--text-dim); }
 .bk-status.live { color: var(--live); }
+.bk-status.canc { color: var(--accent); }
 .bk-teams { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 9px; }
 .bk-team { display: flex; align-items: center; gap: 8px; min-width: 0; height: 22px; }
 .bk-team .nm { min-width: 0; font-size: 13.5px; font-weight: 600; color: var(--text);

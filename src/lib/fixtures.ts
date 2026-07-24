@@ -4,12 +4,26 @@ import type { Lang } from "@/i18n/auth-strings";
 
 const LIVE_CODES = new Set(["1H", "HT", "2H", "ET", "BT", "P", "SUSP", "INT", "LIVE"]);
 const FINISHED_CODES = new Set(["FT", "AET", "PEN", "WO", "AWD"]);
+// Ertelendi / İptal / Yarıda kaldı — oynanmayacak/oynanmamış. Skor/VS gösterilmez,
+// özel etiketle ("İptal", "Ertelendi") ayrı renkte gösterilir (mobil ile aynı).
+const CANCELLED_CODES = new Set(["PST", "CANC", "ABD"]);
 
 export function categorize(status: FixtureStatus): StatusCategory {
   const code = status.shortCode ?? "";
   if (status.elapsed != null || LIVE_CODES.has(code)) return "live";
   if (FINISHED_CODES.has(code)) return "finished";
+  if (CANCELLED_CODES.has(code)) return "cancelled";
   return "upcoming";
+}
+
+/**
+ * Filtre/sayım kovası: "cancelled" ayrı bir sekme DEĞİL — iptal/ertelenen maçlar
+ * "Bitti" filtresi altında toplanır (mobil davranışıyla aynı). Satır render'ı
+ * yine {@link categorize} ile ayrı ele alır (skor yerine etiket).
+ */
+export function filterBucket(status: FixtureStatus): "live" | "upcoming" | "finished" {
+  const c = categorize(status);
+  return c === "cancelled" ? "finished" : c;
 }
 
 /**

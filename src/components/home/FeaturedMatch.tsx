@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useHome } from "@/context/home-context";
 import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
-import { categorize, kickoffTime, liveClock, winnerSide } from "@/lib/fixtures";
+import { categorize, kickoffTime, liveClock, statusLabelShort, winnerSide } from "@/lib/fixtures";
 import { matchPath, teamPath, leaguePath } from "@/lib/routes";
 import type { FixtureSummary, FixtureTeam, PopularLeague } from "@/lib/fixtures-types";
 import type { Lang } from "@/i18n/auth-strings";
@@ -46,7 +46,8 @@ function FeatRow({ f }: { f: FixtureSummary }) {
   const cat = categorize(f.status);
   const isLive = cat === "live";
   const isUpcoming = cat === "upcoming";
-  const winner = isUpcoming ? null : winnerSide(f.score);
+  const isCancelled = cat === "cancelled";
+  const winner = isUpcoming || isCancelled ? null : winnerSide(f.score);
   const homeLost = winner === "away";
   const awayLost = winner === "home";
 
@@ -58,6 +59,8 @@ function FeatRow({ f }: { f: FixtureSummary }) {
         <Link href={matchPath(lang, f.slug)} className="fm-score">
           {isUpcoming ? (
             <span className="fm-time tnum">{kickoffTime(f.kickoff)}</span>
+          ) : isCancelled ? (
+            <span className="fm-time fm-canc">{statusLabelShort(f.status, lang)}</span>
           ) : (
             <span className={"sc tnum" + (isLive ? " is-live" : "")}>
               <b className={homeLost ? "lose" : ""}>{f.score.home ?? 0}</b>

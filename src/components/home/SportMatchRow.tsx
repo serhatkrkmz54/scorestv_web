@@ -63,7 +63,8 @@ export function SportMatchRow({ game }: { game: SportGameSummary }) {
   const cat = categorizeSport(game.sport, game.status);
   const isLive = cat === "live";
   const isUpcoming = cat === "upcoming";
-  const winner = isUpcoming ? null : sportWinnerSide(game);
+  const isCancelled = cat === "cancelled";
+  const winner = isUpcoming || isCancelled ? null : sportWinnerSide(game);
   const fav = has(game.id);
 
   const homeLost = winner === "away";
@@ -72,7 +73,7 @@ export function SportMatchRow({ game }: { game: SportGameSummary }) {
   const statusMain = isUpcoming
     ? startTime(game.startAt)
     : sportStatusLabelShort(game.sport, game.status, lang);
-  const statusKind = isLive ? "live" : isUpcoming ? "up" : "fin";
+  const statusKind = isLive ? "live" : isCancelled ? "canc" : isUpcoming ? "up" : "fin";
 
   const detailPath =
     game.sport === "basketball"
@@ -110,6 +111,8 @@ export function SportMatchRow({ game }: { game: SportGameSummary }) {
 
       {isUpcoming ? (
         <div className="bk-vs">VS</div>
+      ) : isCancelled ? (
+        <div className="bk-vs">–</div>
       ) : (
         <>
           {segs.length > 0 && (

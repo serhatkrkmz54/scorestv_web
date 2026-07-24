@@ -86,7 +86,8 @@ export function MatchRow({
   const cat = categorize(fixture.status);
   const isLive = cat === "live";
   const isUpcoming = cat === "upcoming";
-  const winner = isUpcoming ? null : winnerSide(fixture.score);
+  const isCancelled = cat === "cancelled";
+  const winner = isUpcoming || isCancelled ? null : winnerSide(fixture.score);
   const fav = has(fixture.id);
 
   const homeLost = winner === "away";
@@ -96,9 +97,12 @@ export function MatchRow({
   const minute = liveClock(fixture.status);
   // Status metni backend'den (longText): "Maç Bitti", "Devre Arası", "Penaltılarda Bitti"…
   // Canlı + dakikalı durumda dakika ("90+1'"). longText yoksa kısa etikete düş.
+  // İptal/ertelendi → kickoff saati değil, kısa TR etiket ("İptal"/"Ertelendi").
   const statusMain = isUpcoming
     ? kickoffTime(fixture.kickoff)
-    : minute || fixture.status.longText || statusLabelShort(fixture.status, lang);
+    : isCancelled
+      ? statusLabelShort(fixture.status, lang)
+      : minute || fixture.status.longText || statusLabelShort(fixture.status, lang);
   // Mobilde dar status kolonuna sigmasi icin KISA etiket (longText degil).
   // Masaustunde tam metin gosterilir; ikisi CSS ile toggle edilir.
   const statusCompact = isUpcoming
@@ -125,7 +129,7 @@ export function MatchRow({
     : undefined;
 
   const goMatch = () => router.push(matchPath(lang, fixture.slug));
-  const statusKind = isLive ? "live" : isUpcoming ? "up" : "fin";
+  const statusKind = isLive ? "live" : isCancelled ? "canc" : isUpcoming ? "up" : "fin";
 
   return (
     <div
@@ -170,6 +174,8 @@ export function MatchRow({
 
         {isUpcoming ? (
           <span className="mr-vs">VS</span>
+        ) : isCancelled ? (
+          <span className="mr-vs">–</span>
         ) : (
           <div className="mr-score">
             <div className="sc-main tnum">

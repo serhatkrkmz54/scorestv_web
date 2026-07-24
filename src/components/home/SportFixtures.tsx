@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLang } from "@/context/lang-context";
 import { useFavorites } from "@/context/favorites-context";
 import { HOME_STR } from "@/i18n/home-strings";
-import { categorizeSport } from "@/lib/sport-scores";
+import { filterBucketSport } from "@/lib/sport-scores";
 import type {
   SportDayResponse,
   SportLeagueGroup,
@@ -113,7 +113,7 @@ export function SportFixtures({
     day?.leagues.forEach((g) =>
       g.games.forEach((game) => {
         c.all++;
-        c[categorizeSport(sport, game.status)]++;
+        c[filterBucketSport(sport, game.status)]++;
         if (has(game.id)) c.fav++;
       }),
     );
@@ -127,7 +127,7 @@ export function SportFixtures({
       .map((g) => ({
         league: g.league,
         games: g.games.filter((game) =>
-          status === "fav" ? has(game.id) : categorizeSport(sport, game.status) === status,
+          status === "fav" ? has(game.id) : filterBucketSport(sport, game.status) === status,
         ),
       }))
       .filter((g) => g.games.length > 0);

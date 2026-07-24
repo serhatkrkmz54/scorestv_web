@@ -5,7 +5,7 @@ import { useLang } from "@/context/lang-context";
 import { useFavorites } from "@/context/favorites-context";
 import { useHome } from "@/context/home-context";
 import { HOME_STR } from "@/i18n/home-strings";
-import { categorize } from "@/lib/fixtures";
+import { filterBucket } from "@/lib/fixtures";
 import type { LeagueGroup } from "@/lib/fixtures-types";
 import { IconBall } from "@/components/icons";
 import { DateStrip } from "./DateStrip";
@@ -24,7 +24,7 @@ export function HomeFixtures() {
     day?.leagues.forEach((g) =>
       g.fixtures.forEach((f) => {
         c.all++;
-        c[categorize(f.status)]++;
+        c[filterBucket(f.status)]++;
         if (has(f.id)) c.fav++;
       }),
     );
@@ -38,7 +38,7 @@ export function HomeFixtures() {
       .map((g) => ({
         league: g.league,
         fixtures: g.fixtures.filter((f) =>
-          status === "fav" ? has(f.id) : categorize(f.status) === status,
+          status === "fav" ? has(f.id) : filterBucket(f.status) === status,
         ),
       }))
       .filter((g) => g.fixtures.length > 0);

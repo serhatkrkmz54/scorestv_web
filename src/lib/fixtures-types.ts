@@ -93,7 +93,7 @@ export interface FixtureDatesResponse {
   dates: DateEntry[];
 }
 
-export type StatusCategory = "live" | "upcoming" | "finished";
+export type StatusCategory = "live" | "upcoming" | "finished" | "cancelled";
 export type StatusFilter = "all" | "fav" | StatusCategory;
 
 export interface PopularLeague {
