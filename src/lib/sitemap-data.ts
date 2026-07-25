@@ -11,6 +11,9 @@ export interface Counts {
   players: number;
   leagues: number;
   matches: number;
+  basketballLeagues: number;
+  basketballTeams: number;
+  basketballGames: number;
 }
 export interface Alt {
   hreflang: string;
@@ -40,6 +43,9 @@ export async function fetchCounts(): Promise<Counts | null> {
       players: j.players ?? 0,
       leagues: j.leagues ?? 0,
       matches: j.matches ?? 0,
+      basketballLeagues: j.basketballLeagues ?? 0,
+      basketballTeams: j.basketballTeams ?? 0,
+      basketballGames: j.basketballGames ?? 0,
     };
   } catch {
     return null;
@@ -56,6 +62,9 @@ export function sitemapFiles(c: Counts): string[] {
   add("teams", c.teams);
   add("players", c.players);
   add("matches", c.matches);
+  add("basketball-leagues", c.basketballLeagues);
+  add("basketball-teams", c.basketballTeams);
+  add("basketball-games", c.basketballGames);
   return files;
 }
 
@@ -242,7 +251,10 @@ export async function entriesFor(name: string): Promise<UrlEntry[] | null> {
   if (name === "news") {
     return newsEntries();
   }
-  const m = /^(leagues|teams|players|matches)-(\d+)$/.exec(name);
+  const m =
+    /^(leagues|teams|players|matches|basketball-leagues|basketball-teams|basketball-games)-(\d+)$/.exec(
+      name,
+    );
   if (!m) return [];
   const type = m[1];
   const page = Number(m[2]);
@@ -257,15 +269,16 @@ export async function entriesFor(name: string): Promise<UrlEntry[] | null> {
       trPath: string;
       lastmod: string | null;
     }[];
-    const isMatch = type === "matches";
-    const isLeague = type === "leagues";
+    // Basketbol maclari da futbol maclari gibi tazelik-bazli derecelenir;
+    // basketbol ligleri populer-set'e sahip degil → tazelik-bazli lig kurali.
+    const isMatch = type === "matches" || type === "basketball-games";
+    const isLeague = type === "leagues" || type === "basketball-leagues";
     // Ligler: config'teki populer set'e gore oncelik (yuksek) vs tazelik (dusuk).
-    const popularLeagueIds = isLeague ? await fetchPopularLeagueIds() : null;
+    const popularLeagueIds =
+      type === "leagues" ? await fetchPopularLeagueIds() : null;
     // Mac/lig disi tipler: mevcut statik degerler. Mac + lig: entry basina dinamik.
-    const staticFreq =
-      type === "players" || type === "matches" ? "monthly" : "weekly";
-    const staticPrio =
-      type === "matches" ? "0.4" : "0.5";
+    const staticFreq = type === "players" ? "monthly" : "weekly";
+    const staticPrio = "0.5";
     const out: UrlEntry[] = [];
     for (const e of list) {
       const enUrl = SITE + e.enPath;
