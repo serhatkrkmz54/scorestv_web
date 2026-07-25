@@ -52,6 +52,17 @@ export function basketballTeamPath(lang: Lang, idOrSlug: string | number): strin
   return `/${lang === "tr" ? "basketbol/takim" : "basketball/team"}/${idOrSlug}`;
 }
 
+// ===== Voleybol bolum rotalari =====
+export function volleyballHomePath(lang: Lang): string {
+  return lang === "tr" ? "/voleybol" : "/volleyball";
+}
+export function volleyballLeaguePath(lang: Lang, idOrSlug: string | number): string {
+  return `/${lang === "tr" ? "voleybol/lig" : "volleyball/league"}/${idOrSlug}`;
+}
+export function volleyballTeamPath(lang: Lang, idOrSlug: string | number): string {
+  return `/${lang === "tr" ? "voleybol/takim" : "volleyball/team"}/${idOrSlug}`;
+}
+
 // Mevcut path'i hedef dile cevir. Lang switcher kullaniyor.
 //   /mac/X (TR) <-> /match/X (EN), vs.
 // Bilinmeyen rotalar oldugu gibi donulur (anasayfa, profil, vb.).

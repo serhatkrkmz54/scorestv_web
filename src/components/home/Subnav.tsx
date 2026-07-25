@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSportOptional } from "@/context/sport-context";
@@ -8,7 +8,7 @@ import { useLang } from "@/context/lang-context";
 import { HOME_STR } from "@/i18n/home-strings";
 import type { FixtureDatesResponse } from "@/lib/fixtures-types";
 import type { Sport } from "@/lib/sports";
-import { rankingsPath, basketballHomePath, gamesPath } from "@/lib/routes";
+import { rankingsPath, basketballHomePath, volleyballHomePath, gamesPath } from "@/lib/routes";
 import { newsListPath } from "@/lib/news-format";
 import { IconBars, IconCalendar, IconGamepad, IconNews } from "@/components/icons";
 
@@ -36,6 +36,7 @@ export function Subnav() {
   // bir tazelenir.
   const [footballLive, setFootballLive] = useState(0);
   const [basketballLive, setBasketballLive] = useState(0);
+  const [volleyballLive, setVolleyballLive] = useState(0);
 
   useEffect(() => {
     let aborted = false;
@@ -64,6 +65,17 @@ export function Subnav() {
       } catch {
         /* sessiz */
       }
+      try {
+        const r = await fetch(`/api/volleyball/fixtures?status=live&lang=${lang}`, {
+          cache: "no-store",
+        });
+        if (r.ok) {
+          const data = (await r.json()) as { liveCount?: number };
+          if (!aborted) setVolleyballLive(data.liveCount ?? 0);
+        }
+      } catch {
+        /* sessiz */
+      }
     };
     void load();
     const id = setInterval(() => void load(), 60000);
@@ -72,24 +84,6 @@ export function Subnav() {
       clearInterval(id);
     };
   }, [lang]);
-
-  // Voleybol web'de PASIF — henuz kategori (landing) sayfasi yok. Menude
-  // GORUNUR ama tiklaninca gercek sayfaya gitmek yerine "Yakinda" toast'i
-  // gosterir (var olmayan sayfaya link vermek SEO'ya zarar verir). Hazir
-  // olunca /voleybol landing + gercek link olarak aktiflenir.
-  const [showSoon, setShowSoon] = useState(false);
-  const soonTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const popSoon = useCallback(() => {
-    setShowSoon(true);
-    if (soonTimer.current) clearTimeout(soonTimer.current);
-    soonTimer.current = setTimeout(() => setShowSoon(false), 2200);
-  }, []);
-  useEffect(
-    () => () => {
-      if (soonTimer.current) clearTimeout(soonTimer.current);
-    },
-    [],
-  );
 
   const sports: {
     id: Sport;
@@ -116,18 +110,18 @@ export function Subnav() {
       id: "volleyball",
       label: t.volleyball,
       img: "/sport_volleyball.png",
-      live: 0,
-      on: false,
+      live: volleyballLive,
+      on: true,
     },
   ];
 
   // Gerçek kategori sayfası olan spor: futbol "/", basketbol "/basketbol" |
-  // "/basketball".
+  // "/basketball", voleybol "/voleybol" | "/volleyball".
   function sportHref(id: Sport): string {
-    return id === "basketball" ? basketballHomePath(lang) : "/";
+    if (id === "basketball") return basketballHomePath(lang);
+    if (id === "volleyball") return volleyballHomePath(lang);
+    return "/";
   }
-
-  const soonText = lang === "tr" ? "Yakında" : "Coming soon";
 
   return (
     <nav className="subnav">
@@ -150,26 +144,18 @@ export function Subnav() {
               {sp.live > 0 && <span className="cnt live">{sp.live}</span>}
             </>
           );
-          // SEO: kategori sayfası olan sporlar GERÇEK <a href> link (Google
-          // takip edebilsin). Spor-context onClick ile senkron tutulur.
-          if (sp.on) {
-            return (
-              <Link
-                key={sp.id}
-                href={sportHref(sp.id)}
-                className={className}
-                aria-current={selected ? "page" : undefined}
-                onClick={() => sportCtx?.setSport(sp.id)}
-              >
-                {inner}
-              </Link>
-            );
-          }
-          // Pasif spor (voleybol) → tıklanınca "Yakında" toast'ı göster.
+          // SEO: tum sporlarin gercek kategori sayfasi var → GERÇEK <a href>
+          // link (Google takip edebilsin). Spor-context onClick ile senkron.
           return (
-            <button key={sp.id} type="button" className={className} onClick={popSoon}>
+            <Link
+              key={sp.id}
+              href={sportHref(sp.id)}
+              className={className}
+              aria-current={selected ? "page" : undefined}
+              onClick={() => sportCtx?.setSport(sp.id)}
+            >
               {inner}
-            </button>
+            </Link>
           );
         })}
         {/* Maç Programı / Sıralamalar / Haberler — MOBİLDE subnav'dan gizlenir
@@ -195,11 +181,6 @@ export function Subnav() {
           <span>{lang === "tr" ? "Oyunlar" : "Games"}</span>
         </Link>
       </div>
-      {showSoon && (
-        <div className="subnav-toast" role="status">
-          {soonText}
-        </div>
-      )}
     </nav>
   );
 }

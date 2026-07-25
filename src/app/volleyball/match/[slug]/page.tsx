@@ -4,7 +4,7 @@ import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchVolleyballDetailServer } from "@/lib/volleyball-detail";
 import { escapeJsonLd } from "@/lib/jsonld";
 import { VolleyballDetailScreen } from "@/components/match/volleyball/VolleyballDetailScreen";
-import { LeftRail } from "@/components/home/LeftRail";
+import { VolleyballLeftRail } from "@/components/home/VolleyballLeftRail";
 import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scorestv.com";
@@ -79,7 +79,7 @@ export default async function Page({ params }: PageProps) {
       <h1 className="sr-only">{home} - {away}</h1>
       <div className="layout">
         <aside className="rail-left">
-          <LeftRail />
+          <VolleyballLeftRail />
         </aside>
         <div className="match-detail-main">
           <Breadcrumb items={crumbsFromJsonLd(initial.seo?.breadcrumbsJsonLd)} />

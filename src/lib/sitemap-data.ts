@@ -14,6 +14,9 @@ export interface Counts {
   basketballLeagues: number;
   basketballTeams: number;
   basketballGames: number;
+  volleyballLeagues: number;
+  volleyballTeams: number;
+  volleyballGames: number;
 }
 export interface Alt {
   hreflang: string;
@@ -46,6 +49,9 @@ export async function fetchCounts(): Promise<Counts | null> {
       basketballLeagues: j.basketballLeagues ?? 0,
       basketballTeams: j.basketballTeams ?? 0,
       basketballGames: j.basketballGames ?? 0,
+      volleyballLeagues: j.volleyballLeagues ?? 0,
+      volleyballTeams: j.volleyballTeams ?? 0,
+      volleyballGames: j.volleyballGames ?? 0,
     };
   } catch {
     return null;
@@ -65,6 +71,9 @@ export function sitemapFiles(c: Counts): string[] {
   add("basketball-leagues", c.basketballLeagues);
   add("basketball-teams", c.basketballTeams);
   add("basketball-games", c.basketballGames);
+  add("volleyball-leagues", c.volleyballLeagues);
+  add("volleyball-teams", c.volleyballTeams);
+  add("volleyball-games", c.volleyballGames);
   return files;
 }
 
@@ -75,6 +84,8 @@ const STATIC: { path: string; priority: string; freq: string }[] = [
   { path: "/canli-mac-programi", priority: "0.8", freq: "hourly" },
   { path: "/basketbol", priority: "0.8", freq: "hourly" },
   { path: "/basketball", priority: "0.8", freq: "hourly" },
+  { path: "/voleybol", priority: "0.8", freq: "hourly" },
+  { path: "/volleyball", priority: "0.8", freq: "hourly" },
   { path: "/siralama", priority: "0.7", freq: "daily" },
   { path: "/haberler", priority: "0.6", freq: "daily" },
   { path: "/news", priority: "0.6", freq: "daily" },
@@ -97,6 +108,7 @@ const STATIC: { path: string; priority: string; freq: string }[] = [
 // TR<->EN URL cifti olan statik sayfalar — her iki girise ayni hreflang seti.
 const STATIC_PAIR_LIST: { tr: string; en: string }[] = [
   { tr: "/basketbol", en: "/basketball" },
+  { tr: "/voleybol", en: "/volleyball" },
   { tr: "/haberler", en: "/news" },
   { tr: "/oyunlar", en: "/games" },
   { tr: "/ai-performans", en: "/ai-performance" },
@@ -252,7 +264,7 @@ export async function entriesFor(name: string): Promise<UrlEntry[] | null> {
     return newsEntries();
   }
   const m =
-    /^(leagues|teams|players|matches|basketball-leagues|basketball-teams|basketball-games)-(\d+)$/.exec(
+    /^(leagues|teams|players|matches|basketball-leagues|basketball-teams|basketball-games|volleyball-leagues|volleyball-teams|volleyball-games)-(\d+)$/.exec(
       name,
     );
   if (!m) return [];
@@ -269,10 +281,12 @@ export async function entriesFor(name: string): Promise<UrlEntry[] | null> {
       trPath: string;
       lastmod: string | null;
     }[];
-    // Basketbol maclari da futbol maclari gibi tazelik-bazli derecelenir;
-    // basketbol ligleri populer-set'e sahip degil → tazelik-bazli lig kurali.
-    const isMatch = type === "matches" || type === "basketball-games";
-    const isLeague = type === "leagues" || type === "basketball-leagues";
+    // Basketbol/voleybol maclari da futbol gibi tazelik-bazli derecelenir;
+    // bu sporlarin ligleri populer-set'e sahip degil → tazelik-bazli lig kurali.
+    const isMatch =
+      type === "matches" || type === "basketball-games" || type === "volleyball-games";
+    const isLeague =
+      type === "leagues" || type === "basketball-leagues" || type === "volleyball-leagues";
     // Ligler: config'teki populer set'e gore oncelik (yuksek) vs tazelik (dusuk).
     const popularLeagueIds =
       type === "leagues" ? await fetchPopularLeagueIds() : null;

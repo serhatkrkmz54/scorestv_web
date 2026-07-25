@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
-import { teamPath, volleyballMatchPath } from "@/lib/routes";
+import { volleyballTeamPath, volleyballMatchPath } from "@/lib/routes";
 import { formatDate } from "@/lib/match-format";
 import type {
   VolleyballGameDetailResponse,
@@ -34,7 +34,7 @@ function TeamCell({
   const inner = side === "home" ? (<>{name}{logo}</>) : (<>{logo}{name}</>);
   if (team.slug) {
     return (
-      <Link href={teamPath(lang, team.slug)} className={cls} onClick={(e) => e.stopPropagation()}>
+      <Link href={volleyballTeamPath(lang, team.slug)} className={cls} onClick={(e) => e.stopPropagation()}>
         {inner}
       </Link>
     );

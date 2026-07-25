@@ -4,7 +4,7 @@ import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
 import { CountryFlag } from "@/components/shell/CountryFlag";
 import { MatchCountdown } from "../MatchCountdown";
-import { leaguePath } from "@/lib/routes";
+import { volleyballLeaguePath } from "@/lib/routes";
 import type {
   VolleyballGameDetailResponse,
   VolleyballScoreBreakdown,
@@ -82,7 +82,7 @@ export function VolleyballHero({ detail, lang }: Props) {
       <div className="match-hero-content">
         <div className="match-hero-meta">
           <Link
-            href={leaguePath(lang, league.slug ?? String(league.id))}
+            href={volleyballLeaguePath(lang, league.slug ?? String(league.id))}
             className="match-hero-league"
           >
             {league.countryFlag || league.countryName ? (

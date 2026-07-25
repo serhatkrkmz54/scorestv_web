@@ -6,7 +6,7 @@ import { useLang } from "@/context/lang-context";
 import { categorizeSport } from "@/lib/sport-scores";
 import type { SportLeagueGroup } from "@/lib/sport-scores-types";
 import type { Sport } from "@/lib/sports";
-import { basketballLeaguePath } from "@/lib/routes";
+import { basketballLeaguePath, volleyballLeaguePath } from "@/lib/routes";
 import { buildEntitySlug } from "@/lib/slug-utils";
 import { CountryFlag } from "@/components/shell/CountryFlag";
 import { useFavorites } from "@/context/favorites-context";
@@ -31,11 +31,13 @@ export function SportLeagueBlock({
   const ids = games.map((g) => g.id);
   const allFav = hasAll(ids);
 
-  // Basketbolda lig basligi tiklanabilir → basketbol lig sayfasi.
+  // Basketbol/voleybolda lig basligi tiklanabilir → ilgili lig sayfasi.
   const leagueHref =
     sport === "basketball" && league.id
       ? basketballLeaguePath(lang, buildEntitySlug(league.name, league.id))
-      : null;
+      : sport === "volleyball" && league.id
+        ? volleyballLeaguePath(lang, buildEntitySlug(league.name, league.id))
+        : null;
 
   const identity = (
     <>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { TeamLogo } from "@/components/shell/TeamLogo";
-import { teamPath } from "@/lib/routes";
+import { volleyballTeamPath } from "@/lib/routes";
 import type {
   VolleyballGameDetailResponse,
   VolleyballStandingRow,
@@ -79,7 +79,7 @@ function StandingsTable({
                 </td>
                 <td className="standings-team-col">
                   {r.team.slug ? (
-                    <Link href={teamPath(lang, r.team.slug)} className="standings-team-link">
+                    <Link href={volleyballTeamPath(lang, r.team.slug)} className="standings-team-link">
                       <TeamLogo name={r.team.name} logo={r.team.logo ?? null} size={18} />
                       <span>{r.team.displayName ?? r.team.name}</span>
                     </Link>
