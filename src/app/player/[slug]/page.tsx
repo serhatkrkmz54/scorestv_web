@@ -24,6 +24,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   // Veri yoksa (gecici backend hatasi dahil) noindex — Google'in "bulunamadi"
   // basligini indexlemesini (soft-404) onler.
   if (!data) return { title: "Player not found | Scores TV", robots: { index: false, follow: false } };
+  // API-Sports bazi oyunculari "Data Not Available" yer tutucu adiyla gonderir —
+  // bu sayfalar iceriksizdir, Google soft-404 sayar; indexletme.
+  const placeholderName = /^data[ -]?not[ -]?available$/i.test(data.name ?? "");
   const seo = data.seo;
   const title = seo?.title ?? `${data.name} | Scores TV`;
   const description =
@@ -37,6 +40,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   return {
     title,
     description,
+    robots: placeholderName ? { index: false, follow: true } : undefined,
     alternates: { canonical: seo?.canonicalUrl ?? undefined, languages: alternates },
     openGraph: {
       title: seo?.openGraph?.title ?? title,
