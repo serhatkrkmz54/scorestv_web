@@ -495,3 +495,37 @@ export function IconPoint({ s = 17, ...p }: IP) {
     </svg>
   );
 }
+
+export function IconCamera({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M3 8.5a2 2 0 012-2h2l1.5-2h7L17 6.5h2a2 2 0 012 2V18a2 2 0 01-2 2H5a2 2 0 01-2-2V8.5z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </svg>
+  );
+}
+
+export function IconStop({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="currentColor" stroke="none" {...p}>
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+    </svg>
+  );
+}
+
+export function IconScreen({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="3" y="4.5" width="18" height="12.5" rx="2" />
+      <path d="M9 20.5h6M12 17v3.5" />
+    </svg>
+  );
+}
+
+export function IconCheck({ s = 16, ...p }: IP) {
+  return (
+    <svg {...base(s)} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  );
+}

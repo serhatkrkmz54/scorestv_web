@@ -1,8 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
+import { Logo } from "@/components/shell/Logo";
+import {
+  IconBall,
+  IconCamera,
+  IconCheck,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPoint,
+  IconTrophy,
+  IconWhistle,
+} from "@/components/icons";
 import { MatchDesk, type DeskFixture } from "./MatchDesk";
 
 /**
@@ -54,7 +66,7 @@ function LogoUpload({
 }) {
   return (
     <label className="mrc-logo-btn" title={title}>
-      📷
+      <IconCamera s={14} />
       <input
         type="file"
         accept="image/png,image/jpeg,image/webp"
@@ -149,9 +161,11 @@ function FixtureRow({
       <div className="mrc-fix-meta">
         {fmtKickoff(f.kickoffAt, lang)}
         {f.round ? ` · ${f.round}` : ""}
-        {done && <span className="mrc-done">✓ +100</span>}
+        {done && <span className="mrc-done"><IconCheck s={12} /> +100</span>}
         <button className="mrc-act manage" onClick={onManage}>
-          {active ? t("Masayı Kapat", "Close Desk") : t("Yönet →", "Manage →")}
+          {active ? t("Masayı Kapat", "Close Desk") : (
+            <>{t("Yönet", "Manage")} <IconChevronRight s={11} /></>
+          )}
         </button>
       </div>
     </div>
@@ -263,7 +277,7 @@ function LeaguePanel({
           url={`/api/reporter/leagues/${league.leagueId}/logo`}
           title={t("Lig logosu yükle", "Upload league logo")}
           onDone={() => {
-            setMsg(t("Lig logosu yüklendi ✓ (sayfa yenilenince görünür)", "League logo uploaded ✓"));
+            setMsg(t("Lig logosu yüklendi.", "League logo uploaded."));
             onLeagueLogoChange?.();
           }}
           onError={setMsg}
@@ -377,6 +391,65 @@ function LeaguePanel({
   );
 }
 
+// ==================== Portal kabuğu ====================
+
+/**
+ * /muhabir harici sayfadır: site Header/Subnav/Footer'ı yerine kendi
+ * ince üst barı + zemini olan bağımsız portal kabuğunu çizer.
+ */
+function PortalShell({ lang, children }: { lang: "tr" | "en"; children: ReactNode }) {
+  const { user, logout } = useAuth();
+  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+  const name = user?.displayName || t("Üye", "Member");
+  const initial = name.trim().charAt(0).toUpperCase() || "U";
+  return (
+    <div className="rp-shell">
+      <header className="rp-topbar">
+        <div className="rp-topbar-in">
+          <Link href="/" className="rp-logo" aria-label="Scores TV">
+            <Logo h={22} />
+          </Link>
+          <span className="rp-topbar-sep" aria-hidden />
+          <span className="rp-topbar-title">
+            <IconWhistle s={14} />
+            {t("Saha Muhabiri", "Field Reporter")}
+          </span>
+          <span className="rp-topbar-right">
+            {user && (
+              <button
+                className="rp-user"
+                title={t("Çıkış yap", "Sign out")}
+                onClick={() => void logout()}
+              >
+                <span className="rp-user-av">
+                  {user.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={user.avatarUrl} alt={name} />
+                  ) : (
+                    initial
+                  )}
+                </span>
+                <span className="rp-user-nm">{name}</span>
+              </button>
+            )}
+            <Link href="/" className="rp-back">
+              <IconChevronLeft s={14} />
+              {t("Siteye Dön", "Back to Site")}
+            </Link>
+          </span>
+        </div>
+      </header>
+      <main className="rp-main">{children}</main>
+      <footer className="rp-foot">
+        {t(
+          "Bu konsol yalnızca Scores TV saha muhabirleri içindir. Girilen veriler editör ekibince denetlenir.",
+          "This console is for Scores TV field reporters only. Submitted data is reviewed by our editors.",
+        )}
+      </footer>
+    </div>
+  );
+}
+
 // ==================== Ana konsol ====================
 
 export function ReporterConsole() {
@@ -439,8 +512,11 @@ export function ReporterConsole() {
 
   if (!loading && !user) {
     return (
-      <div className="mrc-page">
-        <div className="mrc-hero">
+      <PortalShell lang={lang}>
+        <div className="rp-hero">
+          <span className="rp-hero-kicker">
+            <IconWhistle s={13} /> Scores TV
+          </span>
           <h1>{t("Saha Muhabiri", "Field Reporter")}</h1>
           <p>
             {t(
@@ -448,26 +524,72 @@ export function ReporterConsole() {
               "Bring your local amateur league to ScoresTV: enter fixtures, keep live scores on match day, earn Scores Points for every completed match.",
             )}
           </p>
-          <button className="ri-submit" onClick={() => openAuth("signin")}>
+          <div className="rp-steps">
+            <div className="rp-step">
+              <span className="rp-step-ic"><IconTrophy s={18} /></span>
+              <b>{t("1 · Başvur", "1 · Apply")}</b>
+              <span>{t(
+                "Takip ettiğin ligi anlat, editör onayıyla lig sana atansın.",
+                "Tell us about your league; it gets assigned to you on approval.",
+              )}</span>
+            </div>
+            <div className="rp-step">
+              <span className="rp-step-ic"><IconBall s={18} /></span>
+              <b>{t("2 · Veriyi Gir", "2 · Enter Data")}</b>
+              <span>{t(
+                "Takımları, fikstürü, kadroları ve maç günü canlı skoru yönet.",
+                "Manage teams, fixtures, lineups and live scores on match day.",
+              )}</span>
+            </div>
+            <div className="rp-step">
+              <span className="rp-step-ic"><IconPoint s={18} /></span>
+              <b>{t("3 · Puan Kazan", "3 · Earn Points")}</b>
+              <span>{t(
+                "Tamamlanan her maç hesabına +100 Scores Puanı ekler.",
+                "Every completed match adds +100 Scores Points to your account.",
+              )}</span>
+            </div>
+          </div>
+          <button className="ri-submit rp-cta" onClick={() => openAuth("signin")}>
             {t("Başlamak için giriş yap", "Sign in to get started")}
           </button>
         </div>
-      </div>
+      </PortalShell>
     );
   }
 
   const selected = me?.leagues.find((l) => l.leagueId === activeLeague) ?? null;
+  const totalFixtures = me?.leagues.reduce((s, l) => s + l.fixtureCount, 0) ?? 0;
+  const totalTeams = me?.leagues.reduce((s, l) => s + l.teamCount, 0) ?? 0;
 
   return (
-    <div className="mrc-page">
-      <div className="mrc-hero">
-        <h1>{t("Saha Muhabiri", "Field Reporter")}</h1>
-        <p>
-          {t(
-            "API'lerin görmediği ligleri sen görünür kıl — her tamamlanan maç +100 Scores Puanı.",
-            "Make the leagues APIs can't see visible — every completed match earns +100 Scores Points.",
-          )}
-        </p>
+    <PortalShell lang={lang}>
+      <div className="rp-head">
+        <div className="rp-head-txt">
+          <h1>{t("Saha Muhabiri", "Field Reporter")}</h1>
+          <p>
+            {t(
+              "API'lerin görmediği ligleri sen görünür kıl — her tamamlanan maç +100 Scores Puanı.",
+              "Make the leagues APIs can't see visible — every completed match earns +100 Scores Points.",
+            )}
+          </p>
+        </div>
+        {me && me.leagues.length > 0 && (
+          <div className="rp-stats">
+            <span className="rp-stat">
+              <IconTrophy s={14} />
+              <b className="tnum">{me.leagues.length}</b> {t("lig", "leagues")}
+            </span>
+            <span className="rp-stat">
+              <IconBall s={14} />
+              <b className="tnum">{totalTeams}</b> {t("takım", "teams")}
+            </span>
+            <span className="rp-stat">
+              <IconCheck s={14} />
+              <b className="tnum">{totalFixtures}</b> {t("maç", "matches")}
+            </span>
+          </div>
+        )}
       </div>
 
       {msg && <div className="mrc-msg">{msg}</div>}
@@ -557,6 +679,6 @@ export function ReporterConsole() {
           </div>
         )}
       </section>
-    </div>
+    </PortalShell>
   );
 }

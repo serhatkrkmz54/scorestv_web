@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import type { Lang } from "@/i18n/auth-strings";
 import { ThemeProvider } from "./theme-context";
 import { LangProvider } from "./lang-context";
@@ -33,12 +34,7 @@ export function Providers({
             <NotifPrefsProvider>
               <SportProvider>
                 <MobileNavProvider>
-                  <div className="app">
-                    <Header />
-                    <Subnav />
-                    <main>{children}</main>
-                    <Footer />
-                  </div>
+                  <SiteShell>{children}</SiteShell>
                   <MobileNavDrawerWithContent />
                   <AuthModal />
                   <NotificationsEngine />
@@ -49,6 +45,27 @@ export function Providers({
         </AuthProvider>
       </LangProvider>
     </ThemeProvider>
+  );
+}
+
+/**
+ * Site kabuğu (Header/Subnav/Footer). /muhabir HARİCİ sayfadır — kendi portal
+ * kabuğunu çizer, site kabuğu gizlenir (context'ler yine sarılı kalır: auth,
+ * dil, tema konsolda da çalışır).
+ */
+function SiteShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const standalone = pathname?.startsWith("/muhabir");
+  if (standalone) {
+    return <div className="app">{children}</div>;
+  }
+  return (
+    <div className="app">
+      <Header />
+      <Subnav />
+      <main>{children}</main>
+      <Footer />
+    </div>
   );
 }
 

@@ -6804,3 +6804,203 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   border-radius: 4px;
   object-fit: contain;
 }
+
+/* ════════════════ SAHA MUHABIRI PORTAL KABUGU (/muhabir — harici sayfa) ════════════════ */
+.rp-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(1100px 480px at 50% -220px, rgba(56, 189, 248, 0.13), transparent 65%),
+    var(--bg);
+}
+.rp-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.rp-topbar-in {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rp-logo { display: inline-flex; align-items: center; }
+.rp-topbar-sep { width: 1px; height: 22px; background: var(--border-2); }
+.rp-topbar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.rp-topbar-right { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; }
+.rp-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px 4px 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+}
+.rp-user:hover { border-color: var(--border-2); }
+.rp-user-av {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex: none;
+}
+.rp-user-av img { width: 100%; height: 100%; object-fit: cover; }
+.rp-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px 6px 10px;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.rp-back:hover { color: var(--text); border-color: var(--border-2); }
+.rp-main {
+  flex: 1;
+  width: 100%;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 26px var(--page-pad-x) 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.rp-foot {
+  border-top: 1px solid var(--border);
+  padding: 16px var(--page-pad-x) 22px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+/* ── Giris yapilmamis hero ── */
+.rp-hero { text-align: center; padding: 44px 0 8px; }
+.rp-hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+.rp-hero h1 {
+  margin: 14px 0 0;
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.rp-hero p {
+  margin: 12px auto 0;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-dim);
+}
+.rp-steps {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  text-align: left;
+}
+.rp-step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rp-step-ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.rp-step b { font-size: 14px; color: var(--text); }
+.rp-step span:last-child { font-size: 12.5px; line-height: 1.55; color: var(--text-dim); }
+.rp-cta { margin-top: 26px; padding: 11px 26px; font-size: 14px; }
+
+/* ── Giris yapilmis baslik + istatistik cipleri ── */
+.rp-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 6px 0 2px;
+}
+.rp-head-txt h1 { margin: 0; font-size: 26px; font-weight: 800; color: var(--text); }
+.rp-head-txt p { margin: 6px 0 0; max-width: 60ch; font-size: 13.5px; color: var(--text-dim); }
+.rp-stats { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.rp-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.rp-stat b { color: var(--text); font-weight: 800; }
+.rp-stat svg { color: var(--accent); }
+
+@media (max-width: 767.98px) {
+  .rp-topbar-in { height: 52px; gap: 9px; }
+  .rp-user-nm { display: none; }
+  .rp-user { padding: 4px; }
+  .rp-hero { padding-top: 26px; }
+  .rp-hero h1 { font-size: 30px; }
+  .rp-steps { grid-template-columns: 1fr; }
+  .rp-head { align-items: flex-start; flex-direction: column; }
+}

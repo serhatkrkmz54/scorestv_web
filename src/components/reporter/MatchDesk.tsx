@@ -1,8 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { matchPath } from "@/lib/routes";
+import {
+  IconBall,
+  IconCard,
+  IconCheck,
+  IconChevronRight,
+  IconClose,
+  IconPlay,
+  IconScreen,
+  IconStop,
+  IconSwap,
+  IconTarget,
+} from "@/components/icons";
 
 /**
  * Maç yönetim masası — seçilen manuel maçın tam kontrolü:
@@ -47,29 +59,40 @@ interface LineupPlayer {
 
 const LIVE = new Set(["1H", "HT", "2H"]);
 
-const EVENT_TYPES: { key: string; tr: string; en: string; icon: string; needsAssist?: boolean }[] = [
-  { key: "GOAL", tr: "Gol", en: "Goal", icon: "⚽" },
-  { key: "PEN_GOAL", tr: "Penaltı Golü", en: "Penalty Goal", icon: "🎯" },
-  { key: "PEN_MISS", tr: "Kaçan Penaltı", en: "Missed Penalty", icon: "🚫" },
-  { key: "OWN_GOAL", tr: "Kendi Kalesine", en: "Own Goal", icon: "🥅" },
-  { key: "YELLOW", tr: "Sarı Kart", en: "Yellow Card", icon: "🟨" },
-  { key: "RED", tr: "Kırmızı Kart", en: "Red Card", icon: "🟥" },
-  { key: "SUB", tr: "Oyuncu Değişikliği", en: "Substitution", icon: "🔄", needsAssist: true },
-  { key: "VAR_GOAL_CANCELLED", tr: "VAR — Gol İptal", en: "VAR — Goal cancelled", icon: "📺" },
-  { key: "VAR_PEN_CONFIRMED", tr: "VAR — Penaltı", en: "VAR — Penalty confirmed", icon: "📺" },
+const YELLOW_CARD = "#FBBF24";
+const RED_CARD = "#EF4444";
+
+const EVENT_TYPES: {
+  key: string;
+  tr: string;
+  en: string;
+  icon: ReactNode;
+  needsAssist?: boolean;
+}[] = [
+  { key: "GOAL", tr: "Gol", en: "Goal", icon: <IconBall s={14} /> },
+  { key: "PEN_GOAL", tr: "Penaltı Golü", en: "Penalty Goal", icon: <IconTarget s={14} /> },
+  { key: "PEN_MISS", tr: "Kaçan Penaltı", en: "Missed Penalty", icon: <IconClose s={14} /> },
+  { key: "OWN_GOAL", tr: "Kendi Kalesine", en: "Own Goal", icon: <IconBall s={14} className="ev-og" /> },
+  { key: "YELLOW", tr: "Sarı Kart", en: "Yellow Card", icon: <IconCard s={13} color={YELLOW_CARD} /> },
+  { key: "RED", tr: "Kırmızı Kart", en: "Red Card", icon: <IconCard s={13} color={RED_CARD} /> },
+  { key: "SUB", tr: "Oyuncu Değişikliği", en: "Substitution", icon: <IconSwap s={14} />, needsAssist: true },
+  { key: "VAR_GOAL_CANCELLED", tr: "VAR — Gol İptal", en: "VAR — Goal cancelled", icon: <IconScreen s={14} /> },
+  { key: "VAR_PEN_CONFIRMED", tr: "VAR — Penaltı", en: "VAR — Penalty confirmed", icon: <IconScreen s={14} /> },
 ];
 
-function eventIcon(ev: EventView): string {
+function eventIcon(ev: EventView): ReactNode {
   if (ev.type === "Goal") {
-    if (ev.detail === "Own Goal") return "🥅";
-    if (ev.detail === "Penalty") return "🎯";
-    if (ev.detail === "Missed Penalty") return "🚫";
-    return "⚽";
+    if (ev.detail === "Own Goal") return <IconBall s={15} className="ev-og" />;
+    if (ev.detail === "Penalty") return <IconTarget s={15} />;
+    if (ev.detail === "Missed Penalty") return <IconClose s={15} />;
+    return <IconBall s={15} />;
   }
-  if (ev.type === "Card") return ev.detail === "Red Card" ? "🟥" : "🟨";
-  if (ev.type === "subst") return "🔄";
-  if (ev.type === "Var") return "📺";
-  return "•";
+  if (ev.type === "Card") {
+    return <IconCard s={14} color={ev.detail === "Red Card" ? RED_CARD : YELLOW_CARD} />;
+  }
+  if (ev.type === "subst") return <IconSwap s={15} />;
+  if (ev.type === "Var") return <IconScreen s={15} />;
+  return null;
 }
 
 async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
@@ -184,7 +207,7 @@ export function MatchDesk({
       setEvMinute("");
       setEvExtra("");
       await loadEvents();
-      setMsg(t("Olay eklendi ✓", "Event added ✓"));
+      setMsg(t("Olay eklendi.", "Event added."));
     } catch (e) {
       setMsg(e instanceof Error ? e.message : t("Eklenemedi.", "Could not add."));
     } finally {
@@ -220,7 +243,7 @@ export function MatchDesk({
     <div className="desk">
       {/* Skorbord */}
       <div className="desk-board">
-        <button className="desk-close" onClick={onClose} title={t("Kapat", "Close")}>✕</button>
+        <button className="desk-close" onClick={onClose} title={t("Kapat", "Close")}><IconClose s={15} /></button>
         <div className="desk-team home">{fixture.homeTeamName}</div>
         <div className="desk-score">
           <span className="tnum">{fixture.homeGoals ?? "-"}</span>
@@ -256,7 +279,7 @@ export function MatchDesk({
             {(fixture.statusShort === "NS" || fixture.statusShort === "PST") && (
               <>
                 <button className="mrc-act go" disabled={busy} onClick={() => phaseAction("START")}>
-                  ▶ {t("Maçı Başlat", "Start Match")}
+                  <IconPlay s={11} /> {t("Maçı Başlat", "Start Match")}
                 </button>
                 <button className="mrc-act" disabled={busy} onClick={() => phaseAction("POSTPONE")}>
                   {t("Ertele", "Postpone")}
@@ -273,7 +296,7 @@ export function MatchDesk({
             )}
             {fixture.statusShort === "HT" && (
               <button className="mrc-act go" disabled={busy} onClick={() => phaseAction("SECOND_HALF")}>
-                ▶ {t("2. Yarıyı Başlat", "Start 2nd Half")}
+                <IconPlay s={11} /> {t("2. Yarıyı Başlat", "Start 2nd Half")}
               </button>
             )}
             {live && (
@@ -286,14 +309,14 @@ export function MatchDesk({
                   }
                 }}
               >
-                ■ {t("Maçı Bitir", "Finish Match")}
+                <IconStop s={11} /> {t("Maçı Bitir", "Finish Match")}
               </button>
             )}
             {done && (
               <>
-                <span className="mrc-done">✓ {t("Maç tamamlandı · +100 puan", "Completed · +100 points")}</span>
+                <span className="mrc-done"><IconCheck s={13} /> {t("Maç tamamlandı · +100 puan", "Completed · +100 points")}</span>
                 <Link href={matchPath(lang, fixture.slug)} className="mrc-fix-link">
-                  {t("Maç sayfasını gör →", "View match page →")}
+                  {t("Maç sayfasını gör", "View match page")} <IconChevronRight s={12} />
                 </Link>
               </>
             )}
@@ -497,7 +520,7 @@ function LineupTab({ fixture, lang }: { fixture: DeskFixture; lang: "tr" | "en" 
           players,
         }),
       });
-      setMsg(t("Kadro kaydedildi ✓ — maç sayfasında görünür.", "Lineup saved ✓ — visible on match page."));
+      setMsg(t("Kadro kaydedildi — maç sayfasında görünür.", "Lineup saved — visible on match page."));
     } catch (e) {
       setMsg(e instanceof Error ? e.message : t("Kaydedilemedi.", "Could not save."));
     } finally {
@@ -583,7 +606,7 @@ function BroadcastTab({ fixture, lang }: { fixture: DeskFixture; lang: "tr" | "e
         { method: "PUT", body: JSON.stringify({ channels: next }) },
       );
       setChannels(b.channels);
-      setMsg(t("Kaydedildi ✓", "Saved ✓"));
+      setMsg(t("Kaydedildi.", "Saved."));
     } catch (e) {
       setMsg(e instanceof Error ? e.message : t("Kaydedilemedi.", "Could not save."));
     } finally {
@@ -608,7 +631,7 @@ function BroadcastTab({ fixture, lang }: { fixture: DeskFixture; lang: "tr" | "e
               disabled={busy}
               onClick={() => save(channels.filter((x) => x !== c))}
             >
-              ✕
+              <IconClose s={10} />
             </button>
           </span>
         ))}
