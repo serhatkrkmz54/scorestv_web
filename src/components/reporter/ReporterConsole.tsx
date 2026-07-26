@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
-import { Logo } from "@/components/shell/Logo";
 import {
   IconBall,
   IconCalendar,
@@ -395,20 +394,14 @@ function LeaguePanel({
   );
 }
 
-// ==================== Portal kabuğu (sidebar düzeni) ====================
-
-/** Pexels stok görselleri — yalnızca dekoratif zemin (hotlink serbest). */
-const LANDING_BG =
-  "https://images.pexels.com/photos/262524/pexels-photo-262524.jpeg?auto=compress&cs=tinysrgb&w=1920";
-const HERO_BG =
-  "https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=1600";
+// ==================== Portal kabuğu (admin panel stili) ====================
 
 type PortalView = "overview" | "apps" | `league:${number}`;
 
-function Avatar({ url, name }: { url: string | null; name: string }) {
+function Avatar({ url, name, big }: { url: string | null; name: string; big?: boolean }) {
   const initial = name.trim().charAt(0).toUpperCase() || "U";
   return (
-    <span className="rp-user-av">
+    <span className={`rp-avatar ${big ? "big" : ""}`}>
       {url ? (
         // eslint-disable-next-line @next/next/no-img-element -- kullanıcı avatarı
         <img src={url} alt={name} />
@@ -419,7 +412,25 @@ function Avatar({ url, name }: { url: string | null; name: string }) {
   );
 }
 
-/** Sol sabit menü: navigasyon + lig listesi + kullanıcı kartı. */
+/** Marka kutusu — admin panelindeki gradyan logo karosunun aynısı. */
+function Brand({ lang }: { lang: "tr" | "en" }) {
+  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+  return (
+    <div className="rp-brand">
+      <span className="rp-brand-logo">
+        <IconWhistle s={19} />
+      </span>
+      <div className="rp-brand-txt">
+        <b>
+          Scores<i>TV</i>
+        </b>
+        <small>{t("Muhabir Paneli", "Reporter Panel")}</small>
+      </div>
+    </div>
+  );
+}
+
+/** Sol lacivert menü — admin panel sidebar'ı ile aynı dil. */
 function Sidebar({
   lang,
   leagues,
@@ -438,28 +449,22 @@ function Sidebar({
   const name = user?.displayName || t("Üye", "Member");
   return (
     <aside className="rp-side">
-      <div className="rp-side-brand">
-        <Link href="/" className="rp-logo" aria-label="Scores TV">
-          <Logo h={24} />
-        </Link>
-        <span className="rp-side-sub">
-          <IconWhistle s={12} /> {t("Saha Muhabiri", "Field Reporter")}
-        </span>
-      </div>
+      <Brand lang={lang} />
 
       <nav className="rp-side-nav">
+        <span className="rp-side-label">{t("Menü", "Menu")}</span>
         <button
-          className={`rp-side-item ${view === "overview" ? "is-active" : ""}`}
+          className={`rp-nav-item ${view === "overview" ? "active" : ""}`}
           onClick={() => onView("overview")}
         >
-          <IconHome s={16} /> {t("Genel Bakış", "Overview")}
+          <IconHome s={17} /> {t("Genel Bakış", "Overview")}
         </button>
         <button
-          className={`rp-side-item ${view === "apps" ? "is-active" : ""}`}
+          className={`rp-nav-item ${view === "apps" ? "active" : ""}`}
           onClick={() => onView("apps")}
         >
-          <IconNews s={16} /> {t("Başvurularım", "Applications")}
-          {pendingCount > 0 && <span className="rp-side-badge">{pendingCount}</span>}
+          <IconNews s={17} /> {t("Başvurularım", "Applications")}
+          {pendingCount > 0 && <span className="rp-nav-badge">{pendingCount}</span>}
         </button>
 
         <span className="rp-side-label">{t("Liglerim", "My Leagues")}</span>
@@ -471,17 +476,17 @@ function Sidebar({
         {leagues.map((l) => (
           <button
             key={l.leagueId}
-            className={`rp-side-item ${view === `league:${l.leagueId}` ? "is-active" : ""}`}
+            className={`rp-nav-item ${view === `league:${l.leagueId}` ? "active" : ""}`}
             onClick={() => onView(`league:${l.leagueId}`)}
           >
             {l.logo ? (
               // eslint-disable-next-line @next/next/no-img-element -- muhabir logosu
-              <img src={l.logo} alt="" className="rp-side-lg" />
+              <img src={l.logo} alt="" className="rp-nav-lg" />
             ) : (
-              <IconTrophy s={16} />
+              <IconTrophy s={17} />
             )}
-            <span className="rp-side-item-nm">{l.leagueName}</span>
-            <span className="rp-side-badge dim tnum">{l.fixtureCount}</span>
+            <span className="rp-nav-nm">{l.leagueName}</span>
+            <span className="rp-nav-badge dim tnum">{l.fixtureCount}</span>
           </button>
         ))}
       </nav>
@@ -490,24 +495,43 @@ function Sidebar({
         {user && (
           <div className="rp-side-user">
             <Avatar url={user.avatarUrl ?? null} name={name} />
-            <div className="rp-side-user-txt">
-              <b>{name}</b>
-              <span>{user.email}</span>
+            <div className="rp-side-user-meta">
+              <span className="nm">{name}</span>
+              <span className="role">{t("Saha Muhabiri", "Field Reporter")}</span>
             </div>
           </div>
         )}
-        <div className="rp-side-actions">
-          <Link href="/">
-            <IconChevronLeft s={13} /> {t("Siteye Dön", "Back to Site")}
-          </Link>
-          {user && (
-            <button onClick={() => void logout()}>
-              <IconLogout s={13} /> {t("Çıkış", "Sign out")}
-            </button>
-          )}
-        </div>
+        <button className="rp-side-logout" onClick={() => void logout()}>
+          <IconLogout s={15} /> {t("Çıkış", "Sign out")}
+        </button>
       </div>
     </aside>
+  );
+}
+
+/** Beyaz üst bar — sayfa başlığı + Siteye Dön + kullanıcı çipi. */
+function Topbar({ lang, title }: { lang: "tr" | "en"; title: string }) {
+  const { user } = useAuth();
+  const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
+  const name = user?.displayName || t("Üye", "Member");
+  return (
+    <header className="rp-topbar">
+      <h1 className="rp-topbar-title">{title}</h1>
+      <div className="rp-topbar-right">
+        <Link href="/" className="rp-btn ghost">
+          <IconChevronLeft s={14} /> {t("Siteye Dön", "Back to Site")}
+        </Link>
+        {user && (
+          <div className="rp-user-chip">
+            <Avatar url={user.avatarUrl ?? null} name={name} big />
+            <div className="rp-user-meta">
+              <span className="nm">{name}</span>
+              <span className="rp-role-badge">{t("Saha Muhabiri", "Field Reporter")}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
   );
 }
 
@@ -516,18 +540,9 @@ function Sidebar({
 function Landing({ lang, onSignIn }: { lang: "tr" | "en"; onSignIn: () => void }) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   return (
-    <div className="rp-land" style={{ backgroundImage: `url(${LANDING_BG})` }}>
-      <header className="rp-land-top">
-        <Logo h={26} />
-        <Link href="/" className="rp-back on-photo">
-          <IconChevronLeft s={14} /> {t("Siteye Dön", "Back to Site")}
-        </Link>
-      </header>
-      <div className="rp-land-mid">
-        <span className="rp-hero-kicker">
-          <IconWhistle s={13} />
-          {t("Scores TV Topluluk Programı", "Scores TV Community Program")}
-        </span>
+    <div className="rp-land">
+      <div className="rp-land-card">
+        <Brand lang={lang} />
         <h1>{t("Saha Muhabiri", "Field Reporter")}</h1>
         <p>
           {t(
@@ -535,42 +550,51 @@ function Landing({ lang, onSignIn }: { lang: "tr" | "en"; onSignIn: () => void }
             "Bring your local amateur league to ScoresTV: enter fixtures, keep live scores on match day, earn Scores Points for every completed match.",
           )}
         </p>
-        <div className="rp-steps">
-          <div className="rp-step">
-            <span className="rp-step-ic"><IconTrophy s={18} /></span>
-            <b>{t("1 · Başvur", "1 · Apply")}</b>
-            <span>{t(
-              "Takip ettiğin ligi anlat, editör onayıyla lig sana atansın.",
-              "Tell us about your league; it gets assigned to you on approval.",
-            )}</span>
+        <div className="rp-land-steps">
+          <div className="rp-land-step">
+            <span className="rp-step-ic"><IconTrophy s={17} /></span>
+            <div>
+              <b>{t("Başvur", "Apply")}</b>
+              <span>{t(
+                "Takip ettiğin ligi anlat, editör onayıyla lig sana atansın.",
+                "Tell us about your league; it gets assigned to you on approval.",
+              )}</span>
+            </div>
           </div>
-          <div className="rp-step">
-            <span className="rp-step-ic"><IconBall s={18} /></span>
-            <b>{t("2 · Veriyi Gir", "2 · Enter Data")}</b>
-            <span>{t(
-              "Takımları, fikstürü, kadroları ve maç günü canlı skoru yönet.",
-              "Manage teams, fixtures, lineups and live scores on match day.",
-            )}</span>
+          <div className="rp-land-step">
+            <span className="rp-step-ic"><IconBall s={17} /></span>
+            <div>
+              <b>{t("Veriyi Gir", "Enter Data")}</b>
+              <span>{t(
+                "Takımları, fikstürü, kadroları ve maç günü canlı skoru yönet.",
+                "Manage teams, fixtures, lineups and live scores on match day.",
+              )}</span>
+            </div>
           </div>
-          <div className="rp-step">
-            <span className="rp-step-ic"><IconPoint s={18} /></span>
-            <b>{t("3 · Puan Kazan", "3 · Earn Points")}</b>
-            <span>{t(
-              "Tamamlanan her maç hesabına +100 Scores Puanı ekler.",
-              "Every completed match adds +100 Scores Points to your account.",
-            )}</span>
+          <div className="rp-land-step">
+            <span className="rp-step-ic"><IconPoint s={17} /></span>
+            <div>
+              <b>{t("Puan Kazan", "Earn Points")}</b>
+              <span>{t(
+                "Tamamlanan her maç hesabına +100 Scores Puanı ekler.",
+                "Every completed match adds +100 Scores Points to your account.",
+              )}</span>
+            </div>
           </div>
         </div>
-        <button className="ri-submit rp-cta" onClick={onSignIn}>
+        <button className="rp-btn primary wide" onClick={onSignIn}>
           {t("Başlamak için giriş yap", "Sign in to get started")}
         </button>
+        <Link href="/" className="rp-land-back">
+          <IconChevronLeft s={13} /> {t("Siteye Dön", "Back to Site")}
+        </Link>
       </div>
-      <footer className="rp-land-foot">
+      <p className="rp-land-note">
         {t(
           "Bu konsol yalnızca Scores TV saha muhabirleri içindir. Girilen veriler editör ekibince denetlenir.",
           "This console is for Scores TV field reporters only. Submitted data is reviewed by our editors.",
         )}
-      </footer>
+      </p>
     </div>
   );
 }
@@ -647,7 +671,6 @@ export function ReporterConsole() {
   const selected = view.startsWith("league:")
     ? leagues.find((l) => `league:${l.leagueId}` === view) ?? null
     : null;
-  const name = user?.displayName || t("Muhabir", "Reporter");
 
   const statusLabel = (s: Application["status"]) =>
     s === "PENDING"
@@ -655,6 +678,12 @@ export function ReporterConsole() {
       : s === "APPROVED"
         ? t("Onaylandı", "Approved")
         : t("Reddedildi", "Rejected");
+
+  const title = selected
+    ? selected.leagueName
+    : view === "apps"
+      ? t("Başvurularım", "My Applications")
+      : t("Genel Bakış", "Overview");
 
   return (
     <div className="rp-shell">
@@ -666,82 +695,73 @@ export function ReporterConsole() {
         onView={setView}
       />
       <div className="rp-body">
-        <main className="rp-main">
+        <Topbar lang={lang} title={title} />
+        <main className="rp-content">
           {view === "overview" && (
             <>
-              <div className="rp-hero-card" style={{ backgroundImage: `url(${HERO_BG})` }}>
-                <span className="rp-hero-kicker">
-                  <IconWhistle s={13} /> {t("Saha Muhabiri", "Field Reporter")}
-                </span>
-                <h1>{t(`Hoş geldin, ${name}`, `Welcome, ${name}`)}</h1>
-                <p>
-                  {t(
-                    "API'lerin görmediği ligleri sen görünür kıl — her tamamlanan maç hesabına +100 Scores Puanı ekler.",
-                    "Make the leagues APIs can't see visible — every completed match adds +100 Scores Points.",
-                  )}
-                </p>
-              </div>
-
-              <div className="rp-cards">
-                <div className="rp-scard">
-                  <span className="rp-scard-ic"><IconTrophy s={17} /></span>
+              <div className="rp-stat-grid">
+                <div className="rp-stat">
                   <div>
-                    <b className="tnum">{leagues.length}</b>
-                    <span>{t("Atanmış Lig", "Assigned Leagues")}</span>
+                    <span className="rp-stat-label">{t("Atanmış Lig", "Assigned Leagues")}</span>
+                    <b className="rp-stat-value tnum">{leagues.length}</b>
                   </div>
+                  <span className="rp-stat-ic"><IconTrophy s={20} /></span>
                 </div>
-                <div className="rp-scard">
-                  <span className="rp-scard-ic"><IconBall s={17} /></span>
+                <div className="rp-stat">
                   <div>
-                    <b className="tnum">{totalTeams}</b>
-                    <span>{t("Takım", "Teams")}</span>
+                    <span className="rp-stat-label">{t("Takım", "Teams")}</span>
+                    <b className="rp-stat-value tnum">{totalTeams}</b>
                   </div>
+                  <span className="rp-stat-ic success"><IconBall s={20} /></span>
                 </div>
-                <div className="rp-scard">
-                  <span className="rp-scard-ic"><IconCalendar s={17} /></span>
+                <div className="rp-stat">
                   <div>
-                    <b className="tnum">{totalFixtures}</b>
-                    <span>{t("Maç", "Matches")}</span>
+                    <span className="rp-stat-label">{t("Maç", "Matches")}</span>
+                    <b className="rp-stat-value tnum">{totalFixtures}</b>
                   </div>
+                  <span className="rp-stat-ic warning"><IconCalendar s={20} /></span>
                 </div>
-                <div className="rp-scard">
-                  <span className="rp-scard-ic"><IconNews s={17} /></span>
+                <div className="rp-stat">
                   <div>
-                    <b className="tnum">{pending}</b>
-                    <span>{t("Bekleyen Başvuru", "Pending Applications")}</span>
+                    <span className="rp-stat-label">{t("Bekleyen Başvuru", "Pending Applications")}</span>
+                    <b className="rp-stat-value tnum">{pending}</b>
                   </div>
+                  <span className="rp-stat-ic neutral"><IconNews s={20} /></span>
                 </div>
               </div>
 
               {leagues.length > 0 ? (
-                <section>
-                  <h2 className="rp-sec-title">{t("Liglerim", "My Leagues")}</h2>
-                  <div className="rp-lgrid">
+                <section className="rp-card">
+                  <div className="rp-card-head">
+                    <h2>{t("Liglerim", "My Leagues")}</h2>
+                  </div>
+                  <div className="rp-league-rows">
                     {leagues.map((l) => (
-                      <button
-                        key={l.leagueId}
-                        className="rp-lcard"
-                        onClick={() => setView(`league:${l.leagueId}`)}
-                      >
+                      <div key={l.leagueId} className="rp-league-row">
                         {l.logo ? (
                           // eslint-disable-next-line @next/next/no-img-element -- muhabir logosu
-                          <img src={l.logo} alt="" className="rp-lcard-lg" />
+                          <img src={l.logo} alt="" className="rp-lrow-lg" />
                         ) : (
-                          <span className="rp-lcard-ph"><IconTrophy s={20} /></span>
+                          <span className="rp-lrow-ph"><IconTrophy s={18} /></span>
                         )}
-                        <b>{l.leagueName}</b>
-                        <span>
-                          {l.teamCount} {t("takım", "teams")} · {l.fixtureCount} {t("maç", "matches")}
-                        </span>
-                        <span className="rp-lcard-go">
+                        <div className="rp-lrow-txt">
+                          <b>{l.leagueName}</b>
+                          <span>
+                            {l.teamCount} {t("takım", "teams")} · {l.fixtureCount} {t("maç", "matches")}
+                          </span>
+                        </div>
+                        <button
+                          className="rp-btn primary sm"
+                          onClick={() => setView(`league:${l.leagueId}`)}
+                        >
                           {t("Yönet", "Manage")} <IconChevronRight s={12} />
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </section>
               ) : (
-                <div className="rp-onboard">
+                <section className="rp-card rp-onboard">
                   <span className="rp-step-ic"><IconTrophy s={18} /></span>
                   <b>{t("İlk ligini almak için başvur", "Apply to get your first league")}</b>
                   <span>
@@ -750,27 +770,30 @@ export function ReporterConsole() {
                       "Tell us about the amateur league you follow; once approved it is assigned to you and you can start entering data.",
                     )}
                   </span>
-                  <button className="ri-submit" onClick={() => setView("apps")}>
+                  <button className="rp-btn primary" onClick={() => setView("apps")}>
                     {t("Başvuru Yap", "Apply Now")}
                   </button>
-                </div>
+                </section>
               )}
 
               {apps.length > 0 && (
-                <section>
-                  <h2 className="rp-sec-title">{t("Son Başvurular", "Recent Applications")}</h2>
-                  <div className="mrc-card">
-                    <div className="mrc-apps" style={{ marginTop: 0 }}>
-                      {apps.slice(0, 3).map((a) => (
-                        <div key={a.id} className="mrc-app">
-                          <span className="mrc-app-name">{a.leagueName}</span>
-                          <span className={`mrc-app-status s-${a.status.toLowerCase()}`}>
-                            {statusLabel(a.status)}
-                          </span>
-                          {a.reviewNote && <span className="mrc-app-note">{a.reviewNote}</span>}
-                        </div>
-                      ))}
-                    </div>
+                <section className="rp-card">
+                  <div className="rp-card-head">
+                    <h2>{t("Son Başvurular", "Recent Applications")}</h2>
+                    <button className="rp-btn ghost sm" onClick={() => setView("apps")}>
+                      {t("Tümü", "View all")} <IconChevronRight s={12} />
+                    </button>
+                  </div>
+                  <div className="rp-app-rows">
+                    {apps.slice(0, 3).map((a) => (
+                      <div key={a.id} className="rp-app-row">
+                        <span className="rp-app-nm">{a.leagueName}</span>
+                        <span className={`rp-badge s-${a.status.toLowerCase()}`}>
+                          {statusLabel(a.status)}
+                        </span>
+                        {a.reviewNote && <span className="rp-app-note">{a.reviewNote}</span>}
+                      </div>
+                    ))}
                   </div>
                 </section>
               )}
@@ -778,77 +801,74 @@ export function ReporterConsole() {
           )}
 
           {selected && (
-            <>
-              <button className="rp-crumb" onClick={() => setView("overview")}>
-                <IconChevronLeft s={13} /> {t("Genel Bakış", "Overview")}
-              </button>
-              <LeaguePanel
-                league={selected}
-                lang={lang}
-                onLeagueLogoChange={() => void loadMe()}
-              />
-            </>
+            <LeaguePanel
+              league={selected}
+              lang={lang}
+              onLeagueLogoChange={() => void loadMe()}
+            />
           )}
 
           {view === "apps" && (
             <>
-              <div className="rp-page-head">
-                <h1>{t("Başvurularım", "My Applications")}</h1>
-                <p>
-                  {t(
-                    "Hangi ligi girmek istiyorsun? Onaylanınca lig sana atanır ve veri girişine başlarsın.",
-                    "Which league do you want to cover? Once approved, the league is assigned to you.",
-                  )}
-                </p>
-              </div>
-
               {msg && <div className="mrc-msg">{msg}</div>}
 
-              <section className="mrc-card">
-                <h3 className="mrc-card-title">{t("Yeni Lig Başvurusu", "Apply for a New League")}</h3>
-                <div className="mrc-form">
-                  <input
-                    className="ri-input"
-                    value={leagueName}
-                    onChange={(e) => setLeagueName(e.target.value)}
-                    maxLength={150}
-                    placeholder={t("Lig adı — ör. Ankara 1. Amatör Küme", "League name")}
-                  />
-                  <input
-                    className="ri-input"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                    maxLength={150}
-                    placeholder={t("Bölge/şehir (ops.)", "Region/city (opt.)")}
-                  />
-                  <textarea
-                    className="ri-input ri-textarea"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    maxLength={1000}
-                    rows={3}
-                    placeholder={t(
-                      "Kendinden bahset: bu ligi nereden takip ediyorsun, hangi sıklıkla girebilirsin?",
-                      "Tell us: how do you follow this league, how often can you enter data?",
+              <section className="rp-card">
+                <div className="rp-card-head">
+                  <h2>{t("Yeni Lig Başvurusu", "Apply for a New League")}</h2>
+                </div>
+                <div className="rp-card-pad">
+                  <p className="rp-hint">
+                    {t(
+                      "Hangi ligi girmek istiyorsun? Onaylanınca lig sana atanır ve veri girişine başlarsın.",
+                      "Which league do you want to cover? Once approved, the league is assigned to you.",
                     )}
-                  />
-                  <button className="ri-submit" disabled={busy} onClick={apply}>
-                    {busy ? t("Gönderiliyor…", "Sending…") : t("Başvur", "Apply")}
-                  </button>
+                  </p>
+                  <div className="mrc-form">
+                    <input
+                      className="ri-input"
+                      value={leagueName}
+                      onChange={(e) => setLeagueName(e.target.value)}
+                      maxLength={150}
+                      placeholder={t("Lig adı — ör. Ankara 1. Amatör Küme", "League name")}
+                    />
+                    <input
+                      className="ri-input"
+                      value={region}
+                      onChange={(e) => setRegion(e.target.value)}
+                      maxLength={150}
+                      placeholder={t("Bölge/şehir (ops.)", "Region/city (opt.)")}
+                    />
+                    <textarea
+                      className="ri-input ri-textarea"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      maxLength={1000}
+                      rows={3}
+                      placeholder={t(
+                        "Kendinden bahset: bu ligi nereden takip ediyorsun, hangi sıklıkla girebilirsin?",
+                        "Tell us: how do you follow this league, how often can you enter data?",
+                      )}
+                    />
+                    <button className="rp-btn primary" disabled={busy} onClick={apply}>
+                      {busy ? t("Gönderiliyor…", "Sending…") : t("Başvur", "Apply")}
+                    </button>
+                  </div>
                 </div>
               </section>
 
               {apps.length > 0 && (
-                <section className="mrc-card">
-                  <h3 className="mrc-card-title">{t("Geçmiş Başvurular", "Past Applications")}</h3>
-                  <div className="mrc-apps" style={{ marginTop: 0 }}>
+                <section className="rp-card">
+                  <div className="rp-card-head">
+                    <h2>{t("Geçmiş Başvurular", "Past Applications")}</h2>
+                  </div>
+                  <div className="rp-app-rows">
                     {apps.map((a) => (
-                      <div key={a.id} className="mrc-app">
-                        <span className="mrc-app-name">{a.leagueName}</span>
-                        <span className={`mrc-app-status s-${a.status.toLowerCase()}`}>
+                      <div key={a.id} className="rp-app-row">
+                        <span className="rp-app-nm">{a.leagueName}</span>
+                        <span className={`rp-badge s-${a.status.toLowerCase()}`}>
                           {statusLabel(a.status)}
                         </span>
-                        {a.reviewNote && <span className="mrc-app-note">{a.reviewNote}</span>}
+                        {a.reviewNote && <span className="rp-app-note">{a.reviewNote}</span>}
                       </div>
                     ))}
                   </div>
@@ -857,12 +877,6 @@ export function ReporterConsole() {
             </>
           )}
         </main>
-        <footer className="rp-foot">
-          {t(
-            "Bu konsol yalnızca Scores TV saha muhabirleri içindir. Girilen veriler editör ekibince denetlenir.",
-            "This console is for Scores TV field reporters only. Submitted data is reviewed by our editors.",
-          )}
-        </footer>
       </div>
     </div>
   );
