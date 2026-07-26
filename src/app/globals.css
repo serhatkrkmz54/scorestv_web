@@ -6518,3 +6518,114 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   font-weight: 700;
 }
 .ri-submit:disabled { opacity: 0.6; cursor: default; }
+
+/* ════════════════════ SAHA MUHABIRI KONSOLU (/muhabir) ════════════════════ */
+.mrc-page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 28px var(--page-pad-x) 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mrc-hero { text-align: center; padding: 8px 0 4px; }
+.mrc-hero h1 { margin: 0; font-size: 30px; font-weight: 800; color: var(--text); }
+.mrc-hero p { margin: 8px auto 14px; max-width: 56ch; font-size: 14.5px; line-height: 1.6; color: var(--text-dim); }
+.mrc-msg {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text);
+}
+.mrc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.mrc-card-title { margin: 0 0 10px; font-size: 15.5px; font-weight: 700; color: var(--text); }
+.mrc-hint { margin: 0 0 12px; font-size: 13px; color: var(--text-dim); }
+.mrc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 767.98px) { .mrc-grid { grid-template-columns: 1fr; } }
+.mrc-form { display: flex; flex-direction: column; gap: 10px; }
+.mrc-row { display: flex; gap: 8px; margin-top: 10px; }
+.mrc-row .ri-input { flex: 1; }
+.mrc-team-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.mrc-team {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+.mrc-empty { font-size: 13px; color: var(--text-faint); }
+.mrc-league-title { margin: 4px 0 0; font-size: 20px; font-weight: 800; color: var(--text); }
+.mrc-league-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.mrc-league-tab {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  text-align: left;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mrc-league-tab.is-active { border-color: var(--accent); }
+.mrc-league-tab-meta { font-size: 11.5px; font-weight: 500; color: var(--text-dim); }
+
+/* Fikstur karti + canli konsol */
+.mrc-fixture {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-top: 10px;
+  background: var(--surface-2);
+}
+.mrc-fix-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.mrc-fix-teams { font-size: 14.5px; font-weight: 600; color: var(--text); }
+.mrc-fix-teams b { font-size: 16px; }
+.mrc-fix-teams i { margin: 0 3px; opacity: 0.5; }
+.mrc-fix-status { font-size: 12px; font-weight: 700; color: var(--text-dim); display: inline-flex; align-items: center; gap: 5px; }
+.mrc-fix-status.is-live { color: var(--live); }
+.mrc-fix-meta { margin-top: 4px; font-size: 12px; color: var(--text-faint); display: flex; gap: 10px; }
+.mrc-fix-link { color: var(--accent); font-weight: 600; }
+.mrc-fix-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.mrc-act {
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.mrc-act.go { background: var(--win); border-color: var(--win); color: #fff; }
+.mrc-act.warn { background: transparent; border-color: var(--live); color: var(--live); }
+.mrc-act:disabled { opacity: 0.5; }
+.mrc-done { font-size: 12.5px; font-weight: 700; color: var(--win); align-self: center; }
+
+/* Basvuru gecmisi */
+.mrc-apps { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.mrc-app {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  font-size: 13px;
+}
+.mrc-app-name { font-weight: 600; color: var(--text); }
+.mrc-app-status { border-radius: 999px; padding: 2px 10px; font-size: 11.5px; font-weight: 700; }
+.mrc-app-status.s-pending { background: color-mix(in srgb, orange 18%, transparent); color: orange; }
+.mrc-app-status.s-approved { background: color-mix(in srgb, var(--win) 18%, transparent); color: var(--win); }
+.mrc-app-status.s-rejected { background: color-mix(in srgb, var(--live) 18%, transparent); color: var(--live); }
+.mrc-app-note { font-size: 12px; color: var(--text-dim); }
