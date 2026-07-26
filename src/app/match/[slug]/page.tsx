@@ -13,6 +13,7 @@ import { fetchHighlightsServer } from "@/lib/highlights-server";
 import { videoObjectJsonLd } from "@/lib/video-jsonld";
 import { getNewsByFixture } from "@/lib/news-server";
 import { RelatedNews } from "@/components/news/RelatedNews";
+import { ReportIssueButton } from "@/components/match/ReportIssueButton";
 
 const FINISHED = new Set(["FT", "AET", "PEN"]);
 
@@ -102,6 +103,13 @@ export default async function Page({ params }: PageProps) {
         <div className="match-detail-main">
           <Breadcrumb items={initial.seo?.breadcrumbs} />
           <MatchDetailScreen initial={initial} slug={slug} lang="en" initialHighlights={highlights} />
+          <ReportIssueButton
+            sport="football"
+            targetType="FIXTURE"
+            targetId={initial.id}
+            targetLabel={`${initial.homeTeam.name} - ${initial.awayTeam.name}`}
+            lang="en"
+          />
           <RelatedNews items={relatedNews} lang="en" />
         </div>
         <aside className="rail-right">

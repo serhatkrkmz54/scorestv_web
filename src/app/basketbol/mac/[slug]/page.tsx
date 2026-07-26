@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchBasketballDetailServer } from "@/lib/basketball-detail";
 import { escapeJsonLd } from "@/lib/jsonld";
+import { ReportIssueButton } from "@/components/match/ReportIssueButton";
 import { BasketballDetailScreen } from "@/components/match/basketball/BasketballDetailScreen";
 import { BasketballLeftRail } from "@/components/home/BasketballLeftRail";
 import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
@@ -69,6 +70,15 @@ export default async function Page({ params }: PageProps) {
         <div className="match-detail-main">
           <Breadcrumb items={crumbsFromJsonLd(initial.seo?.breadcrumbsJsonLd)} />
           <BasketballDetailScreen initial={initial} slug={slug} lang="tr" />
+          {initial.id != null ? (
+            <ReportIssueButton
+              sport="basketball"
+              targetType="FIXTURE"
+              targetId={initial.id}
+              targetLabel={`${home} - ${away}`}
+              lang="tr"
+            />
+          ) : null}
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { backendUnavailable } from "@/lib/backend-unavailable";
 import { fetchVolleyballDetailServer } from "@/lib/volleyball-detail";
 import { escapeJsonLd } from "@/lib/jsonld";
+import { ReportIssueButton } from "@/components/match/ReportIssueButton";
 import { VolleyballDetailScreen } from "@/components/match/volleyball/VolleyballDetailScreen";
 import { VolleyballLeftRail } from "@/components/home/VolleyballLeftRail";
 import { Breadcrumb, crumbsFromJsonLd } from "@/components/seo/Breadcrumb";
@@ -84,6 +85,15 @@ export default async function Page({ params }: PageProps) {
         <div className="match-detail-main">
           <Breadcrumb items={crumbsFromJsonLd(initial.seo?.breadcrumbsJsonLd)} />
           <VolleyballDetailScreen initial={initial} slug={slug} lang="tr" />
+          {initial.id != null ? (
+            <ReportIssueButton
+              sport="volleyball"
+              targetType="FIXTURE"
+              targetId={initial.id}
+              targetLabel={`${home} - ${away}`}
+              lang="tr"
+            />
+          ) : null}
         </div>
       </div>
     </>
