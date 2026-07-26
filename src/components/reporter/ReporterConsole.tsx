@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/context/auth-context";
 import { useLang } from "@/context/lang-context";
-import { matchPath } from "@/lib/routes";
-import Link from "next/link";
+import { MatchDesk, type DeskFixture } from "./MatchDesk";
 
 /**
  * Saha Muhabiri konsolu — /muhabir.
@@ -17,6 +16,7 @@ import Link from "next/link";
 interface AssignedLeague {
   leagueId: number;
   leagueName: string;
+  logo: string | null;
   teamCount: number;
   fixtureCount: number;
 }
@@ -37,21 +37,55 @@ interface MeResponse {
 interface TeamView {
   id: number;
   name: string;
+  logo: string | null;
 }
-interface FixtureView {
-  id: number;
-  slug: string;
-  kickoffAt: string;
-  statusShort: string;
-  elapsed: number | null;
-  homeGoals: number | null;
-  awayGoals: number | null;
-  homeTeamId: number;
-  homeTeamName: string;
-  awayTeamId: number;
-  awayTeamName: string;
-  round: string | null;
+
+/** Gizli file input'lu logo yükleme düğmesi (PNG/JPG/WebP, max 2MB). */
+function LogoUpload({
+  url,
+  title,
+  onDone,
+  onError,
+}: {
+  url: string;
+  title: string;
+  onDone: () => void;
+  onError: (msg: string) => void;
+}) {
+  return (
+    <label className="mrc-logo-btn" title={title}>
+      📷
+      <input
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        style={{ display: "none" }}
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (!file) return;
+          if (file.size > 2 * 1024 * 1024) {
+            onError("Logo en fazla 2MB olabilir.");
+            return;
+          }
+          const form = new FormData();
+          form.append("file", file);
+          try {
+            const r = await fetch(url, { method: "POST", body: form });
+            if (!r.ok) {
+              const body = (await r.json()) as { message?: string };
+              onError(body.message ?? "Yükleme başarısız.");
+              return;
+            }
+            onDone();
+          } catch {
+            onError("Yükleme başarısız.");
+          }
+        }}
+      />
+    </label>
+  );
 }
+type FixtureView = DeskFixture;
 
 const LIVE = new Set(["1H", "HT", "2H"]);
 
@@ -80,24 +114,24 @@ function fmtKickoff(iso: string, lang: "tr" | "en"): string {
   }
 }
 
-// ==================== Canlı maç kartı ====================
+// ==================== Fikstür satırı (kompakt) ====================
 
-function FixtureCard({
+function FixtureRow({
   f,
   lang,
-  onAction,
-  busy,
+  active,
+  onManage,
 }: {
   f: FixtureView;
   lang: "tr" | "en";
-  onAction: (id: number, body: Record<string, unknown>) => void;
-  busy: boolean;
+  active: boolean;
+  onManage: () => void;
 }) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const live = LIVE.has(f.statusShort);
   const done = f.statusShort === "FT";
   return (
-    <div className="mrc-fixture">
+    <div className={`mrc-fixture ${active ? "is-active" : ""}`}>
       <div className="mrc-fix-head">
         <span className="mrc-fix-teams">
           {f.homeTeamName} <b className="tnum">{f.homeGoals ?? "-"}</b>
@@ -107,88 +141,18 @@ function FixtureCard({
         <span className={`mrc-fix-status ${live ? "is-live" : ""}`}>
           {live && <span className="live-dot pulse" />}
           {f.statusShort}
-          {live && f.elapsed != null ? ` · ${f.elapsed}'` : ""}
+          {live && f.elapsed != null
+            ? ` · ${f.elapsed}${f.statusExtra ? `+${f.statusExtra}` : ""}'`
+            : ""}
         </span>
       </div>
       <div className="mrc-fix-meta">
         {fmtKickoff(f.kickoffAt, lang)}
         {f.round ? ` · ${f.round}` : ""}
-        {done && (
-          <Link href={matchPath(lang, f.slug)} className="mrc-fix-link">
-            {t("Maç sayfası →", "Match page →")}
-          </Link>
-        )}
-      </div>
-      <div className="mrc-fix-actions">
-        {f.statusShort === "NS" || f.statusShort === "PST" ? (
-          <>
-            <button className="mrc-act go" disabled={busy} onClick={() => onAction(f.id, { action: "START" })}>
-              ▶ {t("Başlat", "Start")}
-            </button>
-            <button className="mrc-act" disabled={busy} onClick={() => onAction(f.id, { action: "POSTPONE" })}>
-              {t("Ertele", "Postpone")}
-            </button>
-            <button className="mrc-act warn" disabled={busy} onClick={() => onAction(f.id, { action: "CANCEL" })}>
-              {t("İptal", "Cancel")}
-            </button>
-          </>
-        ) : null}
-        {live ? (
-          <>
-            <button className="mrc-act go" disabled={busy} onClick={() => onAction(f.id, { action: "GOAL_HOME" })}>
-              +1 {t("Ev", "Home")}
-            </button>
-            <button className="mrc-act go" disabled={busy} onClick={() => onAction(f.id, { action: "GOAL_AWAY" })}>
-              +1 {t("Dep", "Away")}
-            </button>
-            {f.statusShort === "1H" && (
-              <button className="mrc-act" disabled={busy} onClick={() => onAction(f.id, { action: "HT" })}>
-                {t("Devre", "Halftime")}
-              </button>
-            )}
-            {f.statusShort === "HT" && (
-              <button className="mrc-act" disabled={busy} onClick={() => onAction(f.id, { action: "SECOND_HALF" })}>
-                {t("2. Yarı", "2nd Half")}
-              </button>
-            )}
-            <button
-              className="mrc-act"
-              disabled={busy}
-              onClick={() => {
-                const m = window.prompt(t("Dakika (0-130):", "Minute (0-130):"), String(f.elapsed ?? ""));
-                if (m == null) return;
-                onAction(f.id, { action: "SET_ELAPSED", minute: Number(m) });
-              }}
-            >
-              {t("Dakika", "Minute")}
-            </button>
-            <button
-              className="mrc-act"
-              disabled={busy}
-              onClick={() => {
-                const h = window.prompt(t("Ev sahibi gol:", "Home goals:"), String(f.homeGoals ?? 0));
-                if (h == null) return;
-                const a = window.prompt(t("Deplasman gol:", "Away goals:"), String(f.awayGoals ?? 0));
-                if (a == null) return;
-                onAction(f.id, { action: "SET_SCORE", homeGoals: Number(h), awayGoals: Number(a) });
-              }}
-            >
-              {t("Skor Düzelt", "Fix Score")}
-            </button>
-            <button
-              className="mrc-act warn"
-              disabled={busy}
-              onClick={() => {
-                if (window.confirm(t("Maç bitirilsin mi? (+100 Scores Puanı)", "Finish the match? (+100 Scores Points)"))) {
-                  onAction(f.id, { action: "FINISH" });
-                }
-              }}
-            >
-              ■ {t("Bitir", "Finish")}
-            </button>
-          </>
-        ) : null}
-        {done && <span className="mrc-done">✓ {t("Tamamlandı · +100 puan", "Completed · +100 points")}</span>}
+        {done && <span className="mrc-done">✓ +100</span>}
+        <button className="mrc-act manage" onClick={onManage}>
+          {active ? t("Masayı Kapat", "Close Desk") : t("Yönet →", "Manage →")}
+        </button>
       </div>
     </div>
   );
@@ -196,7 +160,15 @@ function FixtureCard({
 
 // ==================== Lig paneli ====================
 
-function LeaguePanel({ league, lang }: { league: AssignedLeague; lang: "tr" | "en" }) {
+function LeaguePanel({
+  league,
+  lang,
+  onLeagueLogoChange,
+}: {
+  league: AssignedLeague;
+  lang: "tr" | "en";
+  onLeagueLogoChange?: () => void;
+}) {
   const t = (tr: string, en: string) => (lang === "tr" ? tr : en);
   const [teams, setTeams] = useState<TeamView[]>([]);
   const [fixtures, setFixtures] = useState<FixtureView[]>([]);
@@ -207,6 +179,8 @@ function LeaguePanel({ league, lang }: { league: AssignedLeague; lang: "tr" | "e
   const [round, setRound] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  /** Açık maç yönetim masası (fixture id). */
+  const [deskId, setDeskId] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -222,7 +196,12 @@ function LeaguePanel({ league, lang }: { league: AssignedLeague; lang: "tr" | "e
   }, [league.leagueId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- async veri cekimi (standart desen)
     void load();
+    // Canlı dakika/skor tazeliği: backend job elapsed'i işletir; liste 30 sn'de
+    // bir sessizce yenilenir (açık masa da fixture prop'undan güncellenir).
+    const id = setInterval(() => void load(), 30000);
+    return () => clearInterval(id);
   }, [load]);
 
   async function addTeam() {
@@ -266,22 +245,30 @@ function LeaguePanel({ league, lang }: { league: AssignedLeague; lang: "tr" | "e
     }
   }
 
-  async function fixtureAction(id: number, body: Record<string, unknown>) {
-    setBusy(true);
-    setMsg(null);
-    try {
-      const updated = await post<FixtureView>(`/api/reporter/fixtures/${id}/actions`, body);
-      setFixtures((fs) => fs.map((f) => (f.id === updated.id ? updated : f)));
-    } catch (e) {
-      setMsg(e instanceof Error ? e.message : t("İşlem başarısız.", "Action failed."));
-    } finally {
-      setBusy(false);
-    }
-  }
+  const patchFixture = useCallback((updated: FixtureView) => {
+    setFixtures((fs) => fs.map((f) => (f.id === updated.id ? updated : f)));
+  }, []);
 
   return (
     <div className="mrc-league">
-      <h2 className="mrc-league-title">{league.leagueName}</h2>
+      <div className="mrc-league-head">
+        {league.logo ? (
+          // eslint-disable-next-line @next/next/no-img-element -- muhabir logosu
+          <img src={league.logo} alt="" className="mrc-logo" />
+        ) : (
+          <span className="mrc-logo mrc-logo-ph">{league.leagueName.charAt(0)}</span>
+        )}
+        <h2 className="mrc-league-title">{league.leagueName}</h2>
+        <LogoUpload
+          url={`/api/reporter/leagues/${league.leagueId}/logo`}
+          title={t("Lig logosu yükle", "Upload league logo")}
+          onDone={() => {
+            setMsg(t("Lig logosu yüklendi ✓ (sayfa yenilenince görünür)", "League logo uploaded ✓"));
+            onLeagueLogoChange?.();
+          }}
+          onError={setMsg}
+        />
+      </div>
       {msg && <p className="ri-error">{msg}</p>}
 
       <div className="mrc-grid">
@@ -290,7 +277,19 @@ function LeaguePanel({ league, lang }: { league: AssignedLeague; lang: "tr" | "e
           <h3 className="mrc-card-title">{t("Takımlar", "Teams")} ({teams.length})</h3>
           <div className="mrc-team-list">
             {teams.map((tm) => (
-              <span key={tm.id} className="mrc-team">{tm.name}</span>
+              <span key={tm.id} className="mrc-team">
+                {tm.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- muhabir logosu
+                  <img src={tm.logo} alt="" className="mrc-team-logo" />
+                ) : null}
+                {tm.name}
+                <LogoUpload
+                  url={`/api/reporter/teams/${tm.id}/logo`}
+                  title={t("Takım logosu yükle", "Upload team logo")}
+                  onDone={() => void load()}
+                  onError={setMsg}
+                />
+              </span>
             ))}
             {teams.length === 0 && (
               <span className="mrc-empty">{t("Henüz takım yok — ekleyin.", "No teams yet — add some.")}</span>
@@ -344,14 +343,34 @@ function LeaguePanel({ league, lang }: { league: AssignedLeague; lang: "tr" | "e
         </section>
       </div>
 
-      {/* Fikstür + canlı konsol */}
+      {/* Açık maç yönetim masası */}
+      {deskId != null && (() => {
+        const f = fixtures.find((x) => x.id === deskId);
+        if (!f) return null;
+        return (
+          <MatchDesk
+            fixture={f}
+            lang={lang}
+            onFixtureUpdate={patchFixture}
+            onClose={() => setDeskId(null)}
+          />
+        );
+      })()}
+
+      {/* Fikstür listesi */}
       <section className="mrc-card" style={{ marginTop: 14 }}>
         <h3 className="mrc-card-title">{t("Maçlar", "Matches")} ({fixtures.length})</h3>
         {fixtures.length === 0 && (
           <span className="mrc-empty">{t("Henüz maç yok.", "No matches yet.")}</span>
         )}
         {fixtures.map((f) => (
-          <FixtureCard key={f.id} f={f} lang={lang} onAction={fixtureAction} busy={busy} />
+          <FixtureRow
+            key={f.id}
+            f={f}
+            lang={lang}
+            active={deskId === f.id}
+            onManage={() => setDeskId(deskId === f.id ? null : f.id)}
+          />
         ))}
       </section>
     </div>
@@ -383,6 +402,7 @@ export function ReporterConsole() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- async veri cekimi (standart desen)
     if (user) void loadMe();
   }, [user, loadMe]);
 
@@ -473,7 +493,9 @@ export function ReporterConsole() {
         </section>
       )}
 
-      {selected && <LeaguePanel league={selected} lang={lang} />}
+      {selected && (
+        <LeaguePanel league={selected} lang={lang} onLeagueLogoChange={() => void loadMe()} />
+      )}
 
       {/* Başvuru formu + geçmiş */}
       <section className="mrc-card">
