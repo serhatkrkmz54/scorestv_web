@@ -31,10 +31,14 @@ export interface DeskFixture {
   statusExtra: number | null;
   homeGoals: number | null;
   awayGoals: number | null;
+  penHome: number | null;
+  penAway: number | null;
   homeTeamId: number;
   homeTeamName: string;
+  homeTeamLogo: string | null;
   awayTeamId: number;
   awayTeamName: string;
+  awayTeamLogo: string | null;
   round: string | null;
 }
 
@@ -57,7 +61,12 @@ interface LineupPlayer {
   substitute: boolean;
 }
 
-const LIVE = new Set(["1H", "HT", "2H"]);
+/** Canlı/ara fazlar — olay ve skor düzenlenebilir. */
+const LIVE = new Set(["1H", "HT", "2H", "ET", "BT", "P", "INT", "SUSP"]);
+/** Saatin işlediği fazlar. */
+const RUNNING = new Set(["1H", "2H", "ET"]);
+/** Puan kazandıran bitiş fazları. */
+const FINISHED = new Set(["FT", "AET", "PEN"]);
 
 const YELLOW_CARD = "#FBBF24";
 const RED_CARD = "#EF4444";
@@ -125,16 +134,17 @@ export function MatchDesk({
   const [events, setEvents] = useState<EventView[]>([]);
 
   const live = LIVE.has(fixture.statusShort);
-  const done = fixture.statusShort === "FT";
+  const done = FINISHED.has(fixture.statusShort);
 
   // ---- Canlı dakika: sunucu değeri (ManualLiveClockJob 30 sn'de bir işletir;
   // LeaguePanel listeyi periyodik tazeleyip fixture prop'unu günceller). ----
   const displayMinute = useMemo(() => {
-    if (fixture.statusShort === "HT") return t("DEVRE", "HT");
-    if (
-      fixture.elapsed != null &&
-      (fixture.statusShort === "1H" || fixture.statusShort === "2H")
-    ) {
+    const st = fixture.statusShort;
+    if (st === "HT") return t("DEVRE", "HT");
+    if (st === "BT") return t("ARA", "BREAK");
+    if (st === "P") return t("PENALTILAR", "PENS");
+    if (st === "INT" || st === "SUSP") return t("DURDU", "PAUSED");
+    if (fixture.elapsed != null && RUNNING.has(st)) {
       // Uzatma varsa 45+2' / 90+4' biçiminde göster (API maçlarıyla aynı).
       return fixture.statusExtra != null && fixture.statusExtra > 0
         ? `${fixture.elapsed}+${fixture.statusExtra}'`
@@ -172,6 +182,16 @@ export function MatchDesk({
     } finally {
       setBusy(false);
     }
+  }
+
+  // ---- Hakem ilanı (+dk) girişi ----
+  const [stoppage, setStoppage] = useState("");
+
+  /** Penaltı serisi skorunu güncelle (delta: -1/+1). */
+  function penDelta(side: "home" | "away", delta: number) {
+    const h = Math.max(0, (fixture.penHome ?? 0) + (side === "home" ? delta : 0));
+    const a = Math.max(0, (fixture.penAway ?? 0) + (side === "away" ? delta : 0));
+    void phaseAction("SET_PEN_SCORE", { homeGoals: h, awayGoals: a });
   }
 
   // ---- Olay formu ----
@@ -244,17 +264,35 @@ export function MatchDesk({
       {/* Skorbord */}
       <div className="desk-board">
         <button className="desk-close" onClick={onClose} title={t("Kapat", "Close")}><IconClose s={15} /></button>
-        <div className="desk-team home">{fixture.homeTeamName}</div>
+        <div className="desk-team home">
+          {fixture.homeTeamLogo && (
+            // eslint-disable-next-line @next/next/no-img-element -- muhabir logosu
+            <img src={fixture.homeTeamLogo} alt="" className="desk-team-logo" />
+          )}
+          {fixture.homeTeamName}
+        </div>
         <div className="desk-score">
           <span className="tnum">{fixture.homeGoals ?? "-"}</span>
           <i>:</i>
           <span className="tnum">{fixture.awayGoals ?? "-"}</span>
+          {(fixture.statusShort === "P" || fixture.statusShort === "PEN") &&
+            fixture.penHome != null && (
+              <div className="desk-pen tnum">
+                {t("Pen.", "Pens")} {fixture.penHome}-{fixture.penAway}
+              </div>
+            )}
           <div className={`desk-status ${live ? "is-live" : ""}`}>
             {live && <span className="live-dot pulse" />}
             {displayMinute ?? fixture.statusShort}
           </div>
         </div>
-        <div className="desk-team away">{fixture.awayTeamName}</div>
+        <div className="desk-team away">
+          {fixture.awayTeamLogo && (
+            // eslint-disable-next-line @next/next/no-img-element -- muhabir logosu
+            <img src={fixture.awayTeamLogo} alt="" className="desk-team-logo" />
+          )}
+          {fixture.awayTeamName}
+        </div>
       </div>
 
       {msg && <div className="desk-msg">{msg}</div>}
@@ -281,9 +319,11 @@ export function MatchDesk({
                 <button className="mrc-act go" disabled={busy} onClick={() => phaseAction("START")}>
                   <IconPlay s={11} /> {t("Maçı Başlat", "Start Match")}
                 </button>
-                <button className="mrc-act" disabled={busy} onClick={() => phaseAction("POSTPONE")}>
-                  {t("Ertele", "Postpone")}
-                </button>
+                {fixture.statusShort === "NS" && (
+                  <button className="mrc-act" disabled={busy} onClick={() => phaseAction("POSTPONE")}>
+                    {t("Ertele", "Postpone")}
+                  </button>
+                )}
                 <button className="mrc-act warn" disabled={busy} onClick={() => phaseAction("CANCEL")}>
                   {t("İptal Et", "Cancel")}
                 </button>
@@ -299,7 +339,68 @@ export function MatchDesk({
                 <IconPlay s={11} /> {t("2. Yarıyı Başlat", "Start 2nd Half")}
               </button>
             )}
-            {live && (
+            {fixture.statusShort === "2H" && (
+              <>
+                <button className="mrc-act" disabled={busy} onClick={() => phaseAction("BREAK")}>
+                  {t("Uzatma Devresine Git", "Go to Extra Time")}
+                </button>
+                <button className="mrc-act" disabled={busy} onClick={() => phaseAction("PENALTIES")}>
+                  {t("Penaltılara Geç", "Go to Penalties")}
+                </button>
+              </>
+            )}
+            {fixture.statusShort === "BT" && (
+              <>
+                <button className="mrc-act go" disabled={busy} onClick={() => phaseAction("EXTRA_TIME")}>
+                  <IconPlay s={11} />{" "}
+                  {fixture.elapsed != null && fixture.elapsed >= 105
+                    ? t("2. Uzatma Devresi (106')", "2nd ET Half (106')")
+                    : t("Uzatmayı Başlat (91')", "Start Extra Time (91')")}
+                </button>
+                <button className="mrc-act" disabled={busy} onClick={() => phaseAction("PENALTIES")}>
+                  {t("Penaltılara Geç", "Go to Penalties")}
+                </button>
+              </>
+            )}
+            {fixture.statusShort === "ET" && (
+              <>
+                {fixture.elapsed != null && fixture.elapsed < 106 && (
+                  <button className="mrc-act" disabled={busy} onClick={() => phaseAction("BREAK")}>
+                    {t("Uzatma Devre Arası", "ET Halftime")}
+                  </button>
+                )}
+                <button className="mrc-act" disabled={busy} onClick={() => phaseAction("PENALTIES")}>
+                  {t("Penaltılara Geç", "Go to Penalties")}
+                </button>
+              </>
+            )}
+            {(fixture.statusShort === "INT" || fixture.statusShort === "SUSP") && (
+              <>
+                <button className="mrc-act go" disabled={busy} onClick={() => phaseAction("RESUME")}>
+                  <IconPlay s={11} /> {t("Devam Ettir", "Resume")}
+                </button>
+                <button
+                  className="mrc-act warn"
+                  disabled={busy}
+                  onClick={() => {
+                    if (window.confirm(t(
+                      "Maç tatil edilsin mi? (Devam etmeyecek — puan verilmez)",
+                      "Abandon match? (Will not continue — no points)",
+                    ))) {
+                      void phaseAction("ABANDON");
+                    }
+                  }}
+                >
+                  {t("Maçı Tatil Et", "Abandon")}
+                </button>
+              </>
+            )}
+            {RUNNING.has(fixture.statusShort) && (
+              <button className="mrc-act" disabled={busy} onClick={() => phaseAction("PAUSE")}>
+                {t("Maçı Durdur", "Pause Match")}
+              </button>
+            )}
+            {live && fixture.statusShort !== "INT" && fixture.statusShort !== "SUSP" && (
               <button
                 className="mrc-act warn"
                 disabled={busy}
@@ -320,7 +421,68 @@ export function MatchDesk({
                 </Link>
               </>
             )}
+            {fixture.statusShort === "ABD" && (
+              <span className="mrc-empty">{t("Maç tatil edildi.", "Match abandoned.")}</span>
+            )}
           </div>
+
+          {/* Hakem ilanı: +dk (uzatma) — saat bu değerde tutulur */}
+          {RUNNING.has(fixture.statusShort) && (
+            <div className="desk-stoppage">
+              <span className="desk-hint" style={{ margin: 0 }}>
+                {t("Hakem ilanı:", "Announced:")}
+              </span>
+              <input
+                className="ri-input"
+                style={{ width: 72 }}
+                type="number"
+                min={0}
+                max={15}
+                value={stoppage}
+                onChange={(e) => setStoppage(e.target.value)}
+                placeholder="+dk"
+                title={t("İlan edilen uzatma (ör. +5)", "Announced stoppage (e.g. +5)")}
+              />
+              <button
+                className="mrc-act"
+                disabled={busy || stoppage === ""}
+                onClick={() => {
+                  void phaseAction("SET_STOPPAGE", { minute: Number(stoppage) });
+                  setStoppage("");
+                }}
+              >
+                {t("Uzatmayı İşle", "Set Stoppage")}
+              </button>
+            </div>
+          )}
+
+          {/* Penaltı serisi skoru */}
+          {fixture.statusShort === "P" && (
+            <div className="desk-penpad">
+              <div className="desk-pen-side">
+                <span className="desk-pen-team">{fixture.homeTeamName}</span>
+                <button className="mrc-act" disabled={busy} onClick={() => penDelta("home", -1)}>-</button>
+                <b className="tnum">{fixture.penHome ?? 0}</b>
+                <button className="mrc-act go" disabled={busy} onClick={() => penDelta("home", 1)}>
+                  +1 {t("Gol", "Goal")}
+                </button>
+              </div>
+              <div className="desk-pen-side">
+                <span className="desk-pen-team">{fixture.awayTeamName}</span>
+                <button className="mrc-act" disabled={busy} onClick={() => penDelta("away", -1)}>-</button>
+                <b className="tnum">{fixture.penAway ?? 0}</b>
+                <button className="mrc-act go" disabled={busy} onClick={() => penDelta("away", 1)}>
+                  +1 {t("Gol", "Goal")}
+                </button>
+              </div>
+              <p className="desk-hint">
+                {t(
+                  "Seri bitince Maçı Bitir'e bas — sonuç 'Penaltılarla' olarak işaretlenir.",
+                  "When the shootout ends press Finish — result is marked 'after penalties'.",
+                )}
+              </p>
+            </div>
+          )}
 
           {/* Hızlı olay girişi — canlıyken */}
           {live && (

@@ -102,7 +102,7 @@ function LogoUpload({
 }
 type FixtureView = DeskFixture;
 
-const LIVE = new Set(["1H", "HT", "2H"]);
+const LIVE = new Set(["1H", "HT", "2H", "ET", "BT", "P", "INT", "SUSP"]);
 
 async function post<T>(url: string, body: unknown): Promise<T> {
   const r = await fetch(url, {

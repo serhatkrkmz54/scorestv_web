@@ -7340,3 +7340,48 @@ a.news-entity-chip:hover { background: var(--surface-3); border-color: var(--bor
   .rp-league-row, .rp-app-row, .rp-card-head, .rp-card-pad { padding-left: 14px; padding-right: 14px; }
   .rp-land-card { padding: 6px 20px 22px; }
 }
+
+/* ── Muhabir masası: yeni fazlar (uzatma ilanı, penaltı serisi) ── */
+.desk-pen {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--rp-text-muted, #6f767e);
+  margin-top: 2px;
+}
+.desk-stoppage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.desk-penpad {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.desk-pen-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.desk-pen-side b { font-size: 18px; min-width: 24px; text-align: center; }
+.desk-pen-team {
+  flex: 1;
+  min-width: 120px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--rp-text, #222);
+}
+
+/* Masa skorbordunda takım logoları */
+.desk-team-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 6px;
+}
