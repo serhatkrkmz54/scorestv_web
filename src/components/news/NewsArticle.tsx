@@ -123,15 +123,9 @@ export function NewsArticle({
         />
       ) : null}
 
-      {/* Kaynak atıf */}
-      {detail.source && detail.sourceUrl ? (
-        <p className="news-article-source">
-          {t("Kaynak", "Source")}:{" "}
-          <a href={detail.sourceUrl} target="_blank" rel="noopener noreferrer nofollow">
-            {detail.source}
-          </a>
-        </p>
-      ) : null}
+      {/* Kaynak atıfı BİLİNÇLİ olarak gösterilmez — haberin kaynağı makale
+          gövdesinin içinde zaten veriliyor; ayrıca "Kaynak: NEWSDATA" gibi
+          sağlayıcı adı basmak istemiyoruz. */}
 
       {/* İlişkili varlıklar */}
       {hasEntities ? (
